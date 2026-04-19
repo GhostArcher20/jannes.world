@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Mine</title>
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+        <link rel="stylesheet" href="style.css">
+        <style>
+            .main-content {
+                position: relative;
+                flex-direction: column;
+            }
+            .main-content::-webkit-scrollbar {
+                width: 0px;
+            }
+            .satchel {
+                position: absolute;
+                top: 10px;
+                left: 600px;
+            }
+        </style>
+    </head>
+    <body
+    data-arrows='{
+      "arrow-upleft-link":     {"href": "index.html",       "tooltip": "Back to start"},
+      "arrow-downleft-link":   {"href": "#",                "tooltip": "Nothing there..."},
+      "arrow-up-link":         {"href": "campfire.html",    "tooltip": "Go to the campfire"},
+      "arrow-upright-link":    {"href": "#",                "tooltip": "Nothing there..."},
+      "arrow-right-link":      {"href": "#",                "tooltip": "Nothing there..."},
+      "arrow-downright-link":  {"href": "#",                "tooltip": "Nothing there..."},
+      "arrow-down-link":       {"href": "#",                "tooltip": "Nothing there..."},
+      "arrow-left-link":       {"href": "#",                "tooltip": "Nothing there..."}
+    }'>
+    <div class="container">
+        <div id="left-sidebar" class="left-sidebar"></div>
+        
+        <div class="main-content">
+            <h2>The Mines</h2>
+            
+            <div class="collectible satchel" data-id="satchel" data-name="satchel" data-desc="Allows you to pickup heavy ores and metals">
+                <img src="../assets/satchel.png" alt="satchel" style="width: 150px; cursor: pointer;">
+            </div>
+            <div class="collectible" data-id="pickaxe" data-name="pickaxe" data-desc="Used to mine ores">
+                <img src="../assets/pickaxe.png" alt="pickaxe" style="width: 50px; cursor: pointer;">
+            </div>
+            
+            <p>Grab your pickaxe. The air is thick with dust, but the walls glimmer with raw ore.<br>
+            Click the button underneath and try to hit the center of all sparkles of an ore!</p>
+            
+            <button class="ui-button" onclick="startMiningMinigame()">Go down the mine</button>
+            
+            <div id="minedOresContainer" style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 30px; min-height: 50px;"></div>
+        </div>
+        
+        <div id="right-sidebar" class="right-sidebar"></div>
+  </div>
+  
+  <script src="stats.js"></script>  
+  <script src="expPoints.js"></script>
+  <script src="load-sidebars.js"></script>
+  <script src="crafting.js"></script>
+  <script src="mining-minigame.js"></script>
+    </body>
+</html>

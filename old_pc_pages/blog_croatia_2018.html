@@ -1,0 +1,41 @@
+<html>
+	<head>
+	    <meta charset="UTF-8">
+	    <title>blog Croatia 2018</title>
+	    <!-- Add this line to include Marked -->
+	    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <link rel="stylesheet" href="windows_xp_style.css">
+	    <style>
+	    	.content {
+				position: relative;
+			    max-width: 900px;
+			    margin: 50px auto;
+			    padding: 30px;
+			    background: rgba(0, 20, 0, 0.01);  		/* Dark green, almost transparent */
+			    backdrop-filter: blur(0.001px);        	/* Blurs what's behind */
+			    z-index: 1;
+			}
+			.sidebar {
+				
+			}
+	    </style>
+	</head>
+	<body>
+		
+		<div class="container"><div id="blog_croatia_2018"></div></div>
+		
+		<div class="sidebar" data-section="blogs"></div>
+
+	    <script>
+	    // Fetch the .md file and display it
+	    fetch('blog_croatia_2018.md')
+	        .then(response => response.text())  // Get the text from the file
+	        .then(markdown => {
+	            // Convert markdown to HTML and put it in the page
+	            document.getElementById('blog_croatia_2018').innerHTML = marked.parse(markdown);
+	        });
+		</script>
+		<script src="load-sidebar.js"></script>
+		<script src="load-windows-xp-hud.js"></script>
+	</body>
+</html>

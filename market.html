@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- for responsive pages for mobile and pc-->
+		<title>Market</title>
+		<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+		<!-- Link to the shared CSS file -->
+		<link rel="stylesheet" href="style.css">
+		<style>
+			.main-content {
+        	position: relative;
+        	flex-direction: column;
+        }
+        .main-content::-webkit-scrollbar {
+			width: 0px;
+		}
+		</style>
+    </head>
+    <body
+data-arrows='{
+	  "arrow-upleft-link":     {"href": "smeltery.html", 		"tooltip": "Go to the smeltery"},
+	  "arrow-downleft-link":   {"href": "#",       				"tooltip": "Nothing there..."},
+	  "arrow-up-link":         {"href": "blacksmith.html",  	"tooltip": "Go to the blacksmith"},
+	  "arrow-upright-link":    {"href": "castle_gate.html",		"tooltip": "Go towards the castle"},
+	  "arrow-right-link":      {"href": "index.html",     		"tooltip": "Back to start"},
+	  "arrow-downright-link":  {"href": "#",          			"tooltip": "Nothing there..."},
+	  "arrow-down-link":       {"href": "tavern.html",         	"tooltip": "Visit the tavern"},
+	  "arrow-left-link":       {"href": "#",       				"tooltip": "Nothing there..."}
+	}'>
+	<div class="container">
+	    <!-- Empty div that will be filled by JavaScript -->
+	    <div id="left-sidebar" class="left-sidebar"></div>
+	    
+	    <div class="main-content">
+	    	<h2>The Market</h2>
+    	</div>
+		<!-- Empty div that will be filled by JavaScript -->
+	    <div id="right-sidebar" class="right-sidebar"></div>
+  </div>
+<script src="stats.js"></script>  
+<script src="expPoints.js"></script>
+<script src="load-sidebars.js"></script>
+    </body>
+</html>

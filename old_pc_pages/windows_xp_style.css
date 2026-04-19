@@ -1,0 +1,283 @@
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+/* looks like the old tooltips*/
+span {
+    display: none;
+    color: black;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    white-space: nowrap;
+    background-color: #ffffe1;
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    margin-top: 1px;  /* space from image */
+}
+
+/* =================== What's present on all pages: taskbar, top-right corner menu ================*/
+.xp-taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px; /* Adjust to match your taskbar height */
+    z-index: 10;
+    
+    /* Background on the parent element */
+    background-image: url('../assets/taskbar_background.png');
+    background-repeat: repeat-x;
+    background-position: left top;
+    background-size: auto 100%;
+}
+
+
+.taskbar-start {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    z-index: 3;
+}
+
+.taskbar-start img {
+    display: block;
+    height: 100%;
+    width: auto;
+}
+
+.taskbar-right-menu {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    z-index: 3;
+}
+
+.taskbar-right-menu img {
+    display: block;
+    height: 100%;
+    width: auto;
+}
+/* pop-up Start Menu */
+.start-menu {
+    display: none;
+    position: fixed;
+    bottom: 40px;          /* sits directly above the taskbar */
+    left: 0;
+    width: 220px;
+    background: #1164D1;   /*  */
+    border: 2px solid;
+    border-color: #1164D1; /*  */
+    padding: 5px 5px 5px 50px;
+    z-index: 10;
+    font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.start-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.start-menu li {
+    margin: 2px 5px;
+}
+
+/* buttons inside the pop-up menu */
+.start-menu .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    text-decoration: none;
+    color: #174089;
+    background: #D3E5FA;
+    border: 1px solid #B4D1F4; 
+}
+
+.start-menu .menu-item:hover {
+    background: rgba(124,124,124,0.2);
+    color: black;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080; /* pressed effect */
+}
+
+.start-menu .menu-item img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+
+.top-right-corner { /* the box where the box with clickable image sits in (top right) and it's fixed in place*/
+	position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 100;
+}
+
+.minimize-menu { /* the box itself -> otherwise it can't */
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 5;
+    cursor: pointer;
+    display: block;
+    text-align: center;  /* centers the inline-block span */
+    text-decoration: none;
+}
+.minimize-menu img {
+    width: 100%; 
+    height: 40px;
+    display: block;  /* makes image a block element */
+    margin: 0 auto;  /* centers image */
+}
+
+.minimize-menu:hover span {
+    display: inline-block;  /* or block */
+}
+
+.start-menu:hover span {
+	display: inline-block;
+}
+
+/* ========================== sections =============*/
+.content-wrapper {
+    display: flex;
+    gap: 70px;
+    max-width: 1200px;
+    margin: 80px auto 60px 80px;  /* top right bottom left */
+    align-items: flex-start;
+    padding-left: 0px; 
+    padding-right: 0px;
+    font-family: Segoe UI;
+}
+.content {
+    flex: 3; /* Takes 3/4 of the space */
+    padding: 30px;
+    border: 3px solid rgba(0, 0, 0, 1);
+    background: rgba(255, 255, 255, 1);
+    z-index: 1;
+}
+.sidebar {
+	display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;  /* Don't grow or shrink */
+    width: 100px;  /* Fixed width instead of min/max-width */
+    padding: 30px;
+    border: 3px solid rgba(0, 0, 0, 1);
+    background: rgba(255, 255, 255, 1);
+    z-index: 5;
+    position: sticky;
+    top: 0px;
+    align-self: flex-start;
+    height: fit-content;
+    margin-left: 0px;  
+    margin-right: 0px;
+}
+
+
+
+/* ====================== Windows Media Player 10 Style Player =================== */
+.wmp-player {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 320px;
+  background: linear-gradient(180deg, #3a6ea5 0%, #1a3a5a 100%);
+  border: 2px solid #0a1a2a;
+  border-radius: 12px 12px 8px 8px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  padding: 8px;
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  z-index: 100;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.control-btn {
+  background: linear-gradient(180deg, #e1e1e1 0%, #b1b1b1 100%);
+  border: 1px solid #0a1a2a;
+  border-radius: 4px;
+  color: #0a1a2a;
+  font-size: 16px;
+  width: 30px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.5), 0 1px 2px rgba(0,0,0,0.3);
+  font-weight: bold;
+}
+
+.control-btn:active {
+  background: linear-gradient(180deg, #b1b1b1 0%, #e1e1e1 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.volume-slider {
+  width: 60px;
+  height: 4px;
+  background: #0a1a2a;
+  border-radius: 4px;
+  -webkit-appearance: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 16px;
+  background: linear-gradient(180deg, #e1e1e1, #a1a1a1);
+  border: 1px solid #0a1a2a;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.progress-bar {
+  position: relative;
+  height: 10px;
+  background: #0a1a2a;
+  border-radius: 1px;
+  overflow: hidden;
+  border: 1px solid #3a6ea5;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  transition: width 0.1s linear;
+}
+
+.time-current, .time-duration {
+  position: absolute;
+  top: 0px;
+  font-size: 9px;
+  color: white;
+  text-shadow: 1px 1px 0 #000;
+  padding: 0 0px;
+}
+
+.time-current { left: 4px; }
+.time-duration { right: 4px; }
+
+/* Mute button state */
+.mute-btn.muted {
+  opacity: 0.7;
+}

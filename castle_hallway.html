@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  	<head>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>Hallway</title>
+	    <link href="/style.css" rel="stylesheet" type="text/css" media="all">
+	    <style>
+		    .main-content {
+		        	flex-direction: column;
+		        	top: 10%;
+		        }
+	        .office-door-image {
+	        	max-width: 58px;
+	            width: 100%;
+	            height: auto;
+	            display: block;           /* Needed for margin auto to work */
+				
+	    		/* left & top instead of right & bottom */
+		        left: 70%;       /* Position at 80% from left */
+	    		top: 20%;        /* Position at 60% from top */
+	    		position: absolute;
+			    /* Optional: Add a slight shadow to make it pop */
+			    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+	        	}
+    		.office-door-image:hover {
+			    transform: scale(1.05);
+			    transition: transform 0.3s;
+			    cursor: pointer;
+				}
+		</style>
+	</head>
+	<body
+	data-arrows='{
+	  "arrow-downleft-link":   {"href": "#",       			 "tooltip": "Nothing there..."},
+	  "arrow-upleft-link":     {"href": "#", 				 "tooltip": "Nothing there..."},
+	  "arrow-up-link":         {"href": "#",				 "tooltip": "Nothing there..."},
+	  "arrow-upright-link":    {"href": "office_room.html",	 "tooltip": "Go to the office"},
+	  "arrow-right-link":      {"href": "#",     			 "tooltip": "Nothing there..."},
+	  "arrow-downright-link":  {"href": "#",    			 "tooltip": "Nothing there..."},
+	  "arrow-down-link":       {"href": "castle_gate.html",  "tooltip": "Back to castle gate"},
+	  "arrow-left-link":       {"href": "#",                 "tooltip": "Nothing there..."}
+	}'>
+		<div class="container">
+			<!-- Sidebar CONTAINER -->
+			<div id="left-sidebar" class="left-sidebar"></div>
+			
+			<div class="main-content">
+				<h1>Castle Hallway</h1>
+				<h2>from here you are able to walk towards most rooms in the castle</h2>
+				<ul>
+					<li>library</li>
+					<li>observatory</li>
+					<li>office room</li>
+					<li>music room</li>
+					<li>gaming room</li>
+					<li>botany study</li>
+					<li>excercise room</li>
+					<li>art room</li>
+					<li>cabinet of curiosities</li>
+				</ul>
+				<a href="office_room.html">
+					<img src="assets/room_door.png" class="office-door-image"/>
+				</a>
+			</div>  
+		    
+			<!-- Sidebar CONTAINER (stays in main page) -->
+			<div id="right-sidebar" class="right-sidebar"></div>
+		</div>
+	
+	<script src="stats.js"></script>
+	<script src="expPoints.js"></script>
+ 	<script src="load-sidebars.js"></script>
+	</body>
+</html>

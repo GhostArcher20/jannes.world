@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor Reveal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            cursor: none;
+        }
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../assets/Bliss.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 2;
+            pointer-events: none;
+        }
+        #cursor-border {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            border: 1px solid white;
+            box-shadow: 0px 0px 20px 7px black;
+            pointer-events: none;
+            z-index: 3;
+        }
+    </style>
+</head>
+<body>
+    <div id="background"></div>
+    <canvas id="overlay"></canvas>
+    <div id="cursor-border"></div>
+	
+	<!-- taskbar -->
+	<div class="xp-taskbar">
+	    <div class="taskbar-start">
+	        <img src="../assets/taskbar_start.png" alt="Start">
+	    </div>
+	    <div class="taskbar-background"></div>
+	    <div class="taskbar-right-menu">
+	        <img src="../assets/taskbar_right_menu.png" alt="System Tray">
+	    </div>
+	</div>
+	<!-- top right minimize menu -->
+	<a href="old_desktop.html" class="minimize-menu">
+		<img src="../assets/xp_upper_right_minimize.png" alt="Minimize">
+		<span>Go to old desktop</span>
+	</a>
+	
+    <script>
+        const canvas = document.getElementById('overlay');
+        const ctx = canvas.getContext('2d');
+        const border = document.getElementById('cursor-border');
+        const size = 100; // square size
+
+        // Start off-screen so the overlay is fully solid initially
+        let mouseX = -1000;
+        let mouseY = -1000;
+
+        function draw() {
+            // match canvas size to window
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            // fill with blue
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // cut out square at mouse position
+            ctx.clearRect(mouseX - size/2, mouseY - size/2, size, size);
+        }
+        function updateBorder() {
+            border.style.left = (mouseX - size/2) + 'px';
+            border.style.top = (mouseY - size/2) + 'px';
+        }
+
+        // initial draw and border position (both off-screen)
+        draw();
+        updateBorder();
+        window.addEventListener('resize', () => {
+            draw();
+            updateBorder();
+        });
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            draw();
+            updateBorder();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,624 @@
+/* found this font on https://puppy-l0ve.nekoweb.org/ */
+@font-face {font-family: 'pixel';src: url(https://dl.dropbox.com/s/kmhe7d3n18vdz5e/w95fa.woff?dl=0);} 
+:root {
+	--dark-green: #1e3b23;
+    --light-green: #acc9a7;
+    --green: #12db1f;
+    
+    --dark-brown: #452c06;
+    --light-brown: #7d5d2d;
+    --light-beige: #f0e6d2;
+    
+    --dark-blue: #0d2252;
+    
+    --gold: #ffd700;
+    --white: white;
+    --off-white: #d6d6d2;
+    --black: black;
+    --dark-gray: #191411;
+    --darkish-gray: #221B17;
+    --gray: #4B4543;
+    --light-gray: #68615C;
+}
+body {
+    background-color: var(--dark-brown); /*  brown base color */
+    background-size: cover;               /* background image covers entire page */
+    background-repeat: no-repeat;         /* no tiling */
+    background-position: center;          /* center the image */
+    background-attachment: fixed;         /* image stays fixed on scroll */
+    color: white;
+    /* text-shadow: 0.1em 0.1em 2px black;       /* gives text depth:  text-shadow: h-shadow v-shadow blur-radius color*/
+    font-family: 'pixel', calibri, verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;                        /* full viewport height */
+    --motherload: url('../assets/motherload_edited.png');
+}
+
+/* =============== LINKS ===== */
+a {
+    color: gold;                          
+    font-weight: bold;
+    text-shadow: 1px 1px 2px black;       /* subtle shadow for readability */
+    text-decoration: none;                 /* no underline when not hovered  */
+}
+a:hover {
+    text-decoration: underline;            /* underline on hover for clarity */
+}
+
+/* =============== TOOLTIP CONTAINER ===== */
+.tooltipcontainer {
+    flex: 1;
+    justify-content: center;               /* centers horizontally (flex context) */
+    align-items: center;                   			/* centers vertically */
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted var(--dark-gray);     /* visual cue that it's hoverable */
+}
+.tooltip {
+    visibility: hidden;                    /* hidden until hover */
+    width: 160px;
+    padding: 5px 5px;
+    background-color: var(--dark-gray);
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    position: absolute;                    /* positioned relative to .tooltipcontainer */
+    z-index: 20;                           
+    pointer-events: none;
+}
+
+.tooltipcontainer:hover .tooltip {
+    visibility: visible;                   /* show on hover */
+}
+
+
+/* =============== THREE-COLUMN LAYOUT ===== */
+.container {					/* Use container only for when making different flex columns, for the content of a div, use content*/
+    display: flex;
+    height: 100vh;                          /* full viewport height for columns */
+}
+
+/* =============== LEFT SIDEBAR ===== */
+.left-sidebar {
+    width: 220px;
+    background-image: var(--motherload); /* textured background */
+    padding: 18px 18px 5px 18px;
+    border-right: 2px solid gold;           /* gold separator */
+}
+/* Left sidebar menu */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;               /* positioned relative to nearest positioned ancestor (should be relative to .left-sidebar?) */
+    bottom: 300px;                    /* distance from bottom – may need adjustment */
+}
+.left-sidebar,
+.left-sidebar * {
+    box-sizing: border-box;
+}
+.sidebar-menu li {
+    margin-bottom: 3px;
+}
+.sidebar-menu a {
+    display: block;
+    padding: 3px 8px;
+    background-image: url('../assets/menu-sidebar-background.png'); 			/* wooden background: ; */
+    max-width: 160px;
+    border: 2px solid var(--dark-gray);
+    box-shadow: 3px 3px rgba(0, 0, 0, 0.3); /* subtle 3D effect */
+    transition: 0.3s;
+}
+.sidebar-menu a:hover {
+	box-shadow: 3px 3px black; /* subtle 3D effect */
+	transform: scale(105%);
+	transition: 0.3s;
+	/* -webkit-backdrop-filter: grayscale(100%); */ /* doesn't work with image I guess */
+}
+
+/* ====== blinkies strip */
+.blinkie-strip-container {
+	position: relative;        /* anchor for absolute positioning */
+	display: flex;
+	align-items: center; /* Align button and strip vertically */
+	gap: 0.5rem;
+	margin-top: 15px;
+}
+
+
+.strip-toggle {
+	flex-shrink: 0;
+	z-index: 31; /* Keeps button above the sliding strip */
+	cursor: pointer;
+	background: var(--dark-gray);
+	color: gold;
+	border: 1px solid gold;
+	border-radius: 4px;
+	padding: 2px 5px;
+}
+
+.strip-content {
+	position: absolute;        /* taken out of normal flow */
+	left: 0;
+	top: 100%;                 /* sits directly below the toggle button */
+	width: auto;               /* width determined by content */
+	min-width: 200px;     
+	max-width: 60vw;           
+	overflow-x: auto;
+	overflow-y: hidden;
+	max-height: 0;
+	background: var(--darkish-gray);
+	z-index: 30;
+	box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+	border-radius: 4px;
+	white-space: nowrap; /* Keeps blinkies on one line */
+	transition: max-width 0.4s ease;
+}
+
+.strip-content.open {
+  max-height: 50px;
+  border: 1px inset var(--gray);
+}
+
+.strip-inner {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  padding: 5px;
+  height: 40px;
+}
+
+.blinkie-item {
+  display: block;
+}
+
+/* When strip is expanded, push the toggle button to the far right */
+.strip-content.open .strip-toggle {
+  margin-left: auto;
+}
+/* ======== Chatbox inside left sidebar */
+.sidebar-chatbox {
+    position: absolute;
+    bottom: 5px;
+    padding-bottom: 5px;
+}
+
+/* =============== MAIN CONTENT AREA ===== */
+.main-content {
+    padding: 20px;	
+    overflow-y: auto;                        	/* scroll if content overflows */
+    display: flex;
+    flex: 1;                                	/* takes remaining space */
+    justify-content: flex-start;             	/* align children to start */
+    align-items: flex-start;
+}
+
+/* =============== RIGHT SIDEBAR ===== */
+.right-sidebar {
+    width: 220px;
+    background-image: var(--motherload); 		/* same texture as left */
+    padding: 18px;
+    border-left: 2px solid gold;            	/* gold separator */
+}
+.right-sidebar,
+.right-sidebar * {
+    box-sizing: border-box;
+}
+/* xp bar container (e.g., for XP) */
+.xpbar-container {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    background: var(--dark-gray);
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.xpbar-container:hover .tooltip {
+    visibility: visible;
+    transform: translateX(-150px);		   /* moves it to the left */
+}
+
+.minimap-container {
+	
+}
+
+.minimap-container:hover .tooltip {
+    visibility: visible;
+    transform: translateX(-150px) translateY(-180px);		   /* moves it to the left and up*/
+}
+
+/* === INVENTORY SYSTEM STYLES ===== */
+/* Temporary popup message (e.g. when trying to pick up without backpack) */
+.temp-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    font-size: 18px;
+    z-index: 100;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    border: 2px solid gold;
+    text-align: center;
+}
+
+/* Inventory wrapper to handle unlocking animations */
+.inventory-container {
+    margin-bottom: 5px;
+    transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+/* The faded out, locked state */
+.inventory-container.locked {
+    opacity: 0.3;
+    filter: grayscale(100%);
+    pointer-events: none; /* Prevents interaction while locked */
+}
+
+/* box style for inventory slots */
+.plain-slot {
+    border: 2px solid var(--gray);
+    border-radius: 4px;
+    background: var(--darkish-gray);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box; /* Forces padding/borders to stay inside the box */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--light-gray);
+    font-size: 7px; /* Shrunk text to prevent grid breaking */
+    line-height: 1;
+    text-align: center;
+    text-transform: uppercase;
+    overflow: hidden; /* Hides text if it accidentally escapes the box */
+    word-wrap: break-word;
+    margin: 0; /* Margins removed; the grid gap handles spacing now! */
+}
+
+/* Styling for when an item is actually equipped */
+.equipped-slot {
+    border: 2px solid gold;
+    border-radius: 4px;
+    background: var(--dark-brown);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+    margin: 0;
+}
+
+/* --- Strict Equipment Layout --- */
+.equipment-grid {
+    display: grid;
+    /* Forces 3 exact columns of 40px */
+    grid-template-columns: 50px 50px 50px; 
+    /* Forces 4 exact rows of 40px */
+    grid-template-rows: 50px 50px 50px 50px; 
+    justify-content: center;
+    gap: 4px;
+    margin-top: 0px;
+}
+
+/* Center Column: The Body */
+.equipment-part.head     { grid-column: 2; grid-row: 1; }
+.equipment-part.torso    { grid-column: 2; grid-row: 2; }
+.equipment-part.legs     { grid-column: 2; grid-row: 3; }
+.equipment-part.feet     { grid-column: 2; grid-row: 4; }
+
+/* Right Column: Accessories */
+.equipment-part.neck     { grid-column: 3; grid-row: 1; }
+.equipment-part.hand     { grid-column: 3; grid-row: 2; }
+.equipment-part.finger   { grid-column: 3; grid-row: 3; }
+.equipment-part.potion   { grid-column: 3; grid-row: 4; }
+
+/* Left Column: Tall Weapons & Shields */
+/* "grid-row: 1 / 3" tells the grid to start at row 1 and span down to row 3 */
+.equipment-part.mainhand { grid-column: 1; grid-row: 2 ; } 
+.equipment-part.offhand  { grid-column: 1; grid-row: 3 ; }
+
+/* ---- inventory ---- */
+.sidebar-inventory {
+    background-image: url('../assets/inventory.png');
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 5px; 
+    min-height: 65px; 
+    border-style: inset; 
+    border-width: 5px; 
+    border-color: var(--light-gray); 
+    padding: 5px;
+    left: -10px;
+    overflow: visible;
+}
+/* Individual inventory slot (holds item image) */
+.inventory-slot {
+    width: 31%;								/* a bit less than a third to account for margins */
+    height: auto;
+    border: 0px solid transparent;
+    border-radius: 8px;
+    background: var(--light-beige);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;							/* indicates tooltip on hover */
+    position: relative;
+}
+.inventory-slot img {
+    max-width: 80%;
+    max-height: 80%;
+}
+.inventory-slot:hover .tooltip {
+    visibility: visible;
+    transform: translateX(-100px);
+}
+
+/* Collectible items on pages – subtle glow */
+.collectible {
+    transition: .3s ease;
+    filter: drop-shadow(0px 0px 30px #222);    /* soft shadow */
+}
+.collectible:hover {
+    filter: drop-shadow(0px 0px 30px gold); /* gold glow on hover */
+    transform: scale(105%);
+}
+
+/* --- Satchel Toggle Styles --- */
+.inventory-satchel {
+    cursor: pointer;
+    text-align: center;
+    margin: 5px auto;
+}
+/* empty class, only for hovering tooltip 
+	.satchel-icon {
+	
+}
+*/
+.satchel-icon:hover .tooltip {
+	visibility: visible;
+	transform: translateX(-100px) translateY(-60px);
+	z-index: 20;
+}
+/* ======== Floating Satchel Pop-up ======== */
+.satchel-popup {
+    position: absolute;
+    right: 101%; 				/* This pushes the pop-up out to the left of the sidebar! */
+    top: 0;
+    margin-right: 15px; 
+    min-width: 200px;
+    background-image: var(--motherload);
+    border: 2px solid gold;
+    border-radius: 8px;
+    padding: 5px 10px 10px 10px;
+    z-index: 10;
+}
+.satchel-popup.hidden {
+    display: none;
+}
+
+/* Sub-inventory behavior (initially hidden) */
+.sub-inventory.hidden {
+    display: none;
+}
+
+/* Badge for stacked items in the satchel */
+.quantity-badge {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background-color: var(--off-white);
+    color: var(--dark-gray);
+    padding: 0 1px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: bold;
+    pointer-events: none; /* So it doesn't block the tooltip hover */
+}
+
+
+/* ===== daily loading screen tip */
+.daily-tip {
+	font-size: 15px; 
+	text-align: center; 
+	margin-top: 10px; 
+	opacity: 0.8;
+}
+
+
+/* ===== PERSONAL UPDATES BOX ===== */
+.updates {
+    font-size: 13px;
+    background-image: linear-gradient(to bottom, black, #1a0206); /* dark gradient */
+    width: 19%;
+    height: 22%;
+    color: white;
+    float: right;
+    border: 1px solid var(--dark-blue);                  /* deep blue border */
+    border-radius: 3px;
+    padding: 5px;
+    margin: 5px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    border-width: 8px;
+    border-style: solid;
+    /* border-image: url(/main/border.png) 8 fill round; /* custom decorative border */
+    animation: fade-in 1.2s ease-in 0.6s both;   /* fade-in animation (keyframes not shown) */
+}
+
+/* =============== Navigation box styling =============== */
+.navigation-box {
+    position: fixed;
+    bottom: 10px;
+    width: 185px;
+    height: 160px;
+    background: var(--dark-brown);
+    border: 2px solid gold;
+    padding: 5px;
+    overflow: visible;
+    margin-top: 10px;
+    box-sizing: border-box;
+    text-align: center; /* optional: centers the "Navigation" text */
+}
+.navigation-box-title {
+	cursor: default; /* for all cursors: w3schools.com/cssref/playit.php?filename=playcss_cursor&preval=alias */
+}
+.navigation-box-title:hover .tooltip {
+	visibility: visible;
+	transform: translateX(-230px) translateY(-20px);
+}
+
+/* Reset arrow styles inside the box */
+.navigation-box .arrow-up,
+.navigation-box .arrow-upright,
+.navigation-box .arrow-right,
+.navigation-box .arrow-downright,
+.navigation-box .arrow-down,
+.navigation-box .arrow-downleft,
+.navigation-box .arrow-left,
+.navigation-box .arrow-upleft {
+    position: absolute;
+    width: 50px;          /* smaller arrows to fit in the box */
+    height: auto;
+    /* clear any inherited positioning */
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+}
+
+/* Make images fill the container */
+.navigation-box .arrow-up img,
+.navigation-box .arrow-upright img,
+.navigation-box .arrow-right img,
+.navigation-box .arrow-downright img,
+.navigation-box .arrow-down img,
+.navigation-box .arrow-downleft img,
+.navigation-box .arrow-left img,
+.navigation-box .arrow-upleft img {
+    width: 100%;
+    height: auto;
+}
+
+/* Position each arrow */
+.navigation-box .arrow-up { top: 25px; left: 65px; }
+.navigation-box .arrow-upright { top: 25px; right: 23px; }
+.navigation-box .arrow-right {
+    top: 68px;
+    right: 15px;
+}
+.navigation-box .arrow-downright {
+    bottom: 2px;
+    right: 23px;
+}
+.navigation-box .arrow-down {
+    bottom: 2px;
+    left: 65px;
+}
+.navigation-box .arrow-downleft {
+    bottom: 2px;
+    left: 23px;
+}
+.navigation-box .arrow-left {
+    top: 68px;
+    left: 15px;
+}
+.navigation-box .arrow-upleft {
+    top: 25px;
+    left: 23px;
+}
+
+/* making the arrow glow green but not the tooltip */
+.navigation-box a:hover .tooltip {
+    visibility: visible;
+    transform: translateX(-200px);		   /* moves it to the left */
+}
+.navigation-box a:hover img {
+    filter: drop-shadow(0px 0px 20px var(--green));
+    transition: .3s ease;
+}
+
+
+
+
+
+
+
+
+
+/* elements.css inspiration */
+/*
+============================== styling inspiration
+.site-box {
+    text-align: left;
+    background-image: url('https://hermenaut.nekoweb.org/hermenaut.click/assets/flight.gif');
+    background-size: cover;
+    font-size: 12px;
+    font-family: 'xanh mono';
+    border: 3px outset black;
+    border-radius: 10px 10px 0 0;
+    transition: .3s ease;
+    text-align: center;
+    filter: grayscale(100%);
+    filter: brightness(107%);
+    cursor:url("https://puddingpudd.nekoweb.org/puddingpudd.com/maincursor.png"),auto;
+}
+
+.site-box::before {
+  content: url(https://puddingpudd.nekoweb.org/puddingpudd.com/thumbnail/Jelly_Girls.gif); 
+  position: absolute;
+  top: -30px;
+  left: -40px;
+}
+
+.site-box .sitefeature {
+    display: none;
+}
+
+.site-box .follow {
+    visibility: visible;
+    font-size: 25px;
+}
+
+.site-box .following {
+    visibility: visible;
+    font-size: 25px;
+}
+
+.site-box>a>p {
+    color: white;
+    font-size: 25px;
+    font-weight: 100;
+    filter: drop-shadow(1px 0px 0px black) drop-shadow(0px 1px 0px black) drop-shadow(-1px 0px 0px black) drop-shadow(0px -1px 0px black);
+    margin-top: 15%;
+    font-weight: bolder;
+}
+
+.site-box>a>span {
+    color: white;
+    filter: drop-shadow(1px 0px 0px black) drop-shadow(0px 1px 0px black) drop-shadow(-1px 0px 0px black) drop-shadow(0px -1px 0px black);
+    text-decoration: overline;
+    font-weight: bolder;
+}
+
+.site-box:hover {
+    transform: scale(1.05);
+    filter: grayscale(0) contrast(1.3);
+    transition: .3s ease;
+    cursor: help;
+    border: 5px inset black;
+}
+
+*/

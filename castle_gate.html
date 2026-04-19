@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gate</title>
+    <link href="/style.css" rel="stylesheet" type="text/css" media="all">
+    <style>
+        body {
+            background-image: url('landingpage_background.jpg');
+        }
+        .image-stack {
+		    position: relative;  /* This becomes the anchor for absolute positioning */
+		    display: inline-block;  /* Container only as wide as its contents */
+		    margin: 0 auto;  /* Center the stack */
+		}
+        .gate-image {
+            max-width: 500px;
+            width: 100%;
+            height: auto;
+            /* border: 3px solid gold; */
+            /* border-radius: 10px; */
+            display: block;           /* Needed for margin auto to work */
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            position: relative;  							/* Keeps it in normal flow but allows z-index */
+    		z-index: 1;  									/* Lower number = behind */
+        }
+        .guard-image {
+            max-width: 150px;
+            width: 100%;
+            height: auto;
+            display: block;           						/* Needed for margin auto to work */
+            position: absolute;  							/* Takes it out of normal flow */
+	        right: -20px;    								/* More negative = more to the right */
+    		bottom: -30px;   								/* More negative = lower down */
+		    z-index: 2;  /* Higher number = in front */
+		    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5)); /* slight shadow to make it pop */
+        }
+        /* Optional: Add a hover effect */
+		.guard-image:hover {
+		    transform: scale(1.05);
+		    transition: transform 0.3s;
+		    cursor: pointer;
+		}
+          
+	</style>
+	</head>
+	<!-- data-arrow for the navigation in the sidebar to be filled in depending on which page you are. -->
+	<body 
+	data-arrows='{
+	  "arrow-downleft-link":   {"href": "market.html",       "tooltip": "Nothing there...yet"},
+	  "arrow-upleft-link":     {"href": "#", 				 "tooltip": "Nothing there..."},
+	  "arrow-up-link":         {"href": "castle_hallway.html","tooltip": "Go inside the castle"},
+	  "arrow-upright-link":    {"href": "castle_garden.html","tooltip": "Visit the garderns"},
+	  "arrow-right-link":      {"href": "castle_garden.html","tooltip": "Visit the garderns"},
+	  "arrow-downright-link":  {"href": "notice_board.html", "tooltip": "Go to the notice board"},
+	  "arrow-down-link":       {"href": "index.html",        "tooltip": "Back to start"},
+	  "arrow-left-link":       {"href": "blacksmith.html",   "tooltip": "Go to the blacksmith"}
+	}'>
+
+  
+
+	<div class="container">
+	<!-- Sidebar CONTAINER -->
+		<div id="left-sidebar" class="left-sidebar"></div>
+		
+		<div class="main-content">
+			<div>
+				<h1> Hello there, traveller! What brings you here?</h1>
+				<ul>
+					<li> <a href="castle_hallway.html"> I want to enter the castle gate</a></li>
+					<li> I am just looking around</li>
+				</ul>
+				<div class="image-stack">
+					<img src="assets/mossy-stone-gate.jpg" alt="gate" class="gate-image"/>
+					<img src="assets/robot_laputa.png" alt="guard" class="guard-image" />
+				</div>	
+			</div>
+		</div>  
+    
+		<!-- Sidebar CONTAINER (stays in main page) -->
+	<div id="right-sidebar" class="right-sidebar"></div>
+	</div>
+	
+	<script src="stats.js"></script>
+	<script src="expPoints.js"></script>
+ 	<script src="load-sidebars.js"></script>
+
+  </body>
+</html>

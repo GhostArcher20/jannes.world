@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Windows XP desktop</title>
+    <link rel="stylesheet" href="windows_xp_style.css">
+    <style>
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        body {
+            background-image: url('../assets/Bliss.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            font-family: 'Tahoma', 'Segoe UI', sans-serif;
+            position: relative;
+            z-index: 10;
+        }
+
+        .desktop {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 50px);
+            overflow: hidden;
+        }
+        .desktop-icon {
+            position: absolute;
+            width: 90px;
+            text-align: center;
+            cursor: pointer;
+            color: white;
+            text-shadow: 1px 1px 0 #000;
+            font-size: 12px;
+            line-height: 1.2;
+            padding: 4px 2px;
+            will-change: left, top;
+            z-index: 1;
+        }
+        .desktop-icon:hover {
+            outline: 2px solid white;
+            outline-offset: 0px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .desktop-icon.dragging {
+            z-index: 9999;
+            transition: none;
+            opacity: 0.9;
+            outline: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        .desktop-icon img {
+            width: 64px;
+            height: 64px;
+            display: block;
+            margin: 0 auto 4px auto;
+            image-rendering: crisp-edges;
+            pointer-events: none;
+        }
+        .desktop-icon span {
+            display: block;
+            padding: 2px 0;
+            font-weight: normal;
+            word-break: break-word;
+        }
+        .wmp-player {
+            display: none;
+            z-index: 10;
+        }
+        .minimize-menu { 
+			visibility: hidden;
+		}
+    </style>
+</head>
+<body>
+    <div class="desktop" id="desktop">
+        <!-- all icons -->
+        <div class="desktop-icon" data-url="socials.html#goodreads" data-name="goodreads" style="top: 30px; left: 10px;">
+            <img src="../assets/goodreads.jpg" alt="goodreads" draggable="false">
+            <span>goodreads</span>
+        </div>
+        <div class="desktop-icon" data-url="socials.html#letterboxd" data-name="letterboxd" style="top: 30px; left: 110px;">
+            <img src="../assets/letterboxd.jpg" alt="letterboxd" draggable="false">
+            <span>letterboxd</span>
+        </div>
+        <div class="desktop-icon" data-url="old_pc_hub.html" data-name="blog hub" style="top: 150px; left: 250px;">
+            <img src="../assets/blog_hub.png" alt="blog hub" draggable="false">
+            <span>blog hub</span>
+        </div>
+        <div class="desktop-icon" data-url="socials.html#youtube" data-name="youtube" style="top: 30px; left: 220px;">
+            <img src="../assets/YouTube.jpg" alt="youtube" draggable="false">
+            <span>youtube</span>
+        </div>
+        <div class="desktop-icon" data-url="socials.html#plantnet" data-name="plantnet" style="top: 30px; left: 330px;">
+            <img src="../assets/plantnet.jpg" alt="plantnet" draggable="false">
+            <span>plantnet</span>
+        </div>
+        <div class="desktop-icon" data-url="socials.html#lastfm" data-name="lastfm" style="top: 30px; left: 440px;">
+            <img src="../assets/lastfm.jpg" alt="lastfm" draggable="false">
+            <span>last.fm</span>
+        </div>
+        <div class="desktop-icon" data-url="socials.html#untappd" data-name="untappd" style="top: 30px; left: 550px;">
+            <img src="../assets/untapped.jpg" alt="untappd" draggable="false">
+            <span>untappd</span>
+        </div>
+        <div class="desktop-icon" data-url="socials.html#spotify" data-name="spotify" style="top: 30px; left: 660px;">
+            <img src="../assets/spotify.jpg" alt="spotify" draggable="false">
+            <span>spotify</span>
+        </div>
+        <div class="desktop-icon" data-url="socials.html" data-name="socials" style="top: 150px; left: 30px;">
+            <img src="../assets/socials.jpg" alt="socials" draggable="false">
+            <span>socials</span>
+        </div>
+        
+        
+        <!-- Windows Media Player icon -->
+        <div class="desktop-icon" data-name="mediaplayer" data-player-launcher="true" style="top: 30px; left: 990px;">
+            <img src="../assets/window_media_player.jpg" alt="Windows Media Player" draggable="false">
+            <span>Windows Media Player</span>
+        </div>
+        
+    </div>
+
+    
+    <!-- WMP10-style Music Player (hidden initially) -->
+    <div class="wmp-player">
+        <div class="player-controls">
+            <button class="control-btn prev-btn" aria-label="Previous">⏮</button>
+            <button class="control-btn play-pause-btn" aria-label="Play/Pause">⏵</button>
+            <button class="control-btn next-btn" aria-label="Next">⏭</button>
+            <div class="volume-control">
+                <button class="control-btn mute-btn" aria-label="Mute">🔊</button>
+                <input type="range" class="volume-slider" min="0" max="1" step="0.01" value="1">
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+            <!-- <span class="time-current">0:00</span> -->
+            <span class="time-duration">0:00</span>
+        </div>
+	</div>
+    
+
+    <!-- Audio element (no sources) -->
+    <audio id="bg-music" preload="metadata"></audio>
+
+    <!-- Playlist definition (JSON) -->
+    <script type="application/json" id="playlist-json">
+    [
+        "../music/EDEN - Wake Up.mp3",
+        "../music/EDEN - End Credits.mp3",
+        "../music/EDEN - Drugs.mp3"
+    ]
+    </script>
+
+    <!-- Drag script for desktop icons -->
+    <script>
+    (function() {
+        const icons = document.querySelectorAll('.desktop-icon');
+        function saveIconPositions() {
+            const positions = {};
+            icons.forEach(icon => {
+                const name = icon.dataset.name;
+                if (name) {
+                    const left = icon.style.left;
+                    const top = icon.style.top;
+                    if (left && top) {
+                        positions[name] = { left, top };
+                    }
+                }
+            });
+            localStorage.setItem('desktopIconPositions', JSON.stringify(positions));
+        }
+        function loadIconPositions() {
+            const saved = localStorage.getItem('desktopIconPositions');
+            if (!saved) return;
+            try {
+                const positions = JSON.parse(saved);
+                icons.forEach(icon => {
+                    const name = icon.dataset.name;
+                    if (name && positions[name]) {
+                        icon.style.left = positions[name].left;
+                        icon.style.top = positions[name].top;
+                    }
+                });
+            } catch (e) {
+                console.warn('Failed to load saved icon positions', e);
+            }
+        }
+        let activeIcon = null;
+        let dragActive = false;
+        let startX, startY;
+        let initialLeft, initialTop;
+        const threshold = 5;
+
+        function onMouseDown(e) {
+            if (e.button !== 0) return;
+            e.preventDefault();
+            const icon = e.currentTarget;
+            activeIcon = icon;
+            initialLeft = icon.offsetLeft;
+            initialTop = icon.offsetTop;
+            startX = e.clientX;
+            startY = e.clientY;
+            dragActive = false;
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        }
+        function onMouseMove(e) {
+            if (!activeIcon) return;
+            e.preventDefault();
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            if (!dragActive) {
+                if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
+                    dragActive = true;
+                    activeIcon.classList.add('dragging');
+                } else {
+                    return;
+                }
+            }
+            if (dragActive) {
+                const newLeft = initialLeft + dx;
+                const newTop = initialTop + dy;
+                const parentRect = activeIcon.parentElement.getBoundingClientRect();
+                const iconRect = activeIcon.getBoundingClientRect();
+                const maxX = parentRect.width - iconRect.width;
+                const maxY = parentRect.height - iconRect.height;
+                const clampedLeft = Math.min(maxX, Math.max(0, newLeft));
+                const clampedTop = Math.min(maxY, Math.max(0, newTop));
+                activeIcon.style.left = clampedLeft + 'px';
+                activeIcon.style.top = clampedTop + 'px';
+            }
+        }
+        function onMouseUp(e) {
+            if (!activeIcon) {
+                cleanup();
+                return;
+            }
+            if (dragActive) {
+                activeIcon.classList.remove('dragging');
+                saveIconPositions();
+            }
+            cleanup();
+        }
+        function cleanup() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            activeIcon = null;
+            dragActive = false;
+        }
+        function onDoubleClick(e) {
+            const icon = e.currentTarget;
+            const url = icon.dataset.url;
+            if (url) {
+                window.location.href = url;
+            }
+        }
+        icons.forEach(icon => {
+            icon.addEventListener('mousedown', onMouseDown);
+            icon.addEventListener('dblclick', onDoubleClick);
+            const img = icon.querySelector('img');
+            if (img) {
+                img.addEventListener('dragstart', (e) => e.preventDefault());
+            }
+        });
+        loadIconPositions();
+    })();
+    </script>
+	
+	
+    <script src="load-windows-xp-hud.js"></script>
+    <!-- Music player script (must be included!) -->
+    <script src="music-player.js"></script>
+</body>
+</html>

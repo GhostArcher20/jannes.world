@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map</title>
+    <link href="style.css" rel="stylesheet" type="text/css" media="all">
+    <style type="text/css" media="all">
+      body {
+        background-color: rgba(82, 52, 4, 1);
+      }
+      .main-content {
+        justify-content: center;
+        align-content: center;
+      }
+      .navigation-box {
+        visibility: hidden;
+      }
+      .minimap-container {
+      	visibility: hidden;
+      }
+      
+      /* ======== MAP CSS ======== */
+      .map-viewport {
+          width: 100%;
+          height: auto;
+          overflow: auto;           
+      }
+
+      /* The actual map background */
+      .map-container {
+          width: 800px; /* Forces map to be large enough for clicking */
+          height: 750px;
+          position: relative;
+          background-image: url('assets/map.png');
+          background-size: cover;
+          background-position: center;
+      }
+
+      /* The Clickable Pins Base */
+      .map-pin {
+          position: absolute;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          cursor: pointer;
+          transform: translate(-50%, -50%); 
+          transition: 0.2s;
+          z-index: 5;
+      }
+
+      /* Pin States! */
+      .pin-unvisited {
+      }
+      .pin-visited {
+          backdrop-filter: contrast(150%);
+          backdrop-filter: brightness(150%);
+      }
+      .pin-current {
+          backdrop-filter: contrast(150%);
+          backdrop-filter: brightness(200%);
+      }
+      .pin-current::before {
+      	content: "";
+      	position: absolute;
+		top: -40px;
+		left: 8px;
+		width: 50px;
+		height: 50px;
+		background-size: contain;
+		background-repeat: no-repeat;
+      	background-image: url(https://jannesworld.nekoweb.org/assets/quest_marker.png);
+      }
+      
+      .map-pin:hover::after { 
+      	opacity: 1; 
+      }
+      .map-pin:hover { 
+      	background: rgba(255, 215, 0, 0.4); 
+      }
+
+      /* Fog of War Styles */
+      .map-pin.fogged {
+          cursor: not-allowed;
+          pointer-events: none;     
+          background: rgba(100, 100, 0, 0.4); 
+      }
+      .map-pin.fogged::after {
+          content: "???";           
+          color: gray; border-color: gray;
+      }
+
+      /* Office Menu Popup */
+      #officeMenu {
+          position: absolute; 
+          display: none;
+          background: var(--dark-gray); 
+          border: 2px solid var(--gray);
+          padding: 15px; 
+          border-radius: 8px; 
+          z-index: 10;
+          flex-direction: column; 
+          gap: 8px;
+      }
+    </style>
+  </head>
+
+  <body>
+<div class="container">
+<div id="left-sidebar" class="left-sidebar"></div>
+
+<div class="main-content">
+    <a id="goBackLink" href="#">Go back</a><br>
+    
+    <div class="map-viewport">
+        <div class="map-container">
+            
+<div class="map-pin" data-id="index" data-name="The Crossroads" data-href="index.html" style="top: 81%; left: 51%;"></div>
+
+<div class="map-pin" data-id="market" data-name="Market" data-href="market.html" style="top: 67%; left: 29%;"></div>
+<div class="map-pin" data-id="tavern" data-name="Tavern" data-href="tavern.html" style="top: 84%; left: 20%;"></div>
+<div class="map-pin" data-id="blacksmith" data-name="Blacksmith" data-href="blacksmith.html" style="top: 58%; left: 34%;"></div>
+<div class="map-pin" data-id="smeltery" data-name="Smeltery" data-href="smeltery.html" style="top: 59%; left: 21%;"></div>
+
+<div class="map-pin" data-id="mine" data-name="The Mines" data-href="mine.html" style="top: 87%; left: 84%;"></div>
+<div class="map-pin" data-id="campfire" data-name="Campfire" data-href="campfire.html" style="top: 73%; left: 81%;"></div>
+<div class="map-pin" data-id="notice_board" data-name="Notice Board" data-href="notice_board.html" style="top: 65%; left: 64%;"></div>
+<div class="map-pin" data-id="castle_garden" data-name="Gardens" data-href="castle_garden.html" style="top: 52%; left: 81%;"></div>
+
+<div class="map-pin" data-id="castle_gate" data-name="Castle Gate" data-href="castle_gate.html" style="top: 49%; left: 51%;"></div>
+<div class="map-pin" data-id="castle_hallway" data-name="Hallway" data-href="castle_hallway.html" style="top: 38%; left: 51%;"></div>
+
+<div class="map-pin" data-id="office_room" data-name="Office Room" style="top: 24%; left: 57%;"></div>
+
+<div id="officeMenu">
+    <a href="office_room.html"				class="ui-button" style="display:block; margin-bottom: 5px;">Enter Office</a>
+    <a href="old_pc_pages/old_desktop.html" class="ui-button" style="display:block; margin-bottom: 5px;">Enter old pc</a>
+    <a href="old_pc_pages/socials.html" 	class="ui-button" style="display:block; margin-bottom: 5px;">Socials Hub</a>
+    <a href="old_pc_pages/old_pc_hub.html"	class="ui-button" style="display:block; margin-bottom: 5px;">Blog & Reviews hub</a>
+    <a href="old_pc_pages/review_wiels_exhibitions.html" class="ui-button" style="display:block;">Wiels exhibition Reviews</a>
+</div>
+
+        </div>
+    </div>
+</div>  
+
+<div id="right-sidebar" class="right-sidebar"></div>
+</div>
+  
+    <script src="stats.js"></script>
+    <script src="expPoints.js"></script>
+    <script src="load-sidebars.js"></script>
+    <script src="map-navigation.js"></script> 
+</body>
+</html>

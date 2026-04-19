@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog Lapland 2024</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="windows_xp_style.css">
+    <style>
+	    body {
+	        background: linear-gradient(60deg, #000000 0%, #014705 100%);
+	        position: relative;
+	        color: white;
+	        text-shadow: 2px 2px 4px black;
+	        font-family: Arial, sans-serif;
+	        min-height: 100vh;
+	        margin: 0;
+	        padding: 0;
+	        z-index: 0;
+	    }
+	    .lines-effect {
+	        position: fixed;
+	        top: 0;
+	        left: 0;
+	        width: 100%;
+	        height: 100%;
+	        background: repeating-linear-gradient(0deg, 
+	            rgba(0, 255, 0, 0.1) 0px,
+	            rgba(0, 0, 0, 0.8) 1px,
+	            transparent 2px,
+	            rgba(0, 255, 0, 0.1) 3px);
+	        background-size: 100% 4px;
+	        animation: movingLines 20s linear infinite;
+	        pointer-events: none;
+	        z-index: 2;
+	    }
+		
+		@keyframes movingLines {
+		    0% { background-position: 0 0; } 		/* Start at normal position */
+		    100% { background-position: 0 50px; } 	/* End 50px up after 20 seconds */
+		}
+
+		.content {
+			position: relative;
+		    max-width: 800px;
+		    margin: 50px auto;
+		    padding: 30px;
+		    border-radius: 20px;
+		    border: 3px solid rgba(0, 255, 0, 1);
+		    background: rgba(0, 20, 0, 0.01);  /* Dark green, almost transparent */
+		    backdrop-filter: blur(0.001px);        /* Blurs what's behind */
+		    z-index: 1;
+		}
+
+	        /* The content stays at z-index: 1 (below rain) */
+	    #blog_lapland_2024 {
+	        position: relative;
+	        z-index: 1;
+	    }
+		
+		/* Style the links inside the container */
+		.container a {
+		    color: #00ff00;
+		    text-decoration: none;
+		    border-bottom: 1px dashed #00ff00;
+		}
+		
+		.container a:hover {
+		    color: #ffff00;
+		    border-bottom: 1px solid #ffff00;
+		}
+		
+
+		/* Style the "return to homepage" link to match */
+		.top-link {
+		    display: inline-block;
+		    margin: 20px 40px;
+		    color: #00ff00;
+		    text-decoration: none;
+		    padding: 8px 15px;
+		    background: rgba(0, 20, 0, 0.3);
+		    backdrop-filter: blur(4px);
+		    -webkit-backdrop-filter: blur(4px);
+		    border-radius: 20px;
+		    border: 1px solid rgba(0, 255, 0, 0.3);
+		    font-family: Arial, sans-serif;
+		    z-index: 1;
+		    position: relative;
+		}
+		
+		.top-link:hover {
+		    background: rgba(0, 40, 0, 0.5);
+		    border-color: #00ff00;
+		}
+	</style>
+</head>
+<body>
+	<div class="content"><div id="blog_lapland_2024"></div></div>
+	
+	<div class="lines-effect"></div>  <!-- lines layer behind everything -->
+	
+	<a href="old_pc_hub.html" class="top-link">return to homepage</a>
+	
+
+    <script>
+    // Fetch the .md file and display it
+    fetch('blog_lapland_2024.md')
+        .then(response => response.text())  // Get the text from the file
+        .then(markdown => {
+            // Convert markdown to HTML and put it in the page
+            document.getElementById('blog_lapland_2024').innerHTML = marked.parse(markdown);
+        });
+	</script>
+	
+	<script src="load-windows-xp-hud.js"></script>
+
+</body>
+</html>

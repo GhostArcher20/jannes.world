@@ -1,0 +1,318 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Wiels exhibitions</title>
+    
+    <!-- Add this line to include Marked -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	<link rel="stylesheet" href="windows_xp_style.css">
+    <style>
+    	body {
+    		background: #9c9c9c;
+    	}
+    	p {
+    		text-align: justify;
+    		font-family: Segoe UI;
+    	}
+    	h1 {
+    		/* font from the Wiels page of the exhibition */
+    		font-family: korolev, Helvetica Neue, Helvetica, Arial, sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    		font-size: 72px;
+    	}
+    	.content {
+		    background: #c2c2c2;
+		    text-align: justify
+		}
+		.sidebar {
+			background: #c2c2c2;
+			position: sticky;
+		}
+		.links {
+		}
+        /* .regular-links {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        } */
+        
+        .links a {
+            color: #4a4a4a;
+            text-decoration: none;
+            display: block;
+            margin: 10px 0;
+            padding: 0 10px 0 0;
+            font-size: 18px;
+            text-align: right;
+            border: 1px solid transparent;
+            transition: all 0.5s;
+        }
+        
+        .links a:hover {
+        	color: black;
+            border-color: white;
+            border-radius: 5px;
+            padding-right: 20px;
+        }
+        .quotebox-right {
+        	position: relative;
+        	float: right;
+        	width: 33%;
+        	border: 2px solid black;
+        	padding: 50px;
+        	margin: 1em 0 0 1.5em;
+        	text-align: left;
+        	text-justify: interword;
+        }
+        .quotebox-left {
+        	position: relative;
+        	float: left;
+        	width: 33%;
+        	border: 2px solid black;
+        	padding: 50px;
+        	margin: 1em 1.5em 0 0;
+        	text-align: left;
+        	text-justify: interword;	
+        }
+		.quotebox-left::before, .quotebox-right::before {
+			content: "";
+			position: absolute;
+			top: -30px;
+			left: -30px;
+			width: 70px;
+			height: 70px;
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-image: url(https://jannesworld.nekoweb.org/assets/doublequote.png);
+		}
+        /* img inline */
+        .img-inline img {
+		    max-width: 100%;
+		    height: auto;
+		    display: block;
+		    margin: 30px 0;          /* space above and below */
+		}
+		.image-center {
+			display: block;
+			margin: 0 auto;
+			width: 50%;
+		}
+		/* img next to text */
+		.image-float-left img{
+			float: left;
+			margin-right: 20px;
+		}
+		.image-row {
+		    display: flex;
+		    gap: 20px;
+		    margin: 30px 0;
+		    align-items: center;      /* or flex-start */
+		}
+		.image-row img {
+		    flex: 1;                  /* image takes half the space */
+		    max-width: 50%;
+		}
+		.image-row .text {
+		    flex: 1;                  /* text takes the other half */
+		}
+		.image-row.reverse {
+		    flex-direction: row-reverse;
+		}
+		.image-row.img-small img {
+		    max-width: 30%;
+		    flex: 0 0 30%;
+		}
+		.popup-image {				/* broken */
+			display: none;          /* hidden by default */
+		}
+		.image-swap:hover .popup-image  { /* "+" Selects the first <p> element that is placed immediately after <div> elements*/
+			display: block;
+		}
+		/* img behind text */
+		.image-behind-text {
+		    position: relative;
+		    margin: 40px 0;
+		}
+		.image-behind-text .bg-image {
+		    width: 100%;
+		    height: auto;
+		    display: block;
+		}
+		.text-overlay {
+		    position: absolute;
+		    top: 50%;
+		    left: 50%;
+		    transform: translate(-50%, -50%);
+		    background: rgba(255, 255, 255, 0.8); /* semi‑transparent background */
+		    padding: 20px;
+		    border-radius: 8px;
+		    max-width: 80%;
+		    text-align: center;
+		}
+		/* use an image that stretches the full width */
+		.full-width {
+		    width: 70vw;
+		    position: relative;
+		    left: 50%;
+		    right: 50%;
+		    margin-left: -50vw;
+		    margin-right: -50vw;
+		}
+		.full-width img {
+		    width: 100%;
+		    height: auto;
+		    display: block;
+		}
+
+
+    </style>
+</head>
+<body>
+	<a href="old_pc_hub.html">return to homepage</a>
+	<div class="content-wrapper">
+		<div class="sidebar" data-section="reviews"></div>
+		<div class="content">
+			<h1> Wiels </h1>
+	        <h2 id="feb2026"> Nairy Baghramian: nameless</h2>
+	        I had an hour to fill and was close by Wiels, a place that hosts exhibitions in Brussels. It was at a pretty random hour, which (as I would soon notice) was perfect for the vibe of this exhibition. <br>
+        	I hadn't heard of Nairy Baghramian before, which makes sense as I am not at all at home in the contemporary art world, but I'm very eager to learn.
+        	<div class="quotebox-right">
+        		<i>This is the realm of the sensitive,
+				of the emphatic: a space claimed by the visual
+				arts, poetry, dance, rhythm and music. It is
+				a space that resists, escapes the logos, the
+				rational definition and the overdetermination
+				of language, as well as categorisation.</i> <br><br>- Wiels
+			</div>
+			
+        	From the information folder (linked at the bottom of this review) I learned that Nairy Baghramian is considered one of today’s most influential sculptors. She is a German artist, born in 1971 in Isfahan, Iran in an Armenian family. She uses forms and surfaces to touch on relations between human bodies, objects and architecture all the while considering social conditions in which production is possible. She combines textures and surfaces with disciplines that one wouldn't expect, affirming the independence of the aesthetic experience and the autonomy of art. It challenges consumption of commodities in contrast to pop-art or Appropriation, she uses diverse techniques from all kinds of fields (from design, architecture, fashion, boating, dentistry, prosthetics to Japanese packaging) to cement this. She takes inspiration from the subconscious and the somatic combining it to specific forces that she fluidifies or leaves unbalanced. This touching on automatic art reminds me of from surrealist ideas. She takes inspiration from Katarzyna Kobro, Kurt Schwitters, Hans Arp (surrealist automatism, dadaism), Toyen, Isamu Noguchi, Max Ernst, Wols and Mira Schendel. It is not strange as they were, like Baghramian, subject to work in conditions under autocratic regimes and forced to push their boundaries.
+        	
+        	<div class="image-float-left">
+        		<img src="https://i.imgur.com/H0sJsJV.png" style="width: 50%;">
+        	<p>
+        	The exhibition was spread over two floors - or more accurately described, it was as if modeled around those two floors. The first (or bottom) one throws the spectator immediately in an open and wide space. My eyes are looking around, not yet knowing what to expect. The first thing I notice, is some wooden walls are spread around the big concrete space, in front of the nearest wall lays a pillow or a cloud made from transparent plastic. It looks unfinished, everything is hidden. But when coming closer, I noticed a glipse of the backside of one of the wall, which prompted me to look behind all of them. The space itself was the canvas, and only by moving myself physically into the spaces where intuitively I expected nothing to be, I was able to see what the artist had made.
+        	</p>
+        	<p>
+    		The space had glass and metalwork that looked as if repurposed from electrical work and plumbing, the pieces were all remodled into different shapes and arranged so that the colors made my eyes wander. There were also abstract paintings dotted around, characteristically hidden behind walls, so that they were only visible when looking backwards from where you came. I only then noticed a link with the name of the exhibition; none of the paintings had names or explanations as you'd usually expect. I hadn't thought about that when looking at the glass- and metalwork, exposing a clear bias of mine, although I would never put art in a hierarchy like that. The paintings were usually composed of two or three colors, one for a background, and one making an off-center shape. It fitted perfectly in the space, the gray and white emptiness of the building, contrasting with the colors (although not always bright). The works were also placed so that natural light would fall on them gently, making their colors pop even more.
+        	</p>
+        	</div>
+        	<img src="https://i.imgur.com/PguKgBr.png" class="image-center">
+        	<br>
+        	[about the playlist I was listening to]<br>
+        	When I walked in I started looking for music that would fit my vibe, that's what I usually do to enhance experiences. That's when I noticed I didn't really have a playlist yet for modern or contemporary art. I do have one for museums in general, but not for this one. So I started a playlist I called Technobrutalism (techno for technology, not for the edm genre), it has these mechanical sounds and inherent sadness that fit the vibe quite well.
+        	[hopefully I manage to get the music player working]
+        	<br>
+        	<div class="image-float-left">
+        		<img src="https://i.imgur.com/xSgjNAe.png" style="width: 33%;">
+        	The second floor was a contrast with the first one, where the first floor used empty space to do the talking, and only sometimes dotted 1 of 3 kinds of artworks around the rooms (the cloudlike pillow, the glasswork or the paintings), the second floor bombarded the viewer with all kinds of new installations. The room was decorated with 'islands' of artworks, they had all kinds of different objects, sculpters, drawings or paintings on them and their was no clear point where to start. Here the architecture, industry and prosthetics influences were very obvious. The many more things to look at also made it so that I would notice less of the little things, and it was only at the end of my visit that I took the time to look at how the sunlight refracted in some of the glass pieces, how the pattern on the floor of the exhibion matched that of the angle of the light. This second half felt different from the first one, but it had some commonalities. It helped that I was all alone in the exhibition, because even though there was way more going on, I still felt this serenity in her works, as I did in the first section. 
+	        </div>
+				<br><br>
+				[more explanation will follow]
+				[photos will follow]
+
+			<div class="links">
+	        	<a href="https://wiels.org/uploads/0525_NB_digital-visitorsguide_design_EN.pdf?v=1769685654">The visitors guide of the exhibition < </a>
+	       		<a href="https://wiels.org/en/exhibitions/nairy-baghramian">link to the exhibiton < </a>
+        	</div>
+	        
+	        <h2 id=mar26> Marie Zolamian Confabulations</h2>
+	        <div class="quotebox-left">
+	        	<i>To paint is to inhabit those visible and invisible layers, to see a stratification being built where history and tradition deposit, dissolve, and reappear otherwise.</i><br><br>-Marie Zolamian
+	        </div>
+	        This exhibition was shorter than the other ones I visited recently. Marie Zolamian focuses on painting and images, and occasionally ventures into video and audio as well. I liked her painting style but I felt that it didn't really engage me very much. I did really enjoy staring at her collections of different media she arranged in wooden and glass cabinets. She combined prose and poetry with drawing, painting and print. <br>
+	        <br>
+	        <br>
+	        <br>
+	        [photos will follow]
+	        <br>
+	        
+	        <div class="links">
+	        	<a href="https://wiels.org/en/exhibitions/marie-zolamian">Link to the exhibition < </a>
+	        	<a href="https://wiels.org/uploads/0126_MZ_visitorsguide_design_EN.pdf?v=1771860073">Visitors guid of the exhibition < </a>
+	        </div>
+	        
+	        <h2 id=apr26> Lutz Bacher Burning Days</h2>
+	        ‘In memory of my feelings’ is a work she created as a reference to when she had to have tumours removed from her womb. She printed the sentences she had to answer as part of a personality test onto a whole series of T-shirts. She placed them in a tall cupboard with sliding doors, some of which were not fully open, but if you moved closer you could see them. This reveals whether the viewer wants to come closer and read the sentence, even though it is well hidden. When I came closer, it felt as though I wanted to look into her life whilst she was trying to keep the cupboard closed, in the same way that the doctors asked all these questions (see photo) to gain an insight into her personal life. <br>
+	        [photos will follow]
+
+	        <div class="links">
+	        	<a href="https://wiels.org/en/exhibitions/lutz-bacher">Link to the exibition < </a>
+	        	<a href="https://wiels.org/uploads/LB_Handout_FinalWeb_EN.pdf?v=1774619748">Visitors guid of the exhibition < </a>
+	        </div>
+	        
+	        <!-- if I want images next to text (uses flexbox) -->
+	        <!--
+	        <div class="image-row">
+			    <img src="painting.jpg" alt="...">
+			    <div class="text">
+			        <p>This painting shows...</p>
+			    </div>
+			</div>
+			-->
+			<!-- if I want images behind te text  -->
+			<!--
+			<div class="image-behind-text">
+			    <img src="gallery-shot.jpg" alt="" class="bg-image">
+			    <div class="text-overlay">
+			        <p>This text floats over the photo.</p>
+			    </div>
+			</div>
+			-->
+			<!-- If I want an img that stretches the full width -->
+			<!--
+			<div class="full-width">
+    			<img src="panorama.jpg" alt="">
+			</div>
+			-->
+			<!-- for .md file imports -->
+	        <div id="convertedmd"></div>
+				       
+		</div>
+	</div>
+     
+    
+   
+    
+    <!-- WMP10-style Music Player -->
+	<div class="wmp-player">
+	  <div class="player-controls">
+	    <button class="control-btn prev-btn" aria-label="Previous">⏮</button>
+	    <button class="control-btn play-pause-btn" aria-label="Play/Pause">⏵</button>
+	    <button class="control-btn next-btn" aria-label="Next">⏭</button>
+	    <div class="volume-control">
+	      <button class="control-btn mute-btn" aria-label="Mute">🔊</button>
+	      <input type="range" class="volume-slider" min="0" max="1" step="0.01" value="1">
+	    </div>
+	  </div>
+	  <div class="progress-bar">
+	    <div class="progress-fill"></div>
+	    <span class="time-current">0:00</span>
+	    <span class="time-duration">0:00</span>
+	  </div>
+	</div>
+	
+	<audio id="bg-music" preload="metadata">
+	  <source src="music/song1.mp3" type="audio/mpeg">
+	  <source src="music/song1.ogg" type="audio/ogg">
+	  Your browser does not support the audio element.
+	</audio>   
+       
+    <script>
+    // Fetch the .md file and display it
+    fetch('.md')
+        .then(response => response.text())  // Get the text from the file
+        .then(markdown => {
+            // Convert markdown to HTML and put it in the page (target the correct div)
+            document.getElementById('').innerHTML = marked.parse(markdown);
+        });
+	</script>
+	
+	
+	<script src="load-windows-xp-hud.js"></script>
+	<script src="music-player.js"></script>
+	<script src="load-sidebar.js"></script>
+</body>
+</html>

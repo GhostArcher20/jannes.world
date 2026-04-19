@@ -1,0 +1,325 @@
+<html>
+	<head>
+	    <meta charset="UTF-8">
+	    <title>7thgen</title>
+	    
+	    <!-- Add this line to include Marked -->
+	    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <link rel="stylesheet" href="windows_xp_style.css">
+	    <style>
+	    	.container {
+				position: relative;
+			    max-width: 800px;
+			    margin: 50px auto;
+			    padding: 30px;
+			    background: rgba(255, 255, 255, 1); 
+			    backdrop-filter: blur(0.001px);        	/* Blurs what's behind */
+			    z-index: 1;
+			}
+			/* ===== NINTENDO DS MAXIMUM CHAOS ===== */
+body.blog-ds-crazy {
+    background: repeating-linear-gradient(45deg, #ff66cc 0px, #ff66cc 20px, #66ccff 20px, #66ccff 40px, #ccff66 40px, #ccff66 60px);
+    background-size: 200% 200%;
+    animation: dsParty 6s infinite linear;
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+@keyframes dsParty {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+}
+
+/* Floating dual screens – the iconic DS shape */
+.ds-screen {
+    position: fixed;
+    width: 220px;
+    height: 160px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 4px solid white;
+    border-radius: 20px 20px 10px 10px;
+    box-shadow: 0 0 30px cyan, 0 0 60px magenta;
+    backdrop-filter: blur(3px);
+    z-index: 5;
+    pointer-events: none;
+    animation: floatDs 12s infinite alternate;
+}
+
+.ds-screen::after {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 10px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 10px white;
+}
+
+/* Top screen */
+.ds-screen:nth-child(1) {
+    top: 5%;
+    left: 3%;
+    transform: rotate(-5deg);
+}
+
+/* Bottom screen */
+.ds-screen:nth-child(2) {
+    bottom: 10%;
+    right: 2%;
+    width: 200px;
+    height: 150px;
+    transform: rotate(8deg);
+    animation-delay: -3s;
+}
+
+@keyframes floatDs {
+    0% { transform: translate(0, 0) rotate(-5deg) scale(1); }
+    25% { transform: translate(10px, -15px) rotate(-3deg) scale(1.02); }
+    50% { transform: translate(-15px, 20px) rotate(-7deg) scale(0.98); }
+    75% { transform: translate(20px, 10px) rotate(0deg) scale(1.01); }
+    100% { transform: translate(-10px, -20px) rotate(-8deg) scale(0.99); }
+}
+
+/* Stylus scribbles – chaotic hand-drawn lines */
+body.blog-ds-crazy::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 6;
+    background: 
+        /* random squiggles */
+        radial-gradient(circle at 20% 30%, rgba(0,0,0,0.2) 0%, transparent 3%),
+        radial-gradient(circle at 45% 70%, rgba(0,0,0,0.2) 0%, transparent 4%),
+        radial-gradient(circle at 80% 20%, rgba(0,0,0,0.2) 0%, transparent 5%),
+        radial-gradient(circle at 10% 85%, rgba(0,0,0,0.2) 0%, transparent 6%),
+        radial-gradient(circle at 92% 60%, rgba(0,0,0,0.2) 0%, transparent 7%),
+        /* thicker scribbles */
+        radial-gradient(circle at 30% 45%, rgba(255,0,255,0.3) 0%, transparent 8%),
+        radial-gradient(circle at 70% 80%, rgba(0,255,255,0.3) 0%, transparent 9%),
+        /* lines */
+        repeating-linear-gradient(45deg, transparent 0px, transparent 10px, rgba(255,255,0,0.2) 10px, rgba(255,255,0,0.2) 12px),
+        repeating-linear-gradient(-60deg, transparent 0px, transparent 18px, rgba(0,255,0,0.15) 18px, rgba(0,255,0,0.15) 20px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 50px 50px, 70px 70px;
+    animation: scribbleMove 10s infinite alternate;
+}
+
+@keyframes scribbleMove {
+    0% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+    100% { background-position: 100px 50px, -50px 80px, 30px -40px, -80px -20px, 60px 30px, -30px -60px, 70px -30px, 20px 20px, -40px -40px; }
+}
+
+/* Pixelated game icons (using box-shadow to draw simple sprites) */
+.ds-icon {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    box-shadow: 
+        20px 0 rgba(255,0,0,0.5), 40px 0 rgba(255,0,0,0.5),
+        0 20px rgba(255,0,0,0.5), 20px 20px rgba(255,0,0,0.5), 40px 20px rgba(255,0,0,0.5),
+        0 40px rgba(0,0,255,0.5), 20px 40px rgba(0,0,255,0.5), 40px 40px rgba(0,0,255,0.5);
+    pointer-events: none;
+    z-index: 7;
+    animation: iconFloat 14s infinite alternate;
+}
+
+.ds-icon:nth-child(3) {
+    top: 15%;
+    left: 80%;
+    animation-delay: -2s;
+}
+.ds-icon:nth-child(4) {
+    top: 70%;
+    left: 10%;
+    width: 30px;
+    height: 30px;
+    box-shadow: 
+        20px 0 rgba(255,255,0,0.6), 40px 0 rgba(255,255,0,0.6),
+        0 20px rgba(255,255,0,0.6), 20px 20px rgba(255,255,0,0.6), 40px 20px rgba(255,255,0,0.6),
+        0 40px rgba(0,255,255,0.6), 20px 40px rgba(0,255,255,0.6), 40px 40px rgba(0,255,255,0.6);
+    animation-delay: -5s;
+}
+.ds-icon:nth-child(5) {
+    top: 40%;
+    left: 60%;
+    width: 15px;
+    height: 15px;
+    box-shadow: 
+        15px 0 rgba(255,0,255,0.7), 30px 0 rgba(255,0,255,0.7),
+        0 15px rgba(255,0,255,0.7), 15px 15px rgba(255,0,255,0.7), 30px 15px rgba(255,0,255,0.7);
+    animation-delay: -8s;
+}
+
+@keyframes iconFloat {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(20px, -30px) rotate(10deg); }
+    66% { transform: translate(-40px, 20px) rotate(-15deg); }
+    100% { transform: translate(30px, -20px) rotate(5deg); }
+}
+
+/* Touch handprints (from stylus) */
+.ds-handprint {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.3), 0 0 0 8px rgba(0,0,0,0.1);
+    transform: rotate(15deg);
+    pointer-events: none;
+    z-index: 8;
+    animation: handMove 20s infinite alternate;
+}
+
+.ds-handprint:nth-child(6) {
+    top: 20%;
+    right: 15%;
+    animation-delay: -3s;
+}
+.ds-handprint:nth-child(7) {
+    bottom: 30%;
+    left: 20%;
+    width: 70px;
+    height: 70px;
+    animation-delay: -9s;
+}
+
+@keyframes handMove {
+    0% { transform: translate(0, 0) rotate(15deg) scale(1); }
+    25% { transform: translate(30px, -40px) rotate(20deg) scale(1.1); }
+    50% { transform: translate(-50px, 30px) rotate(5deg) scale(0.9); }
+    75% { transform: translate(40px, 60px) rotate(30deg) scale(1.2); }
+    100% { transform: translate(-30px, -50px) rotate(0deg) scale(1); }
+}
+
+/* Mouse trail – leaves little "touch" sparkles */
+.cursor-trail {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 50%, transparent 80%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    animation: trailFadeDs 0.8s forwards;
+}
+
+@keyframes trailFadeDs {
+    0% { opacity: 1; transform: scale(0.5) rotate(0deg); }
+    50% { opacity: 0.5; transform: scale(1.5) rotate(180deg); }
+    100% { opacity: 0; transform: scale(0.5) rotate(360deg); }
+}
+
+/* Style the main content container like a DS cartridge label */
+body.blog-ds-crazy .container {
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(5px);
+    border: 4px solid #ffcc00;
+    box-shadow: 0 0 40px magenta, 0 0 80px cyan, 0 0 120px lime;
+    color: white;
+    position: relative;
+    z-index: 20;
+    border-radius: 20px;
+    font-family: 'Comic Sans MS', cursive, sans-serif; /* optional – very DS PictoChat */
+    animation: containerGlowDs 3s infinite alternate;
+}
+
+@keyframes containerGlowDs {
+    0% { box-shadow: 0 0 40px magenta, 0 0 80px cyan; }
+    50% { box-shadow: 0 0 60px lime, 0 0 100px magenta; }
+    100% { box-shadow: 0 0 40px cyan, 0 0 120px lime; }
+}
+
+body.blog-ds-crazy .socials-sidebar {
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(5px);
+    border: 4px solid #ff66cc;
+    box-shadow: 0 0 30px cyan, 0 0 60px magenta;
+    color: white;
+    z-index: 20;
+}
+
+body.blog-ds-crazy a {
+    color: #ffff99;
+    text-shadow: 2px 2px 0 magenta, 4px 4px 0 cyan;
+    border-bottom: 3px dotted #ff66cc;
+}
+
+body.blog-ds-crazy h1 {
+    text-shadow: 4px 4px 0 magenta, 8px 8px 0 cyan, 12px 12px 0 lime;
+    font-size: 3em;
+    transform: skew(-3deg);
+}
+	    </style>
+	</head>
+	<body class="blog-ds-crazy">
+		
+		
+		<!-- taskbar -->
+	    <div class="xp-taskbar">
+	        <div class="taskbar-start"><img src="../assets/taskbar_start.png" alt="Start" id="start-button"></div>
+	        <div class="taskbar-background"></div>
+	        <div class="taskbar-right-menu"><img src="../assets/taskbar_right_menu.png" alt="System Tray"></div>
+	    </div>
+		<div id="start-menu" class="start-menu">
+			<a href="socials.html" class="menu-item"><img src="" alt="socials_hub">My socials!</a>
+			<a href="blog_hub.html" class="menu-item"><img src="../assets/blog_hub.png"> My blogs!</a>	
+	        <a href="../office_room.html" class="menu-item"><img src="../assets/windows_xp_shutdown.png"> Shut down computer</a>
+	    </div>
+    	<!-- Top right corner image -->
+		<a href="old_desktop.html" class="top-right-corner">
+			<img src="../assets/xp_upper_right_minimize.png" alt="Minimize">
+			<span>Go to old desktop</span>
+		</a>
+		
+		<a href="old_pc_hub.html">return to homepage</a>
+		<div class="container">
+	        <div id=""></div>
+	        <p>test</p>
+	    </div>
+	    <script>
+	    // Fetch the .md file and display it
+	    fetch('.md')
+	        .then(response => response.text())  // Get the text from the file
+	        .then(markdown => {
+	            // Convert markdown to HTML and put it in the page
+	            document.getElementById('').innerHTML = marked.parse(markdown);
+	        });
+		</script>
+		
+
+
+<!-- Pixel icons -->
+<div class="ds-icon"></div>
+<div class="ds-icon"></div>
+<div class="ds-icon"></div>
+
+<!-- Handprints -->
+<div class="ds-handprint"></div>
+<div class="ds-handprint"></div>
+		
+		<!-- Optional: JavaScript for mouse trail (add in script tag) -->
+		<script>
+		document.addEventListener('mousemove', function(e) {
+		    const trail = document.createElement('div');
+		    trail.className = 'cursor-trail';
+		    trail.style.left = e.pageX - 20 + 'px';
+		    trail.style.top = e.pageY - 20 + 'px';
+		    document.body.appendChild(trail);
+		    
+		    setTimeout(() => {
+		        trail.remove();
+		    }, 1000);
+		});
+		</script>
+		
+	</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tavern</title>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            /* any body styles */
+        }
+
+        .main-content {
+            padding: 0;
+            background-image: url('assets/landingpage_background.jpg');
+        }
+
+        /* ===== Tunnel overlay – positioned fixed so it covers whole viewport ===== */
+        #tunnelOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;     /* allow clicking through */
+            z-index: 100;
+            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.7) 80%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+
+        /* ===== Animations ===== */
+        @keyframes tunnelVision {
+            0%   { opacity: 0; }
+            20%  { opacity: 1; }
+            80%  { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes wobble {
+            0%   { transform: translate(0, 0) rotate(0deg); }
+            15%  { transform: translate(-5px, 2px) rotate(-0.5deg); }
+            30%  { transform: translate(4px, -1px) rotate(0.5deg); }
+            45%  { transform: translate(-3px, 1px) rotate(-0.5deg); }
+            60%  { transform: translate(2px, -1px) rotate(0.4deg); }
+            75%  { transform: translate(-1px, 0px) rotate(-0.2deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        @keyframes colorDizzy {
+            0%   { filter: hue-rotate(0deg) blur(0px); scale(1); }
+            20%  { filter: hue-rotate(15deg) blur(2px); scale(1.1); }
+            40%  { filter: hue-rotate(30deg) blur(3px); scale(1.2); }
+            60%  { filter: hue-rotate(20deg) blur(4px);scale(1.3);  }
+            80%  { filter: hue-rotate(10deg) blur(3px); scale(1.2); }
+            100% { filter: hue-rotate(0deg) blur(0px); scale(1); }
+        }
+
+        /* ===== All effects are triggered by adding `drunk` to <body> ===== */
+        body.drunk #tunnelOverlay {
+            display: block;
+            animation: tunnelVision 10s ease-in-out forwards;
+        }
+
+        body.drunk .main-content {
+            animation: wobble 3s ease-in-out 4,
+                       colorDizzy 10s ease-in-out;
+            animation-fill-mode: forwards;
+        }
+    </style>
+</head>
+<body data-arrows='{
+  "arrow-downleft-link":   {"href": "#",                 "tooltip": "Nothing there..."},
+  "arrow-upleft-link":     {"href": "#",                 "tooltip": "Nothing there..."},
+  "arrow-up-link":         {"href": "#",                 "tooltip": "Nothing there..."},
+  "arrow-upright-link":    {"href": "castle_gate.html",  "tooltip": "Go towards the castle"},
+  "arrow-right-link":      {"href": "index.html",        "tooltip": "back to home page"},
+  "arrow-downright-link":  {"href": "#",                 "tooltip": "Nothing there..."},
+  "arrow-down-link":       {"href": "#",                 "tooltip": "Nothing there..."},
+  "arrow-left-link":       {"href": "#",                 "tooltip": "Nothing there..."}
+}'>
+
+    <div class="container">
+        <div id="left-sidebar" class="left-sidebar"></div>
+
+        <div id="tavernContent" class="main-content">
+            <button onclick="consumeAle()">Drink Ale</button>
+            <div id="tunnelOverlay"></div>
+        </div>
+
+        <div id="right-sidebar" class="right-sidebar"></div>
+    </div>
+
+    <script>
+        function consumeAle() {
+            const body = document.body;
+
+            // Remove class to restart animations
+            body.classList.remove('drunk');
+
+            // Force reflow (ensures the animation restarts)
+            void body.offsetWidth;
+
+            // Add class to start effects
+            body.classList.add('drunk');
+
+            // Remove effects after 10 seconds
+            setTimeout(() => {
+                body.classList.remove('drunk');
+            }, 10000);
+
+            // Award XP
+            if (typeof addExpPoint === 'function') {
+                addExpPoint(10);
+            }
+        }
+    </script>
+
+    <script src="stats.js"></script>
+    <script src="expPoints.js"></script>
+    <script src="load-sidebars.js"></script>
+</body>
+</html>

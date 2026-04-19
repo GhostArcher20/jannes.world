@@ -1,0 +1,37 @@
+<html>
+	<head>
+	    <meta charset="UTF-8">
+
+	    <title>blog Tirana 2023</title>
+	    
+	    <!-- Add this line to include Marked -->
+	    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <link rel="stylesheet" href="windows_xp_style.css">
+	    <style>
+	    	.container {
+				position: relative;
+			    max-width: 800px;
+			    margin: 50px auto;
+			    padding: 30px;
+			    background: rgba(0, 20, 0, 0.01);  		/* Dark green, almost transparent */
+			    backdrop-filter: blur(0.001px);        	/* Blurs what's behind */
+			    z-index: 1;
+			}
+	    </style>
+	</head>
+	<body>
+		
+		<a href="old_pc_hub.html">return to homepage</a>
+		<div class="container"><div id="blog_tirana_2023"></div></div>
+	    <script>
+	    // Fetch the .md file and display it
+	    fetch('blog_tirana_2023.md')
+	        .then(response => response.text())  // Get the text from the file
+	        .then(markdown => {
+	            // Convert markdown to HTML and put it in the page
+	            document.getElementById('blog_tirana_2023').innerHTML = marked.parse(markdown);
+	        });
+		</script>
+		<script src="load-windows-xp-hud.js"></script>
+	</body>
+</html>

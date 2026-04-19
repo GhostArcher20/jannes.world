@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BTS</title>
+        <!-- <link rel="stylesheet" href="../old_pc_pages/windows_xp_style.css"> -->
+        <style>
+        	body {
+        		background: linear-gradient(60deg, #003b03 0%, #103d12 50%, #429647 100%);
+        	}
+        	.container {
+        		position: relative;
+        		max-width: 800px;
+        		margin: 50px auto; /* centers it horizontally, 50px from the top and bottom*/
+        		padding: 30px;
+        		border: 3px solid rgba(0, 255, 0, 1);
+        		border-radius: 20px;
+        		background: rgba(0, 20, 0, 0.7);
+        		box-shadow: 17px 17px 9px 1px rgba(0, 0, 0, 0.25); /* offsetX offsetY blur spread color&opacity */
+        		color: white;
+        		font-family: Segoe UI;
+        		text-align: justify;
+        		vertical-align: baseline;
+        	}
+        	a {
+        		color: green;
+        	}
+        	a:hover {
+        		color: lime;
+        	}
+        	.changelog {
+        		display: grid;
+        	}
+        	.changelog-date {
+        		
+        	}
+        	.changelog-text {
+        		flex: 1;
+        	}
+        	
+		    .lines-effect {
+		        position: fixed;
+		        top: 0;
+		        left: 0;
+		        width: 100%;
+		        height: 100%;
+		        background: repeating-linear-gradient(0deg, 
+		            rgba(0, 255, 0, 0.1) 0px,
+		            rgba(0, 0, 0, 0.8) 1px,
+		            transparent 2px,
+		            rgba(0, 255, 0, 0.1) 3px);
+		        background-size: 100% 4px;
+		        animation: movingLines 20s linear infinite;
+		        pointer-events: none;
+		        z-index: 2;
+		    }
+			
+			@keyframes movingLines {
+			    0% { background-position: 0 0; } 		/* Start at normal position */
+			    100% { background-position: 0 50px; } 	/* End 50px up after 20 seconds */
+			}
+
+        </style>
+    </head>
+    <body>
+    	<div class="lines-effect"></div>
+    	<a href="index.html">back to homepage</a>
+        <div class="container">
+        	<h1> BTS, About me & changelog </h1>
+        	<h2> Behind the scenes </h2>
+        	<br>
+        	Here I want to write some of what went into making that website, since it will be constantly evolving, this page too will keep changing. Many of the things on the website right now are placeholder items. This page here will discuss credit to the artists, games, movies, tv-shows, and everything else. Right now everything is under construction. This page will also discuss certain references I tried implementing, the idea of my website (as I surely will discuss in my <a href="goal_etc.html">goals page</a>) is to make it a place that is wholy mine, not in the sense that everything here is made by me, but that everything here played some kind of role in my life and had enough influence for me to remember it. Hopefully, many of the assets I use will be either a clear direct reference, a reference but a bit more obscure or edited (this page will be useful for that), or just made by me. <br>
+        	This page will also host my <a href="behind_the_scenes.html#Aboutme">About me</a> section
+        	<br><br>
+        	I started making this website on the 24th of February 2026. An important thing to note is that I had no experience with coding, I had never touched html, let alone javascript, the only experience I had with css is making a resource pack for minecraft years ago. I always knew this was gonna be hard, but I also knew it only needed to be as hard as I wanted it to be. This is my project, I kind of have a vision of what I want it to be (that vision is constantly altered by what I learn to be possible, difficult or stupid), and that gives me the freedom to stop any aspect of it whenever I want; that freedom, as many will agree, is also somewhat of a curse, because motivating oneself just for the sake of it can be challenging. But I'll keep going until I don't feel like it anymore, and hopefully beyond that as well. <br>
+        	With that background out of the way: The first day into making this thing, I learned how to make the sidebars of the landing page. I had this idea of making it look like the user finds themselves in this medieval-esque fantasy world, everything in this world would be influence by my life, my interests, my experiences, my art and my imagination. Why medieval and fantasy? Idk I just like it. So the sidebars would represent this typical HUD you would get in first person RPG's from the 90s and 2000s. I first used a transparent brown background, but then changed it to the dirt from the browser game Motherload (really fun btw!). Of course, this was already very challenging, I learned about css flexbox, and honestly didn't really understand it. I used a background image from one of my treks in Lapland, pixelized it a bit and hopefully I can make it look decent.<br>
+        	The second day I didn't have much time so mostly fleshed out my idea of what I wanted, I made a few more pages like the castle gate and I used some placeholder images. I also learned that nekoweb might be a better fit for me and migrated from neocities here so I made an account on here, but didn't migrate until the next they. I learned a bit about javascript and how I wanted my "coin" system to work. At the time of writing (08-March-2026) I am not sure of that anymore and I'll probably change it. But it was still useful to learn a bit about it. The day after I went through people's websites on neocities and started on my campfire page. I also started on an office room with an old windows xp pc to host all my socials, blogs, review, and all the gifs that don't fit on the other pages.
+        	<br><br>
+        	Somewhere during the first month I started to get more of an idea of the general idea around my website. The medieval-looking part of my website will be partly to build a world of my own, using assets that have influenced me in some way or that I made myself. But here a kind of immersion or "consistency" will be the priority (I am the judge of what is consistent though so you may disagree :) ), at the same time it will also be a space where I can challenge myself to code and make some fun minigames when possible (like I did for the mining and smelting minigames, but also the fast travel navigation system); if it doesn't fit the vibe, it will go into the old computer (I need to find a better name for this space). 
+        	When making the music player on the old desktop, I wanted the music to look old and at the same time not take up too much space on my website, so I just compressed it more than the usual intended way and now it sounds as if your speakers need cleaning.<br>
+        	I had to make a decision on how to make it both fun but also intuitive to navigate the different pages. First I wanted to have arrows on the body of the screen itself and to position them each individually (on ever page), but now I changed it to a more RPG like navigation arrow box in the sidebar, and the contents of the linked arrows just differ depending on the page. This looks easy in hindsight but it took me a long time to figure everything out.<br>
+        	Quickly about the items on the index page: I made the backpack, key, map and minimap in the sidebar myself (as of 30-03-2026 so probably new things when you're reading this), I don't have experience with pixel art so it takes me a long time and idk if I'm happy with all the results.<br>
+        	I made the daily tips in the right sidebar influenced by minecraft splash texts as well as loading screen tips from games like Skyrim. I'll add more of those in the future of course as the website grows.<br>
+        	I made the ores in the mining minigame look like the ores in motherload (iron=ironium, copper=bronzium, tin=silverium). The the ore dropped is from minecraft.<br>
+        	I also made the ingots look like those in minecraft, the tin is from the mod thermal foundation. I used to play minecraft a ton when I was a kid.<br>
+        	The smelting minigame is kind of based on the metalworking in terra firma craft, where the player has to hit and pull ingots in a certain way to make tool. I took this idea but simplified it to craft iron ingots.<br>
+        	I made the icon on the map for current location the skyrim quest marker. <br>
+        	
+        	<br>
+        	
+        	<h2 id="Aboutme">About me</h2>
+        	Hello there! I noticed that everyone that has a personal website also has a little 'About' section, which makes a lot of sense lol. So here's mine!
+        	People call me Jannes and I am currently 26 years old. I love learning new things all the time, I have a masters degree in History, Archaeology and Art Science that I got at the Free University of Brussels (Belgium), but I'm also very interested in geography, linguistics, geology, astronomy, bothany, etymology, and now also coding apparently. Before starting this website I didn't have any experience, but I'm having a good time learning, although getting stuck on bugs can be frustrating. I really love reading, I try to read 1 to 2 books a month, I always read multiple things simultaniously: 1 historical fiction, a classic, 1 poetry book, 1 non-fiction. Like this I don't get too bored reading one genre and then I also don't stop reading when I'm not in the mood to read a particular book. <br>
+        	I also really love trekking, especially fully autonomous for more than a week. I love the mountains and the physical excercise.<br>
+        	When I have the time and the money, I try to travel. I always try to get to know how people live when I visit a new place. When I'm in a city I always look for a few things: bookstores, vinyl shops, a viewpoint, exhibitions, outdoor shops, historical sites, and of course I try to find a few different grocery stores to try new drinks and snacks. I also try to go for a run because you get to know an area spontaneously. <br>
+        	<br><br>
+        	
+        	<i>Some facts about me? Is that fun? idk, here's goes.</i>
+        	<ul>
+        	<li>When I'm not sure if I like a book, I give it around 50 pages to 'prove' itself to me, if I really dislike it by 50page mark, I just stop it, but I force myself to reach 50 because sometimes it gets really good from there. </li>
+        	<li></li>
+        	<li>My favorite color is green.</li>
+        	</ul>
+        	<h2> Change log </h2>
+        	<div class="changelog">
+        	<pre>
+19-April-2026 --- added my note taking process
+17-April-2026 --- Made the behind the scenes as a page being folded over in the upper left corner.
+13-April-2026 --- I made the map functional. Now it is possible to fast travel to previously visited locations. 
+When not yet visited, it is not possible to fast travel. It's also visible where the user is in the world right now. 
+12-April-2026 --- made a minigame to turn ores into ingots, added the ring of smithing forgiveness. 
+11-April-2026 --- made a mining minigame to collect ores.
+10-April-2026 --- continued with the equipment system, updated all navigation arrows. 
+09-April-2026 --- started on a ore, ingot and equipment system.
+06-April-2026 --- adopted a mushroom for the garden.
+03-April-2026 --- added gardens with flower gifs.
+02-April-2026 --- added another Wiels exhibition, added a misc art project
+31-March-2026 --- started a blinky strip that rolls out of the left sidebar.
+30-March-2026 --- continued on the tavern.
+27-March-2026 --- started on the tavern. Made daily tips in the right sidebar.
+26-March-2026 --- cleaned up my style.css a bit, used var() for colors and stuff. also learned some more 
+javascript. 
+25-March-2026 --- cleaned up many of te pages, put in new .js and made the code a bit more readable. 
+reworked the start button on the windows xp pages, now works everywhere on there. 
+Made drop down menu's on the index page. I still want to make the landing page more inviting tho.
+24-March-2026 --- finally added a review for the wiels exhibition of february 26. 
+23-March-2026 --- made the sidebar of the socials, reviews, and blogs. reworked the socials page so that 
+all of them are on there. added arrow buttons to move through them.
+21-March-2026 --- finished navigation system. expanded some temporary explanation text on the index page.
+20-March-2026 --- started overhauling the navigation system
+16-March-2026 --- made a visitor box with flags on the campfire page. (took it from https://flagcounter.me/)
+13-March-2026 --- made guestbook prettier and more customized.
+12-March-2026 --- made the inventory only visible after picking up backpack. Made backpack 
+and arrow images. Made favicon.
+11-March-2026 --- completed the changelog until today, reworked coin system into exp system, 
+added background music & unmute button.	
+10-March-2026 --- added chatbox, follow button, guestbook.
+09-March-2026 --- made the inventory and sidebars more pretty, changed the look of the coin.
+08-March-2026 --- started the behind the scenes page.
+07-March-2026 --- made a page that explains the goal of my website. continued the noticeboard.
+06-March-2026 --- continued the noticeboard. started my manifesto.
+05-March-2026 --- started on code background project. bought my own domain but didn't get it working yet. 
+started on a notice board with to do list items.
+04-March-2026 --- continued on the music player.
+03-March-2026 --- made a review on an exhibition. started on a music player.
+02-March-2026 --- edited the Robots.txt file. added minimize button on pages inside the pc. made a socials sidebar. 
+added more socials.
+27-February-2026 --- put some more blogs in the hub. started the windows xp style desktop 
+and started with desktop icons.
+26-February-2026 --- migrated to nekoweb, started office-room page with the an old windows xp pc. 
+Clicking the mouse now cycles through some images, these are only placeholder atm. 
+I put some blogs on their pages. I made a hub where all reviews and blogs can float as 
+little dots in space. Gave one of my blogs a crt effect with moving horizontal lines.
+25-February-2026 --- made more pages like castle gate, hallway, campfire etc. Made a coin system 
+24-February-2026 --- started this website on neocities. first time using html and javascript, 
+started with sidebars, learned a lot
+<div class="changelog-date">01-january-2000</div><div class="changelog-text">this is a test</div>
+        	</pre>
+        	
+        	</div>
+        </div>
+        <script src="expPoints.js"></script>
+    </body>
+</html>

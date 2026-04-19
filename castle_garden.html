@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- for responsive pages for mobile and pc-->
+        <title>Gardens</title>
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+		<!-- Link to the shared CSS file -->
+		<link rel="stylesheet" href="style.css">
+		<style>
+			body {
+				background-image: url(assets/flowerfield.jpg);
+			}
+			.main-content {
+	        	position: relative;
+	        	flex-direction: column;
+	        }
+	        .decoration {
+	        	position: absolute;
+	        	width: 50px;
+	        	
+	        }
+	        
+		</style>
+    </head>
+    <body data-arrows='{
+      "arrow-upleft-link":     {"href": "castle_hallway.html", 	"tooltip": "Go inside the castle"},
+      "arrow-downleft-link":   {"href": "index.html",       	"tooltip": "Go back to start"},
+	  "arrow-up-link":         {"href": "#",  					"tooltip": "Nothing there..."},
+	  "arrow-upright-link":    {"href": "#",                	"tooltip": "Nothing there..."},
+	  "arrow-right-link":      {"href": "#",     				"tooltip": "Nothing there..."},
+	  "arrow-downright-link":  {"href": "#",                 	"tooltip": "Nothing there..."},
+	  "arrow-down-link":       {"href": "campfire.html",        "tooltip": "Go to the campfire"},
+	  "arrow-left-link":       {"href": "castle_gate.html",     "tooltip": "Go to the gate"}
+	}'>
+        
+        
+		<div class="container">
+			<!-- Empty div that will be filled by JavaScript -->
+			<div id="left-sidebar" class="left-sidebar"></div>
+			<div class="main-content">
+			<img class="decoration" src="assets/flowersvertical.gif" style="top: 0; right: 0; min-height: 60vh; width: calc(auto - 10px)">
+			<img class="decoration" src="assets/mag-daisy.png" style="top:200px; left:20px;">
+			<img class="decoration" src="assets/purpleroses.gif" style="top:150px; left:150px;">
+			
+			<iframe src="https://shroom.ink/guard.html/?site=Jannesworld&shroom=14" height="250px" width="200px" scrolling="no" frameborder="0" style="position: absolute; bottom:0; right:0;"></iframe>
+			</div>
+			
+			
+			
+			<!-- Empty div that will be filled by JavaScript -->
+			<div id="right-sidebar" class="right-sidebar"></div>
+		
+		</div>
+		
+		
+		
+<script src="stats.js"></script>  
+<script src="expPoints.js"></script>
+<script src="load-sidebars.js"></script>
+    </body>
+</html>

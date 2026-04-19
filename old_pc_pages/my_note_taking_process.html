@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Note taking</title>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>blog Lapland 2024</title>
+	    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	    <link rel="stylesheet" href="windows_xp_style.css">
+    </head>
+    <body>
+    	<a href="old_pc_hub.html" class="top-link">return to homepage</a> 
+    	<br>
+        I wrote this in june of 2022, this needs to be updated.
+        <div class="content-wrapper">
+			<div class="sidebar" data-section="meta"></div>
+	        <div class="content"><div id="my_note_taking_process"></div></div>
+        </div>
+        
+        <script>
+	    // Fetch the .md file and display it
+	    fetch('my_note_taking_process.md')
+	        .then(response => response.text())  // Get the text from the file
+	        .then(markdown => {
+	            // Convert markdown to HTML and put it in the page
+	            document.getElementById('my_note_taking_process').innerHTML = marked.parse(markdown);
+	        });
+		</script>
+		<script src="load-windows-xp-hud.js"></script>
+		<script src="load-sidebar.js"></script>
+    </body>
+</html>

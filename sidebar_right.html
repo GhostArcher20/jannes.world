@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!-- =============== XP Display with progress bar ===============  -->
+<div style="font-family: inherit; margin-top: -5px; margin-bottom: 5px;">
+  <!-- Header with Exp counter on left, Level + image on right -->
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; align-items: center;">
+      <span style="font-size: 14px; margin-right: 3px;">Exp:</span>
+      <span id="expPointCounter" style="font-size: 14px; font-weight: bold;">0</span>
+    </div>
+    <div style="display: flex; align-items: center;">
+      <span style="font-size: 14px; margin-right: 5px;">Lv <span id="levelDisplay">0</span></span>
+      <img src="assets/expPoint.png" alt="XP" style="height: 16px; width: auto;">
+    </div>
+  </div>
+  <!-- Progress bar container -->
+  <div class="xpbar-container">
+    <div id="xpBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #002900, #8aff8a); border-radius: 10px; transition: width 0.3s ease;"></div>
+    <span class="tooltip">Curious how the exp. system works? <br><div style="text-align: left; padding: 5px 10px 5px 10px;">You receive <br>50 for your daily login, <br>10 for visiting the page for the first time, <br>1 for visiting any page, <br>1 every minute spent on the website, <br>25 for finding an item. <br>mining (5) and smelting (15) ores also gives exp.
+    </div></span>
+    <!-- Floating XP notification -->
+    <div id="xpNotification" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #8aff8a; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: bold; opacity: 0; transition: opacity 0.2s; pointer-events: none;">+0</div>
+  </div>
+</div>
+
+<!-- =============== minimap display =============== -->
+<div id="minimapContainer" class="minimap-container" style="display: none;"> 		<!-- extra div with container id for hidden until map collected -->
+  <a href="map.html">
+    <div style="margin-left: 0px;">
+      <img src="minimap.png" alt="minimap" style="width: 100%; height: auto; max-width: 230px; display: block;"/> 
+    </div>
+  </a>
+  <span class="tooltip" style="top=">Your minimap, click to enlarge.</span>
+</div>
+
+<!-- =============== Inventory sections  =============== -->
+<!-- armor and hands -->
+<div id="equipmentSection" class="inventory-container">
+  <div id="equipmentContainer" class="equipment-grid">
+    <div class="equipment-part head plain-slot" data-slot="head">Helmet</div>
+    <div class="equipment-part neck plain-slot" data-slot="necklace">Necklace</div>
+    <div class="equipment-part torso plain-slot" data-slot="chest">Chestplate</div>
+    <div class="equipment-part mainhand plain-slot" data-slot="mainHand">Mainhand</div>
+    <div class="equipment-part hand plain-slot" data-slot="hands">Gloves</div>
+    <div class="equipment-part offhand plain-slot" data-slot="offHand">Shield</div>
+    <div class="equipment-part finger plain-slot" data-slot="ring">Ring</div>
+    <div class="equipment-part legs plain-slot" data-slot="legs">Leggings</div>
+    <div class="equipment-part potion plain-slot" data-slot="potion">Potion</div>
+    <div class="equipment-part feet plain-slot" data-slot="boots">Boots</div>
+  </div>
+</div>
+
+
+<!-- the items live in the sidebar-loader.js -->
+<div id="backpackSection" class="inventory-container locked" >
+  <h4 style="margin:-20px 0 5px 0;">Backpack</h4>
+  <div id="inventoryContainer" class="sidebar-inventory">
+    </div>
+</div>
+
+<!-- ore and ingot satchel -->
+<div id="satchelSection" class="inventory-container">
+  <div class="satchel-wrapper" style="position: relative;">
+  	<div class="satchel-icon"> <!-- for tooltip hover -->
+	    <div id="satchelSlot" class="inventory-slot inventory-satchel plain-slot" style="height: 50px;">
+	    	<img src="assets/satchel.png" alt="satchel">
+	    </div>
+	    <span class="tooltip inventory-satchel">This satchel can hold all kinds of ores and metal ingots</span>
+    </div>
+    <div id="satchelPopup" class="satchel-popup hidden">
+        <h4 style="margin: 0; text-align: center;">Satchel Contents</h4>
+        <div id="satchelContents" class="sidebar-inventory"></div>
+    </div>
+  </div>
+</div>
+
+<!-- =============== Daily loading screen tip =============== -->
+<div id="dailyTipText" class=daily-tip>
+  Visit new places to get more experience points!
+</div>
+
+<!-- =============== TEST BUTTON for XP =============== -->
+<!-- <button onclick="addExpPoint(1)" style="position: relative; width: 100%; margin: 10px 0; padding: 8px; background-color: gold; color: brown; border: none; border-radius: 5px; cursor: pointer;">
+  Add 1 experience point
+</button>
+-->
+
+<button onclick="resetAllItems()" style="position: relative; width: 100%; margin: 0; padding: 0; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 10px;">
+  >!Reset all progress (clear inv & XP)!<
+</button>
+
+
+<!-- =============== audioplayer =============== -->
+<!-- muted audio player -->
+<!--
+<audio id="bgMusic" autoplay muted loop>
+  <source src="music/Manor_Lords_OST.mp3" type="audio/mpeg">
+</audio>
+-->
+<!-- =============== Mute button =============== -->
+<!--
+<button id="muteToggle" style="font-family: inherit; width: 100%; padding: 8px; margin: 10px 0; background-color: #444; color: white; border: none; border-radius: 5px; cursor: pointer;">
+  🔇 Unmute Music
+</button>
+-->
+
+<!-- =============== Navigation box with arrows ("default text" and "#" will be replaced in body of each html) =============== -->
+<div class="navigation-box">
+	<div class="navigation-box-title">
+		Navigation
+		<span class="tooltip" style="letter-spacing: none;">You can also use the keyboard arrows for navigation!</span>
+	</div>
+	
+    <a href="#" class="arrow-up" id="arrow-up-link">
+    	<img src="assets/arrow-up.png" alt="arrow-up">
+    	<span class="tooltip">Default text</span>
+	</a>
+    <a href="#" class="arrow-upright" id="arrow-upright-link">
+    	<img src="assets/arrow-upright.png" alt="arrow-upright">
+    	<span class="tooltip">Default text</span>
+	</a>
+    <a href="#" class="arrow-right" id="arrow-right-link">
+    	<img src="assets/arrow-right.png" alt="arrow-right">
+    	<span class="tooltip">Default text</span>
+	</a>
+    <a href="#" class="arrow-downright" id="arrow-downright-link">
+    	<img src="assets/arrow-downright.png" alt="arrow-downright">
+    	<span class="tooltip">Default text</span>
+	</a>
+    <a href="#" class="arrow-down" id="arrow-down-link">
+    	<img src="assets/arrow-down.png" alt="arrow-down">
+    	<span class="tooltip">Default text</span>
+    	</a>
+	<a href="#" class="arrow-downleft" id="arrow-downleft-link">
+		<img src="assets/arrow-downleft.png" alt="arrow-downleft">
+		<span class="tooltip">Default text</span>
+	</a>
+    <a href="#" class="arrow-left" id="arrow-left-link">
+    	<img src="assets/arrow-left.png" alt="arrow-left">
+    	<span class="tooltip">Default text</span>
+	</a>
+    <a href="#" class="arrow-upleft" id="arrow-upleft-link">
+    	<img src="assets/arrow-upleft.png" alt="arrow-upleft">
+    	<span class="tooltip">Default text</span>
+	</a>
+</div>
+
+
+
+
+<script>
+// Mute toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const audio = document.getElementById('bgMusic');
+  const toggleBtn = document.getElementById('muteToggle');
+
+  if (audio && toggleBtn) {
+    // Set initial button text based on muted state
+    toggleBtn.textContent = audio.muted ? '🔇 Unmute Music' : '🔊 Mute Music';
+
+    toggleBtn.addEventListener('click', function() {
+      audio.muted = !audio.muted;
+      toggleBtn.textContent = audio.muted ? '🔇 Unmute Music' : '🔊 Mute Music';
+    });
+  }
+});
+</script>
+
+<!-- =============== =============== -->

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- for responsive pages for mobile and pc-->
+		<title>Smelter</title>
+		<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+		<!-- Link to the shared CSS file -->
+		<link rel="stylesheet" href="style.css">
+		<style>
+			.main-content {
+        	position: relative;
+        	flex-direction: column;
+        }
+        .main-content::-webkit-scrollbar {
+			width: 0px;
+		}
+		/* =============== SMITHY MINIGAME STYLES =============== */
+		.smithy-container {
+	        background: var(--darkish-gray);
+	        border: 2px solid var(--light-gray);
+	        border-radius: 8px;
+	        padding: 20px;
+	        width: 100%;
+	        max-width: 650px;     /* WIDENED from 500px to fit the image */
+	        display: flex;        /* Put UI and Image side-by-side */
+	        gap: 30px;
+	    }
+	    
+	    .smithy-ui { 
+	    	flex: 1; 		/* UI takes up remaining left space */
+	    }   
+	    
+	    /* The right-side image wrapper */
+	    .smithy-visual {
+	        width: 150px;
+	        display: flex;
+	        align-items: center;
+	        justify-content: center;
+	        position: relative;
+	        display: none;        /* Hidden until the bloom is taken out */
+	    }
+	    
+	    /* Both images perfectly overlap each other */
+	    .bloom-image, .ingot-image {
+	        position: absolute;
+	        width: 100%;
+	        height: auto;
+	        transition: opacity 0.2s ease;
+	        filter: drop-shadow(0px 0px 10px rgba(0,0,0,0.8));
+	    }
+	    
+	    .ingot-image { 
+	    	opacity: 0; 	/* Ingot starts invisible */
+	    } 
+		
+		.ui-select {
+		    background: var(--dark-brown);
+		    color: white;
+		    border: 1px solid gold;
+		    padding: 5px;
+		    font-family: inherit;
+		    margin-right: 10px;
+		}
+		
+		.anvil-layout {
+		    display: flex;
+		    gap: 20px;
+		    align-items: center;
+		    margin-bottom: 20px;
+		    background: var(--dark-gray);
+		    padding: 15px;
+		    border-radius: 8px;
+		}
+		
+		/* Vertical Temperature Gauge */
+	    .temp-gauge-container { 
+	    	display: flex; 
+	    	flex-direction: column; 
+	    	align-items: center; 
+	    }
+	    
+	    .temp-gauge-bg { 
+	        width: 20px; height: 150px; border: 2px solid #111; border-radius: 10px; 
+	        position: relative; overflow: hidden; 
+	        /* The heat gradient is permanently painted on the background */
+	        background: linear-gradient(to top, #777 0%, #ffff00 30%, #ff8800 70%, #ff0000 100%);
+	    }
+	    
+	    .temp-gauge-mask {
+	        width: 100%; height: 0%; position: absolute; top: 0;
+	        background: #333; /* The dark gray ash covering the heat from the top down */
+	        transition: height 0.2s linear; /* Matches the new 200ms tick rate perfectly */
+	    }
+		
+		/* Horizontal Progress Bars */
+	    .bloom-progress-area { flex: 1; }
+	    .progress-bar-bg { width: 100%; height: 15px; background: #222; border: 1px solid #000; border-radius: 4px; overflow: hidden; position: relative; }
+	    .progress-text { font-size: 12px; text-align: right; margin-top: 2px; }
+	    .anvil-controls { text-align: center; }
+	
+	    /* The fixed gradient background */
+	    .bloom-bg {
+	        background: linear-gradient(to right, #ffffff 0%, #87ceeb 50%, #0066ff 100%);
+	    }
+	
+	    /* The dark mask covering the bar from the right */
+	    .bloom-mask {
+	        height: 100%;
+	        background: #222; 
+	        position: absolute;
+	        right: 0;
+	        top: 0;
+	        transition: width 0.1s ease-out;
+	    }
+		
+		.progress-text {
+		    font-size: 12px;
+		    text-align: right;
+		    margin-top: 2px;
+		}
+		
+		.anvil-controls {
+		    text-align: center;
+		}
+	    .furnace-fill { 
+	        height: 100%;
+	        background: #ff4400;
+	        transition: width 0.2s linear;
+	    }
+		</style>
+    </head>
+    <body
+data-arrows='{
+	  "arrow-upleft-link":     {"href": "#", 					"tooltip": "Nothing there..."},
+	  "arrow-downleft-link":   {"href": "#",       				"tooltip": "Nothing there..."},
+	  "arrow-up-link":         {"href": "#",  					"tooltip": "Nothing there..."},
+	  "arrow-upright-link":    {"href": "#",					"tooltip": "Nothing there..."},
+	  "arrow-right-link":      {"href": "blacksmith.html",     	"tooltip": "Go to the blacksmith"},
+	  "arrow-downright-link":  {"href": "market.html",          "tooltip": "Go to the market"},
+	  "arrow-down-link":       {"href": "#",                 	"tooltip": "Nothing there..."},
+	  "arrow-left-link":       {"href": "#",       				"tooltip": "Nothing there..."}
+	}'>
+	<div class="container">
+	    <!-- Empty div that will be filled by JavaScript -->
+	    <div id="left-sidebar" class="left-sidebar"></div>
+	    
+	    <div class="main-content">
+	    	<h2>The Smeltery</h2>
+            <p>Here in the smeltery you can use the ores you mined in the mine to turn them into ingots.<br>
+            You will have to put the ore into the furnace to turn it into a bloom first though!.<br>
+            The bloom has to be worked to turn into a propper ingot, you can do this by hitting it with a certain strength. <br>
+            make sure to work it while it's hot enough, the hotter the more efficient your hits will be. <br>
+            if the bloom gets too cold you will have to reheat it. <br>
+            <br>
+            make sur not to hit it too many times though, because otherwise it will be messed up and you will lose some material.
+            </p>
+		    <div class="smithy-container">
+        
+        <div class="smithy-ui">
+            <div id="forgePrepPhase">
+                <h2>The Smeltery</h2>
+                <p>Select an ore to smelt (Cost: 2 Ore = 1 Ingot)</p>
+                <select id="oreSelect" class="ui-select">
+                    <option value="iron">Iron Ore</option>
+                    <option value="copper">Copper Ore</option>
+                    <option value="tin">Tin Ore</option>
+                </select>
+                <button class="ui-button" onclick="startFurnace()">Put Ore in Furnace</button>
+            </div>
+
+            <div id="forgeHeatPhase" style="display: none; text-align: center;">
+                <h2>Heating in Furnace...</h2>
+                <div class="progress-bar-bg">
+                    <div id="furnaceProgressBar" class="furnace-fill" style="width: 0%;"></div>
+                </div>
+                <button id="takeOutBtn" class="ui-button" style="display: none; margin-top: 15px;"></button>
+            </div>
+
+            <div id="forgeAnvilPhase" style="display: none;">
+                <h2>The Anvil</h2>
+                
+                <div class="anvil-layout">
+                    <div class="temp-gauge-container">
+                        <div class="temp-gauge-bg">
+                            <div id="bloomTempMask" class="temp-gauge-mask"></div>
+                        </div>
+                        <div style="font-size: 10px; margin-top: 5px;">Heat</div>
+                    </div>
+
+                    <div class="bloom-progress-area">
+                        <div style="margin-bottom: 5px; font-weight: bold;">Active Side</div>
+                        <div class="progress-bar-bg bloom-bg">
+                            <div id="activeSideMask" class="bloom-mask" style="width: 100%;"></div>
+                        </div>
+                        <div id="activeSideText" class="progress-text">0 / 100</div>
+
+                        <div style="margin-bottom: 5px; margin-top: 15px; font-weight: bold; color: var(--light-gray);">Bottom Side</div>
+                        <div class="progress-bar-bg bloom-bg" style="filter: grayscale(50%);">
+                            <div id="bottomSideMask" class="bloom-mask" style="width: 100%;"></div>
+                        </div>
+                        <div id="bottomSideText" class="progress-text" style="color: var(--light-gray);">0 / 100</div>
+                    </div>
+                </div>
+
+                <div class="anvil-controls">
+                    <div>
+                        <button class="ui-button hit-btn" onclick="hitBloom('light')">Light Hit</button>
+                        <button class="ui-button hit-btn" onclick="hitBloom('medium')">Medium Hit</button>
+                        <button class="ui-button hit-btn" onclick="hitBloom('heavy')">Heavy Hit</button>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button class="ui-button" onclick="turnBloom()">Turn Bloom</button>
+                        <button class="ui-button" onclick="reheatBloom()">Reheat in Furnace</button>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button id="coolIngotBtn" class="ui-button venture-button" style="display:none;" onclick="coolIngot()">Cool & Collect Ingot</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="bloomVisualContainer" class="smithy-visual">
+            <img id="visualBloom" class="bloom-image" src="" alt="Bloom">
+            <img id="visualIngot" class="ingot-image" src="" alt="Ingot">
+        </div>
+
+    </div>
+    
+    <div id="smelteryFloorContainer" style="display: flex; gap: 10px; margin-top: 20px; width: 100%; min-height: 50px;"></div>
+        </div>
+		<!-- Empty div that will be filled by JavaScript -->
+	    <div id="right-sidebar" class="right-sidebar"></div>
+	</div>
+<script src="stats.js"></script>  
+<script src="expPoints.js"></script>
+<script src="load-sidebars.js"></script>
+<script src="crafting.js"></script>
+<script src="smelting-minigame.js"></script>
+    </body>
+</html>

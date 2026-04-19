@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Notice board</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .noticeboard {
+            width: 850px;
+            height: 500px;
+            border: 3px solid black;
+            border-radius: 10px;
+            background-color: beige;
+            margin: 0;
+            padding: 10px;
+        }
+        .noticeboardgrid {
+            display: grid;
+            grid-template-columns: 200px 200px 200px 200px;
+            gap: 15px;
+        }
+        .taskitem {
+            position: relative;
+            width: 190px;
+            min-height: 50px;
+            max-height: 200px;
+            background: #917a4a;
+            padding: 9px;
+            color: black;
+            text-shadow: 0px 0px black;
+            word-wrap: break-word;
+
+            /* Flex column to separate content and tags */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .task-content {
+            min-height: 0;           /* allows flex item to shrink below content size */
+            overflow: hidden;         /* hides overflowing text */
+            word-wrap: break-word;
+        }
+        .task-tags {
+            font-size: 11px;
+            color: #333;
+            margin-top: 5px;
+            border-top: 1px dashed #5a3e2b;
+            padding-top: 3px;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+        .task-expand {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 24px;
+            height: 24px;
+            color: white;
+            border-radius: 50%;
+            font-size: 16px;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            display: none;
+            z-index: 5;
+        }
+        .task-expand:hover {
+            background: white;
+            color: black;
+        }
+
+        /* Modal, also contains the text */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            
+            /* Text styling  */
+            color: black;
+            text-shadow: 0px 0px black;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        /* Content box inside modal */
+        .modal > div {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            width: 400px;
+            max-height: 60vh;
+            overflow-y: auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body
+data-arrows='{
+	  "arrow-downleft-link":   {"href": "index.html",       		"tooltip": "back to start"},
+	  "arrow-upleft-link":     {"href": "castle_gate.html", 		"tooltip": "Go towards the castle"},
+	  "arrow-up-link":         {"href": "#",						"tooltip": "Nothing there..."},
+	  "arrow-upright-link":    {"href": "castle_garden.html",		"tooltip": "Visit the gardens"},
+	  "arrow-right-link":      {"href": "#",     					"tooltip": "Nothing there..."},
+	  "arrow-downright-link":  {"href": "campfire.html",     			"tooltip": "Go to the campfire"},
+	  "arrow-down-link":       {"href": "#",        				"tooltip": "Nothing there..."},
+	  "arrow-left-link":       {"href": "#",            			"tooltip": "Nothing there..."}
+	}'>
+    <div class="container">
+        <div id="left-sidebar" class="left-sidebar"></div>
+        
+        <div class="main-content">
+            <div class="noticeboard">
+                <div class="noticeboardgrid">
+       		<!-- ============ put task papers here ============== --> 
+                    <div class="taskitem">
+                        <div class="task-content">take music that fits each page and implement it for immersion</div>
+                        <div class="task-tags"></div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content">Fill up my taskboard</div>
+                        <div class="task-tags">30%</div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content">make my manifesto page</div>
+                        <div class="task-tags">#writing</div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content">Look into making a pixel art maker for visitors or something like r/place</div>
+                        <div class="task-tags"></div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content">replace placeholder images in office room when clicking mouse to actual screenshots</div>
+                        <div class="task-tags"></div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content">make the behind the scenes link a different kind of button</div>
+                        <div class="task-tags"></div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content">make a worldmap that shows where visitors came from</div>
+                        <div class="task-tags"></div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content">work on a page that collects everything worthy of the internet Canon</div>
+                        <div class="task-tags"></div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content">Added 2 minigames, one to mine ores in <a href src="mine.html">the mine</a> and the other to smelt them into ingots in <a href src="smeltery.html">the smeltery</a>. </div>
+                        <div class="task-tags">#update</div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content"></div>
+                        <div class="task-tags"></div>
+                    </div>
+                    <div class="taskitem">
+                        <div class="task-content"></div>
+                        <div class="task-tags"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="right-sidebar" class="right-sidebar"></div>
+    </div>
+
+    <!-- one div with class="modal", text goes in the div inside -->
+    <div id="textModal" class="modal">
+        <div></div>  <!-- This empty div will hold the text -->
+    </div>
+
+    <script>
+        function generateRandomTearPath() {
+            let points = [], steps = 15, tearDepth = 2;
+            for (let i = 0; i <= steps; i++) {
+                let x = (i / steps) * 100;
+                points.push(`${x}% ${Math.random() * tearDepth}%`);
+            }
+            for (let i = 1; i < steps; i++) {
+                let y = (i / steps) * 100;
+                points.push(`${100 - Math.random() * tearDepth}% ${y}%`);
+            }
+            for (let i = steps; i >= 0; i--) {
+                let x = (i / steps) * 100;
+                points.push(`${x}% ${100 - Math.random() * tearDepth}%`);
+            }
+            for (let i = steps - 1; i > 0; i--) {
+                let y = (i / steps) * 100;
+                points.push(`${Math.random() * tearDepth}% ${y}%`);
+            }
+            return `polygon(${points.join(', ')})`;
+        }
+        document.querySelectorAll('.taskitem').forEach(item => {
+            item.style.clipPath = generateRandomTearPath();
+        });
+        const modalContent = modal.querySelector('div');  // Get the inner div
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        document.querySelectorAll('.taskitem').forEach(task => {
+            const contentDiv = task.querySelector('.task-content');
+            const btn = document.createElement('div');
+            btn.className = 'task-expand';
+            btn.textContent = '⛶';
+            task.appendChild(btn);
+            // Check overflow on the content div, not the whole task
+            if (contentDiv.scrollHeight > contentDiv.clientHeight) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                modalContent.textContent = contentDiv.textContent;  // Only main content, no tags
+                modal.style.display = 'block';
+            });
+        });
+    </script>
+    
+<script src="stats.js"></script>  
+<script src="expPoints.js"></script>
+<script src="load-sidebars.js"></script>
+
+</body>
+</html>

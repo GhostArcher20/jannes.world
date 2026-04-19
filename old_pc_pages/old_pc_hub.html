@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>blog hub</title>
+        <link rel="stylesheet" href="windows_xp_style.css">
+        <style>
+			body {
+			    background-color: #000033;
+			    background-image: 
+			        radial-gradient(1px 1px at 10px 20px, #ffffff, rgba(0,0,0,0)),
+			        radial-gradient(1px 1px at 30px 70px, #ffff00, rgba(0,0,0,0)),
+			        radial-gradient(2px 2px at 50px 150px, #ff00ff, rgba(0,0,0,0)),
+			        radial-gradient(1px 1px at 90px 40px, #00ffff, rgba(0,0,0,0)),
+			        radial-gradient(3px 3px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+			        radial-gradient(1px 1px at 170px 120px, #ff0000, rgba(0,0,0,0)),
+			        radial-gradient(2px 2px at 200px 50px, #00ff00, rgba(0,0,0,0)),
+			        radial-gradient(1px 1px at 250px 180px, #ffff00, rgba(0,0,0,0));
+			    background-size: 300px 200px;
+			    margin: 0;
+			    padding: 20px;
+			    min-height: 100vh;
+			    color: white;
+			    font-family: Arial, sans-serif;
+			    overflow-x: hidden;
+			}
+
+            /* Apply flicker only to the starfield backgrounds and floating nodes */
+			.floating-nodes,
+			.regular-links {
+			    animation: twinkle 0.1s infinite;
+			}
+            
+            @keyframes twinkle {
+                50% { opacity: 0.8; }
+            }
+            
+            /* Floating nodes system */
+            .floating-nodes {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1000;
+            }
+            
+            .node {							/* box with dot and text for individual link elements */
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                pointer-events: auto;
+                width: 60px;  /* Container for dot + text */
+                animation: float 20s infinite alternate ease-in-out;
+            }
+            
+            .dot {					/* dot for individual link elements */
+                width: 8px;  /* Very small dot */
+                height: 8px;
+                border-radius: 50%;
+                background: currentColor;
+                box-shadow: 0 0 15px currentColor;
+                transition: all 0.3s ease;
+                margin-bottom: 5px;
+            }
+            
+            .node a {
+                color: rgba(255, 255, 255, 0.7);
+                text-decoration: none;
+                font-size: 9px;  
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                text-shadow: 0 0 5px currentColor;
+                transition: all 0.3s ease;
+                max-width: 60px;
+                line-height: 1.2;
+                word-wrap: break-word;
+            }
+            
+            .node:hover .dot {
+                width: 12px;
+                height: 12px;
+                box-shadow: 0 0 30px currentColor;
+            }
+            
+            .node:hover a {
+                color: white;
+                font-size: 10px;			/* make text slightly larger */
+                text-shadow: 0 0 10px currentColor;
+            }
+            
+            /* Gentle floating animation - different speeds and distances */
+            @keyframes float {
+                0% { transform: translate(0, 0) scale(1); }
+                100% { transform: translate(var(--float-x, 50px), var(--float-y, -50px)) scale(1.5); }
+            }
+            
+            /* Keep your existing content above */
+            h1, .regular-links {
+                position: relative;
+                z-index: 1002;
+            }
+            
+            h1 {
+                text-shadow: 0 0 10px cyan, 0 0 20px blue;
+                font-size: 3em;
+                margin-bottom: 30px;
+            }
+            
+            .regular-links {
+            	color: #00ffff;
+                background: rgba(0, 0, 0, 0.3);
+                padding: 5px 10px;
+                border-radius: 10px;
+                display: inline-block;
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            
+            .regular-links a, p {
+            	color: #00ffff;
+                text-decoration: none;
+                display: block;
+                margin: 10px 0;
+                font-size: 18px;
+                padding: 5px 10px;
+                border: 1px solid transparent;
+                transition: all 0.3s;
+            }
+            
+            .regular-links a:hover {
+                border-color: #00ffff;
+                border-radius: 5px;
+                font-size: 19px;
+                padding: 4px 9px;
+            }
+            .regular-links p:hover {
+                padding: 4px 9px;
+                font-size: 18.1px;
+                transition: all 0.3s;
+            }
+        </style>
+    </head>
+    <body>
+	 	
+	    
+        <!-- Floating nodes (will be filled by JavaScript) -->
+        <div class="floating-nodes" id="floatingNodes"></div>
+        
+        <!-- Links at the top of the page -->
+        <div class="regular-links">
+            <a href="../office_room.html">Escape this PC</a>
+        </div>
+		<div class="regular-links">
+			<a href="old_desktop.html">Desktop</a>
+		</div>
+		<div class="regular-links" style="left: 60px">
+			<p>Welcome to this hub! Here you can find all my blogs and reviews floating around in space.</p>
+		</div>
+		
+		
+        <script>
+            // Define all blog pages
+            const blogPages = [
+                { name: "Lapland 2024", link: "blog_lapland_2024.html", color: "#ff6b6b" },
+                { name: "RETRO GAMING", link: "blog_retro_gaming.html", color: "#4ecdc4" },
+                { name: "Tirana 2023", link: "blog_tirana_2023.html", color: "#ffe66d" },
+                { name: "Croatia 2018", link: "blog_croatia_2018.html", color: "#c77dff" },
+                { name: "test", link: "7thgengameconsoles.html", color: "#ff9f1c" },
+                { name: "Art project", link: "project_window.html", color: "#2ecc71" },
+                { name: "Wiels Review feb '26", link: "review_wiels_exhibitions.html#feb26", color: "#ff8c42" },
+                { name: "Wiels Review mar '26", link: "review_wiels_exhibitions.html#mar26", color: "#a37cf4" },
+                { name: "Wiels Review apr '26", link: "review_wiels_exhibitions.html#apr26", color: "#f47ca3" },
+                { name: "misc art projects", link: "misc_art_projects.html", color: "#f4a37c" },
+                { name: "misc museums", link: "misc_museums.html", color: "#7cf4a3" },
+                { name: "BOOKS", link: "blog_books.html", color: "#f47ca3" },
+                { name: "MOVIES", link: "blog_movies.html", color: "#7ca3f4" },
+                { name: "project", link: "project.html", color: "#7ca3f4" }
+            ];
+            const floatingNodes = document.getElementById('floatingNodes');		// Get the floating nodes container
+            const usedPositions = [];											// Store node positions to avoid overlap
+            // Create a node for each blog page
+            blogPages.forEach((page, index) => {
+                // Create the node container
+                const node = document.createElement('div');
+                node.className = 'node';
+                // Generate random position (keep away from edges and each other)
+                let left, top, attempts = 0;
+                let overlap = true;
+                
+                while (overlap && attempts < 200) {
+					left = 5 + Math.random() * 90;    // Keep left/right margins at 5%
+					top = 5 + Math.random() * 85;     // 5% from top, 10% from bottom
+					// Because: 5% (top margin) + 85% (variable range) + 10% (bottom margin) = 100%
+                    
+                    overlap = usedPositions.some(pos => 
+                        Math.abs(pos.left - left) < 15 && Math.abs(pos.top - top) < 15
+                    );
+                    attempts++;
+                }
+                usedPositions.push({ left, top });
+                node.style.left = left + '%';
+                node.style.top = top + '%';
+                
+                // Random floating direction and speed
+                const floatX = (Math.random() - 0.5) * 60; // -30px to 30px
+                const floatY = (Math.random() - 0.5) * 60;
+                const duration = 2 + Math.random() * 5; // 2-5 seconds
+                node.style.setProperty('--float-x', floatX + 'px');
+                node.style.setProperty('--float-y', floatY + 'px');
+                node.style.animation = `float ${duration}s infinite alternate ease-in-out`;
+                // Random starting delay so they don't all move together
+                node.style.animationDelay = (Math.random() * 5) + 's';
+                // Set the color
+                node.style.color = page.color;
+                // Create the dot and link
+                node.innerHTML = `
+                    <div class="dot" style="background: ${page.color}; box-shadow: 0 0 15px ${page.color};"></div>
+                    <a href="${page.link}" style="color: rgba(255,255,255,0.7);">${page.name}</a>
+                `;
+                floatingNodes.appendChild(node);
+            });
+        </script>
+        
+        <script src="load-windows-xp-hud.js"></script>
+    </body>
+</html>

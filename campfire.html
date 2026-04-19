@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Campfire</title>
+	<link href="/style.css" rel="stylesheet" type="text/css" media="all">
+	<style>
+		.main-content {
+	        flex: 1;
+	        padding: 20px;
+	        overflow-y: auto;
+			flex-direction: column;
+			justify-content: flex-start;
+	        align-items: flex-start;    
+	        min-height: 500px;
+		}
+		.chatbox {
+			position: absolute;
+			top: 50vh;
+			left: 50vw;
+		}
+		.sidebar-chatbox {
+			visibility: hidden;
+		}
+		.tooltip { 									/* already defined in style.css*/
+			padding: 5px 5px;
+		}
+
+	</style>
+</head>
+<body 
+	data-arrows='{
+	  "arrow-downleft-link":   {"href": "#",        		 "tooltip": "Nothing there..."},
+	  "arrow-upleft-link":     {"href": "notice_board.html", "tooltip": "Go to the notice board"},
+	  "arrow-up-link":         {"href": "castle_garden.html","tooltip": "Go to the gardens"},
+	  "arrow-upright-link":    {"href": "#",                 "tooltip": "Nothing there..."},
+	  "arrow-right-link":      {"href": "#",                 "tooltip": "Nothing there..."},
+	  "arrow-downright-link":  {"href": "#",                 "tooltip": "Nothing there..."},
+	  "arrow-down-link":       {"href": "mine.html",         "tooltip": "Go down the mine"},
+	  "arrow-left-link":       {"href": "index.html",        "tooltip": "Back to home screen"}
+	}'>
+  
+	<div class="container">
+    
+	    <!-- Sidebar CONTAINER (stays in main page) -->
+	    <div id="left-sidebar" class="left-sidebar"></div>
+	    
+	    <div class="main-content">
+	    	<div>
+	    		<a href="index.html">Back to town</a>
+				<h1>Welcome traveller </h1>
+				<h2>Sit by the fire, you earned your rest.</h2>
+				<p>Here you can chat with your fellow travellers, hopefully soon, you'll see here the amount of travellers by the campfire</p>
+			</div>
+					
+			<div>
+				<img src="assets/firepit.gif" alt="firepit" style="width: 250px; position: absolute; left: 500px;" />
+				<div class="tooltip">Hover over me
+				  <span class="tooltiptext">this is a test, I want to do this to more places though.</span>
+				</div>
+			</div>
+			
+			<a href="https://flagcounter.me/details/gHc"><img src="https://flagcounter.me/gHc/" alt="Flag Counter"></a>
+			
+	    </div>  
+		<!-- Sidebar CONTAINER (stays in main page) -->
+		<div id="right-sidebar" class="right-sidebar">
+			
+		</div>
+	</div>
+	
+	<div class="chatbox">
+		<iframe src="https://www5.cbox.ws/box/?boxid=961846&boxtag=A5qZF2" width="100%" height="300px" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe>		<!-- editor wants &amp instead of &, but then the link doesn't work. -->
+	</div>
+	
+    
+<script src="stats.js"></script> 
+<script src="expPoints.js"></script>
+<script src="load-sidebars.js"></script>
+    
+  </body>
+</html>
