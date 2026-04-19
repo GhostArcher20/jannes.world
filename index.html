@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- for responsive pages for mobile and pc-->
+  <title>Jannes's World</title>
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+  <!-- Link to the shared CSS file -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+        body {
+            background-image: url('assets/landingpage_background.jpg');
+		    font-size: 16px;
+		    /* -webkit-text-stroke: 0.1px black; */ /* kinda ugly with this font*/
+		    /* use these to set constants in css
+			--primary-bg-color: #1e90ff;
+			--primary-color: #ffffff;
+		    */
+        }
+        p {
+        	/* -webkit-text-stroke: 0.1px black; */
+        	font-size: 22px;
+        	text-shadow: -1px -1px 0 #444, 1px -1px 0 #444,-1px 1px 0 #444, 1px 1px 0 #444; /* outline: text-shadow: h-shadow v-shadow blur-radius color, seperated by commas to have multiple (here 4 for each direction) */
+        	/* color: #a3bd9f; */
+        	z-index: 11;
+        }
+        .main-content {
+        	position: relative;
+        	flex-direction: column;
+        }
+        .main-content::-webkit-scrollbar {
+			width: 0px;
+		}
+        .text-box {
+        	position: relative;
+        	/* exact position to be set in the div */
+        	padding: 10px;
+        	color: white;
+        	font-size: 22px;
+        	backdrop-filter: blur(20px); 				/* transparent background but blur */
+        	border: 2px solid rgba(73, 102, 68, 0.5);
+        	max-width: var(--main-content-width); 			/* filled by script that gets clientWidth of the .main-content class */
+        	z-index: 10;
+        }
+        details > p {
+        	
+        }
+        details {
+        	z-index: 12;
+        }
+        
+        /* ===== ITEMS ===== only put the item classes into the pages where I want them */
+        .compass-item {
+        	position: absolute;
+        	bottom: 70px;
+        	left: 800px;
+        	z-index: 5;
+        }
+        .backpack-item {
+        	position: absolute;
+        	bottom: 100px;
+        	left: 200px;
+        	z-index: 5;
+        }
+        .map-item {
+        	position: absolute;
+        	top: 400px;
+        	left: 250px;
+        	z-index: 10;
+        }
+        
+        
+        /* will probably be removed and all put in style.css*/
+		.direction-button {
+        	transition: .3s ease;
+		}
+		.direction-button:hover {
+			filter: drop-shadow(0px 0px 20px green);
+		}
+		a:hover .tooltip {
+			visibility: visible;
+			
+		}
+		.tooltip { /* already defined in style.css*/
+			padding: 5px 5px;
+		}
+		.arrow-right {
+			position: absolute; 
+			bottom: 10px; 
+			right: 10px; 
+		}
+		.arrow-up {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+		}
+  </style>
+</head>
+
+<body
+data-arrows='{
+	  "arrow-upleft-link":     {"href": "blacksmith.html",	 "tooltip": "You hear the sound of metalworking..."},
+	  "arrow-downleft-link":   {"href": "tavern.html",       "tooltip": "Visit the tavern"},
+	  "arrow-up-link":         {"href": "castle_gate.html",  "tooltip": "Go towards the castle"},
+	  "arrow-upright-link":    {"href": "notice_board.html", "tooltip": "Go to the notice board"},
+	  "arrow-right-link":      {"href": "campfire.html",     "tooltip": "You smell wood burning..."},
+	  "arrow-downright-link":  {"href": "mine.html",         "tooltip": "Go down the mine"},
+	  "arrow-down-link":       {"href": "#",                 "tooltip": "You have a long path behind you..."},
+	  "arrow-left-link":       {"href": "market.html",       "tooltip": "Visit the market"}
+	}'>
+
+  <div class="container">
+    <!-- Empty div that will be filled by JavaScript -->
+    <div id="left-sidebar" class="left-sidebar"></div>
+    
+    <div class="main-content">
+    	<a href="behind_the_scenes.html">
+	    	<img src="assets/BTS-changelong-button.png" style="top: -10px; left: -10px; position: absolute;">
+    	</a>
+      	<h1 style="margin-left: 100px;">Jannes's World</h1>
+      	
+  		<details class="text-box" style="top: 0; left: 0; background-color: rgba(255,0,0,0.5);">
+  			<summary>!DISCLAIMER!</summary>
+  			<p>Everything you see is under construction, I have never coded any html and js so this is taking me a while hehe. enjoy looking around though!</p>
+  		</details>
+  		
+  		<div class="text-box" style="top: -50px; left: 600px; max-width: calc(var(--main-content-width) - 700px); backdrop-filter: hue-rotate(300deg);">
+  			Hello there! I am Jannes, I'm a 26yo Belgian guy, I needed a spot for all my projects so I'm making this website.
+  		</div>
+  		
+      	<div class="text-box" style="top: 0px; left: 0; backdrop-filter: brightness(50%);">
+      		Greetings traveller! You have arrived in my little corner of the World Wide Web. Feel free to take rest from the busy world out there. You can visit the campfire to the right to chill, or click the minimap in the sidebar to see all locations. <br> 
+      		Everything here is either made by me or a reference to media I've consumed throughout my life. I hope to be able to make this realm fun and interesting.
+      		
+      	</div>
+      	
+      	<details class="text-box" style="top: 10px; left: 0px; backdrop-filter: invert(70%); max-width: 400px;">
+      		<summary>Quick Navigation in left sidebar!</summary>
+      		My blogs, reviews and socials are stored in what I call the "Old computer". This is an windows xp styled space where I'll put stuff that doesn't fit the vibe of this RPG styled world.<br>
+      		One of the icons leads you to a hub with all my blogs and everything. <br>
+      		If you are interested you can read my behind the scenes or goals pages.
+      	</details>
+      	
+      	<!-- problems and solutions-->
+  		<details class="text-box" style="top: -30px; left: calc(var(--main-content-width) - calc(var(--box-width) * 4)); backdrop-filter: contrast(200%); max-width: 400px;">
+  			<summary>problem</summary>
+  			<p>Somehow I had to find a place to put my blogs or other writings and not make it too jarring to the "medieval" looking start pages.</p>
+  			<p>So the solution I found currently is that there is this old computer stored away in one of the rooms of the castle (the castle hallway will have many different rooms), the office room (with the pc) opens up a windows xp looking desktop where you can see all my socials as desktop icons.</p>
+  		</details>
+      	<!-- <div class="text-box" style="top:400px; left:250px; backdrop-filter: grayscarle(100%);"></div> -->
+      	
+      	
+      	<div class="text-box" style="top: 80px; max-width: 50vw; backdrop-filter: saturate(6);">
+      		Enjoy looking around and if you want you can leave a message in my guestbook or simply in the little chatbox (both in the left sidebar)
+      	</div>
+      	
+		<!-- Example items on the page, only appear on this page, I don't know yet if I want to position them with the div or if I should do it in the css -->
+		<div class="collectible" data-id="key" data-name="Key" data-desc="Opens mysterious doors" style="position: absolute; top: 200px; right: 100px; z-index: 5;">
+		  <img src="../assets/key.png" alt="Key" style="width: 50px; cursor: pointer;">
+		</div>
+		
+		<div class="collectible compass-item" data-id="compass" data-name="Compass" data-desc="Points to hidden treasures">
+		  <img src="../assets/compass.png" alt="Compass" style="width: 50px; cursor: pointer;">
+		</div>
+		<div class="collectible map-item" data-id="map" data-name="map" data-desc="unlocks the map!">
+		  <img src="../assets/map-item.png" alt="map" style="width: 75px; cursor: pointer;">
+		</div>
+		
+		<div class="collectible backpack-item" data-id="backpack" data-name="Backpack" data-desc="Allows you to carry a large amount of items">
+			<img src="../assets/backpack.png" alt="Backpack" style="width: 150px; cursor: pointer;">
+		</div>
+		
+		
+		
+		
+		
+		
+		
+		
+		<!-- controll buttons; will probably be removed-->
+		<a href="campfire.html">
+			<div class="direction-button arrow-right">
+				<img src="../assets/arrow-right.png" alt="arrow-right" style="width: 50px;">
+			</div>
+			<span class="tooltip arrow-right" style="transform: translate(-50px, -50px);">To the campfire.</span>
+		</a>
+		
+		<a href="castle_gate.html">
+			<div class="direction-button arrow-up">
+				<img src="../assets/arrow-up.png" alt="arrow-up" style="width: 50px;">
+			</div>
+			<span class="tooltip arrow-up" style="transform: translate(-50px, 50px);">To the Castle gate (under construction).</span>
+		</a>
+
+		
+		
+    </div>
+    
+    <!-- Empty div that will be filled by JavaScript -->
+    <div id="right-sidebar" class="right-sidebar"></div>
+     
+  </div>
+  
+  <script>
+  // tests for sizes of detail drop down menus
+		  //	const mainContent = document.querySelector(".main-content");			// main content (not sidebars)
+		  //	let width = mainContent.clientWidth  + "px";							// set "width" to the width of the div in px
+		  //	document.getElementById("main-content-width").innerHTML = width;
+	function updateVariables() {
+		const mainContent = document.querySelector(".main-content");
+		const textBox = document.querySelector(".text-box");
+		const width = mainContent.clientWidth + 'px';
+		const height = mainContent.clientHeight + 'px';
+		const boxWidth = textBox.clientWidth + 'px';
+		
+		document.documentElement.style.setProperty('--main-content-width', width);
+		document.documentElement.style.setProperty('--main-content-height', height);
+		document.documentElement.style.setProperty('--box-width', boxWidth);
+		}
+	// Run on page load
+	updateVariables();
+	// Run whenever the window is resized
+	window.addEventListener('resize', updateVariables); // for all the possible events: w3schools.com/jsref/dom_obj_event.asp
+	window.addEventListener('toggle', updateVariables); // for when details open, but currently not in use
+  </script>
+  
+
+<script src="stats.js"></script>  
+<script src="expPoints.js"></script>
+<script src="load-sidebars.js"></script>
+
+  </body>
+</html>
