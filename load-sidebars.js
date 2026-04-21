@@ -429,19 +429,48 @@ function updateDailyTip() {
             tipText = special;
         } else {
             const tips = [
-                "Visit new places to get more experience points!",
-                "Daily login gives bonus XP!",
-                "Check the map to navigate! (currently under construction)",
-                "Collect items to unlock new areas! (currently under construction)",
-                "Use the arrows for easy navigation!",
-                "Visit the campfire to chat with other travellers!",
-                "Find the backpack to carry items!",
-                "Open the old computer to read blogs and reviews!",
+                // exp related tips
+                "Daily login gives bonus EXP!",
+                "Visit new places to get more EXP points!",
                 "Discover secrets for extra points!",
-                "Equiping the satchel allows you to carry ores and ingots!",
+                "Interacting with the website give EXP!",
+                // navigation related tips
+                "Check the map to navigate!",
+                "Use the arrows for easy navigation!",
+                "Use the left sidebar menu for navigation!",
+                // item and collectibles related tips
+                "Find the backpack to carry items!",
+                "Pick up the map item to unlock the minimap!",
+                "Collect items to unlock new areas!",
+                "Equip the satchel to carry ores and ingots!",
                 "Picking up the pickaxe allows you to mine ores!",
-                "Visit the smithy to make ingots from your ores",
-                "Visit the blacksmith to make equipment"
+                "Equipment is stored in the equipment slots!",
+                // funcionality related tips
+                "You can leave a message in my guestbook or chatbox!",
+                "Take a look at the blinkies!",
+                "Look at the notice board for changes and future updates!",
+                "Read my goals with this website!",
+                "This Message changes every day!",
+                "Reset all EXP and collectibles by pressing the red button!",
+                "Click the satchel to see what you collected!",
+                "Play a mining minigame in the mine!",
+                "Play a smelting minigame in the smeltery!",
+                // pages related tips
+                "Visit the tavern to get a drink!",
+                "Visit the gardens!",
+                "Visit the market!",
+                "See all the rooms in the castle from the hallway!",
+                "Enter the old computer from the office!",
+                "Open the old computer to read blogs and reviews!",
+                "Go take a look behind the scenes!",
+                "Find all my socials in the old computer",
+                "Read my blogs in the old computer!",
+                "Read my reviews in the old computer!",
+                "Read about my projects in the old computer!",
+                "Visit the campfire to chat with other travellers!",
+                "Visit the mine to find ores!",
+                "Visit the smithy to make ingots from your ores!",
+                "Visit the blacksmith to make equipment!"
             ];
             const randomIndex = Math.floor(Math.random() * tips.length);
             tipText = tips[randomIndex];
