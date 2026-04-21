@@ -15,12 +15,12 @@ function initBlinkieStrip() {
 // ==================== Right sidebar functions ====================
 // ======== ITEM DATABASE ========
 const itemDatabase = {
-    key:      { name:'Key',      desc:'Opens mysterious doors',        img:'../assets/key.png' },
-    compass:  { name:'Compass',  desc:'Points to hidden treasures',    img:'../assets/compass.png' },
-    map:      { name:'Map',      desc:'Unlocks the minimap',           img:'../assets/map-item.png' },
-    backpack: { name:'Backpack', desc:'Allows you to carry items',     img:'../assets/backpack.png' },
-    pickaxe:  { name:'Pickaxe',  desc:'Used to mine ores',			   img:'../assets/pickaxe.png' },
-    satchel:  { name:'Satchel',  desc:'Holds heavy ores and ingots',   img:'../assets/satchel.png' }
+    key:      { name:'Key ',      desc:'Opens mysterious doors',        img:'../assets/key.png' },
+    compass:  { name:'Compass ',  desc:'Points to hidden treasures',    img:'../assets/compass.png' },
+    map:      { name:'Map ',      desc:'Unlocks the minimap',           img:'../assets/map-item.png' },
+    backpack: { name:'Backpack ', desc:'Allows you to carry items',     img:'../assets/backpack.png' },
+    pickaxe:  { name:'Pickaxe ',  desc:'Used to mine ores',			   img:'../assets/pickaxe.png' },
+    satchel:  { name:'Satchel ',  desc:'Holds heavy ores and ingots',   img:'../assets/satchel.png' }
 };
 
 // ======== COLLECTED ITEMS ========
@@ -519,7 +519,7 @@ function loadSidebar(elementId, filePath) {
         .then(data => document.getElementById(elementId).innerHTML = data);
 }
 
-// ==================== MASTER NAVIGATION (CLICK & KEYBOARD) ====================
+// ==================== NAVIGATION (CLICK & KEYBOARD) ====================
 
 const activeKeys = new Set();   // Global memory of keys currently held down
 let moveTimeout = null;         // Timer for the 75ms input grace period
