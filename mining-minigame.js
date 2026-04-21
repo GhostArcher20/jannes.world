@@ -44,9 +44,9 @@ function calculateTolerance() {
 
 function calculatePlayerStats() {
     let stats = { power: 0, yield: 0 };          // Start with 0 bonuses
-    if (typeof loadCollectedItems !== 'function') return stats; 
+    if (typeof loadData !== 'function') return stats; 
     
-    const inventory = loadCollectedItems();      // Get player's items
+    const inventory = loadData('collectedItems', []);      // Get player's items
     inventory.forEach(itemId => {
         if (ITEM_MODIFIERS[itemId]) {            // If item gives bonuses, add them
             stats.power += ITEM_MODIFIERS[itemId].power;
@@ -61,7 +61,7 @@ function startMiningMinigame() {
     minigameContainer = document.querySelector('.' + MINIGAME_CONTAINER_CLASS); 
     if (!minigameContainer) return;              // Abort if screen is missing
     
-    const inventory = typeof loadCollectedItems === 'function' ? loadCollectedItems() : []; 
+    const inventory = typeof loadData === 'function' ? loadData('collectedItems', []) : [];
     if (!inventory.includes('pickaxe')) {        // Verify tool requirement
         if (typeof showTemporaryMessage === 'function') {
             showTemporaryMessage(`You need a pickaxe to start mining!`); 
@@ -338,7 +338,7 @@ function spawnOreOnGround(type, amount) {        // Builds clickable floor item
     oreEl.onclick = function(e) {                
         e.stopPropagation(); 
         
-        if (typeof hasSatchel === 'function' && !hasSatchel()) {
+        if (typeof loadData === 'function' && !loadData('collectedItems', []).includes('satchel')) {
             if (typeof showTemporaryMessage === 'function') showTemporaryMessage("You need a Satchel to pick up heavy ores!");
         } else {
             if (typeof addOre === 'function') addOre(type, amount); 

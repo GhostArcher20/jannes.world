@@ -305,7 +305,7 @@ function spawnIngotOnGround(type, quality) {
     ingotEl.onclick = function(e) {                              // Listen for click
         e.stopPropagation();                                     // Prevent clicking the floor under it
         
-        if (typeof hasSatchel === 'function' && !hasSatchel()) { // Verify they own a satchel
+        if (typeof loadData === 'function' && !loadData('collectedItems', []).includes('satchel')) { // Verify they own a satchel
             if (typeof showTemporaryMessage === 'function') showTemporaryMessage("You need a Satchel to pick up heavy ingots!");
         } else {
             addIngot(type, quality);                             // Save to data API
