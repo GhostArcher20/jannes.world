@@ -13,14 +13,13 @@ const XP_REWARDS = {
 };
 
 // ==================== CORE XP FUNCTIONS ====================
+// AFTER
 function getExpPoint() {
-    const xp = localStorage.getItem('expPoint');
-    return xp ? parseInt(xp) : 0;
+    return loadData('expPoint', 0); // Handles the null check automatically using the loadData function in load-sidebars.js
 }
-
 function saveExpPoint(xp) {
-    localStorage.setItem('expPoint', xp);
-    displayExpPoint();                     // update UI after saving
+    saveData('expPoint', xp);       // saveData from load-sidebars.js
+    displayExpPoint();
 }
 
 function addExpPoint(amount) {
@@ -49,10 +48,14 @@ function displayExpPoint() {
 }
 
 // Helper to calculate total XP needed to reach a given level
+//function totalXpForLevel(level) {
+//    let total = 0;
+//    for (let i = 0; i < level; i++) total += xpForLevel(i);
+//    return total;
+//}
 function totalXpForLevel(level) {
-    let total = 0;
-    for (let i = 0; i < level; i++) total += xpForLevel(i);
-    return total;
+    // Mathematical sum of an arithmetic progression, No matter what level they are, this solves in 1 millisecond.
+    return 50 * level * (level + 1); 
 }
 
 // ==================== LEVEL SCALING ====================

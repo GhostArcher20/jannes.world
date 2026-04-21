@@ -23,7 +23,6 @@ const BLACKSMITH_RECIPES = {                                     // Central data
 };
 
 // --- RENDER BLACKSMITH MENU ---
-// Generates the buttons dynamically so you never have to hardcode HTML text again!
 function renderBlacksmithMenu() {
     const menuContainer = document.getElementById('blacksmithMenu'); // Find the empty container in the HTML
     if (!menuContainer) return;                                  // Abort if the player isn't on the blacksmith page
@@ -32,25 +31,16 @@ function renderBlacksmithMenu() {
 
     // Loop through every recipe in your database
     for (const [recipeId, recipe] of Object.entries(BLACKSMITH_RECIPES)) {
-        
-        // Capitalize the ore type for the button text (e.g., 'iron' -> 'Iron')
         const capitalizedType = recipe.cost.type.charAt(0).toUpperCase() + recipe.cost.type.slice(1);
         
-        // Create the physical button element
-        const btn = document.createElement('button');
-        btn.className = 'ui-button';                             // Apply your CSS styling
-        
-        // Dynamically inject the recipe variables into the button text!
-        btn.textContent = `Forge ${recipe.name} (Requires ${recipe.cost.amount} ${capitalizedType})`;
-        
-        // Attach the click event, passing the specific recipeId to the Modal function
-        btn.onclick = () => openSmithyUI(recipeId);
-        
-        // Add the finished button to the webpage
-        menuContainer.appendChild(btn);
+        // Create the button in plain HTML, and attach the onclick using the recipeId
+        menuContainer.innerHTML += `
+            <button class="ui-button" onclick="openSmithyUI('${recipeId}')">
+                Forge ${recipe.name} (Requires ${recipe.cost.amount} ${capitalizedType})
+            </button>
+        `;
     }
 }
-
 
 // --- MODAL STATE TRACKING ---
 let currentRecipe = null;                                        // Remembers which recipe the player clicked
