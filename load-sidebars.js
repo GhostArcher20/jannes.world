@@ -3,12 +3,21 @@ function loadData(key, defaultTemplate) {
     const stored = localStorage.getItem(key);
     if (!stored) return defaultTemplate;
     
-    // If returning an object/array, merge it with the template for future-proofing
-    const parsed = JSON.parse(stored);
-    if (typeof defaultTemplate === 'object' && !Array.isArray(defaultTemplate)) {
-        return { ...defaultTemplate, ...parsed };
+    try {
+        // Try to translate it as a complex object/array
+        const parsed = JSON.parse(stored);
+        
+        // Merge objects to protect against future updates
+        if (typeof defaultTemplate === 'object' && !Array.isArray(defaultTemplate)) {
+            return { ...defaultTemplate, ...parsed };
+        }
+        return parsed;
+        
+    } catch (error) {
+        // SAFETY NET: If it crashes (because it's a plain word like "index.html"),
+        // just return the raw text!
+        return stored;
     }
-    return parsed;
 }
 
 function saveData(key, data) {
