@@ -521,16 +521,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ONLY save the location if we are NOT looking at the map!
     if (currentPage !== 'map.html' && currentPage !== '') {
-        // Save current location
-        localStorage.setItem('currentLocation', currentPage);
         
-        // Pull the history from memory, or start a blank array
-        let visitedPages = JSON.parse(localStorage.getItem('visitedPages') || '[]');
+        // 1. Save current location using the new manager
+        saveData('currentLocation', currentPage);
         
-        // If this page isn't in our history yet, add it and save the book!
+        // 2. Pull the history from memory using the new manager
+        let visitedPages = loadData('visitedPages', []);
+        
+        // 3. If this page isn't in our history yet, add it and save the book!
         if (!visitedPages.includes(currentPage)) {
             visitedPages.push(currentPage);
-            localStorage.setItem('visitedPages', JSON.stringify(visitedPages));
+            saveData('visitedPages', visitedPages);
         }
     }
 

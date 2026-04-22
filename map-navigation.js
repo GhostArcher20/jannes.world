@@ -21,12 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function applyFogOfWar() {
-    // Grab data from the browser memory
-    const visitedStr = localStorage.getItem('visitedPages') || '[]';
-    const visitedPages = JSON.parse(visitedStr);
-    
-    // Grab where the player is currently standing
-    const currentLocation = localStorage.getItem('currentLocation') || 'index.html'; 
+    // 1. Grab data using your new universal manager!
+    const visitedPages = loadData('visitedPages', []);
+    const currentLocation = loadData('currentLocation', 'index.html');
     
     // Hook up the "Go Back" link above the map
     const goBackLink = document.getElementById('goBackLink');
