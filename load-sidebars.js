@@ -516,29 +516,33 @@ function initArrowNavigation() {
 
 // ==================== STARTUP ====================
 document.addEventListener('DOMContentLoaded', () => {
-    // Grab the current file name
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    // 1. Grab the raw path (e.g., "/", "/market", or "/market/")
+    let path = window.location.pathname;
+    
+    // 2. Chop off the trailing slash if Cloudflare added one
+    if (path.endsWith('/')) {
+        path = path.slice(0, -1);
+    }
+    
+    // 3. Extract the clean word, strip .html, and default to 'index'
+    let currentId = path.split('/').pop().replace('.html', '') || 'index';
     
     // ONLY save the location if we are NOT looking at the map!
-    if (currentPage !== 'map.html' && currentPage !== '') {
+    if (currentId !== 'map') {
         
-        // 1. Save current location using the new manager
-        saveData('currentLocation', currentPage);
+        saveData('currentLocation', currentId);
         
-        // 2. Pull the history from memory using the new manager
         let visitedPages = loadData('visitedPages', []);
+        if (!Array.isArray(visitedPages)) visitedPages = []; // Safety net
         
-        // 3. If this page isn't in our history yet, add it and save the book!
-        if (!visitedPages.includes(currentPage)) {
-            visitedPages.push(currentPage);
+        if (!visitedPages.includes(currentId)) {
+            visitedPages.push(currentId);
             saveData('visitedPages', visitedPages);
         }
     }
 
     loadSidebar('left-sidebar', 'sidebar_left.html')
-      .then(() => {
-          initBlinkieStrip();
-      });
+      .then(() => { initBlinkieStrip(); });
       
     loadSidebar('right-sidebar', 'sidebar_right.html')
       .then(() => {
