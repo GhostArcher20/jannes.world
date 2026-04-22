@@ -21,64 +21,56 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function applyFogOfWar() {
-    // 1. Grab data using your new universal manager!
-    const visitedPages = loadData('visitedPages', []);
-    const currentLocation = loadData('currentLocation', 'index.html');
+    // 1. Grab our clean IDs from memory (default to 'index' instead of 'index.html')
+    const visitedIds = loadData('visitedPages', []);
+    const currentId = loadData('currentLocation', 'index');
     
-    // Hook up the "Go Back" link above the map
+    // Hook up the "Go Back" link
     const goBackLink = document.getElementById('goBackLink');
     if (goBackLink) {
-        goBackLink.href = currentLocation;
+        // We add the .html back JUST for the clickable link
+        goBackLink.href = `${currentId}.html`; 
     }
 
     // Loop through every pin on the map
     document.querySelectorAll('.map-pin').forEach(pin => {
-        const pinHref = pin.getAttribute('data-href');
+        // We now rely purely on the data-id for our logic!
         const pinId = pin.getAttribute('data-id');
+        
+        // We still need the target URL for the actual teleportation link
+        const pinHref = pin.getAttribute('data-href') || `${pinId}.html`; 
 
-        // Figure out the file name this pin represents
-        let targetFile = pinHref ? pinHref : `${pinId}.html`; 
+        pin.className = 'map-pin'; // Reset classes
 
-        // Reset classes to default before applying colors
-        pin.className = 'map-pin';
-
-        // 1. CURRENT LOCATION (Green)
-        if (currentLocation === targetFile) {
+        // 1. CURRENT LOCATION (Compare IDs directly!)
+        if (currentId === pinId) {
             pin.classList.add('pin-current');
             
             pin.onclick = (e) => {
                 e.stopPropagation();
-                // If it's a normal location (not one with a sub menu)
-                if (pinHref) {
+                if (pin.hasAttribute('data-href')) { // Standard location
                     if (typeof showTemporaryMessage === 'function') showTemporaryMessage("You are already here.");
-                } else {
-                    // If it's a Menu Pin (like the Office), open the menu
+                } else { // Office Menu
                     toggleOfficeMenu(e, pin);
                 }
             };
             
-        // 2. VISITED LOCATION (Orange)
-        } else if (visitedPages.includes(targetFile)) {
+        // 2. VISITED LOCATION (Compare IDs directly!)
+        } else if (visitedIds.includes(pinId)) {
             pin.classList.add('pin-visited');
             
             pin.onclick = (e) => {
                 e.stopPropagation();
-                
-                // If it's a normal location (not one with a sub menu)
-                if (pinHref) {
+                if (pin.hasAttribute('data-href')) {
                     pin.style.pointerEvents = 'none'; 
                     if (typeof showTemporaryMessage === 'function') showTemporaryMessage("You will be transported momentarily...");
-                    
-                    setTimeout(() => {
-                        window.location.href = pinHref;
-                    }, 3000);
+                    setTimeout(() => { window.location.href = pinHref; }, 3000);
                 } else {
-                    // If it's a Menu Pin, open the menu
                     toggleOfficeMenu(e, pin);
                 }
             };
 
-        // 3. UNVISITED LOCATION (Gray)
+        // 3. UNVISITED LOCATION
         } else {
             pin.classList.add('pin-unvisited');
             
