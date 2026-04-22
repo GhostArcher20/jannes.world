@@ -1,5 +1,4 @@
 // ==================== MAP LOGIC & FOG OF WAR ====================
-
 // 1. Define the Map Connections (Kept for future use if needed)
 const MAP_GRAPH = {
     'index.html': ['castle_gate.html', 'notice_board.html', 'campfire.html', 'mine.html', 'tavern.html', 'market.html', 'blacksmith.html' ],
@@ -21,10 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function applyFogOfWar() {
-    // 1. Grab data using your new universal manager!
-    const visitedPages = loadData('visitedPages', []);
-    const currentLocation = loadData('currentLocation', 'index.html');
-    
+    // Grab data from the browser memory
+    const visitedStr = localStorage.getItem('visitedPages') || '[]';
+    const visitedPages = JSON.parse(visitedStr);
+
+    // Grab where the player is currently standing
+    const currentLocation = localStorage.getItem('currentLocation') || 'index.html';
+
     // Hook up the "Go Back" link above the map
     const goBackLink = document.getElementById('goBackLink');
     if (goBackLink) {
@@ -37,7 +39,7 @@ function applyFogOfWar() {
         const pinId = pin.getAttribute('data-id');
 
         // Figure out the file name this pin represents
-        let targetFile = pinHref ? pinHref : `${pinId}.html`; 
+        let targetFile = pinHref ? pinHref : `${pinId}.html`;
 
         // Reset classes to default before applying colors
         pin.className = 'map-pin';
@@ -45,7 +47,7 @@ function applyFogOfWar() {
         // 1. CURRENT LOCATION (Green)
         if (currentLocation === targetFile) {
             pin.classList.add('pin-current');
-            
+
             pin.onclick = (e) => {
                 e.stopPropagation();
                 // If it's a normal location (not one with a sub menu)
@@ -56,19 +58,19 @@ function applyFogOfWar() {
                     toggleOfficeMenu(e, pin);
                 }
             };
-            
-        // 2. VISITED LOCATION (Orange)
+
+            // 2. VISITED LOCATION (Orange)
         } else if (visitedPages.includes(targetFile)) {
             pin.classList.add('pin-visited');
-            
+
             pin.onclick = (e) => {
                 e.stopPropagation();
-                
+
                 // If it's a normal location (not one with a sub menu)
                 if (pinHref) {
-                    pin.style.pointerEvents = 'none'; 
+                    pin.style.pointerEvents = 'none';
                     if (typeof showTemporaryMessage === 'function') showTemporaryMessage("You will be transported momentarily...");
-                    
+
                     setTimeout(() => {
                         window.location.href = pinHref;
                     }, 3000);
@@ -78,10 +80,10 @@ function applyFogOfWar() {
                 }
             };
 
-        // 3. UNVISITED LOCATION (Gray)
+            // 3. UNVISITED LOCATION (Gray)
         } else {
             pin.classList.add('pin-unvisited');
-            
+
             pin.onclick = (e) => {
                 e.stopPropagation();
                 if (typeof showTemporaryMessage === 'function') {
