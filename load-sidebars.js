@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Extract the clean word, strip .html, and default to 'index'
     let currentId = path.split('/').pop().replace('.html', '') || 'index';
     
-    // ONLY save the location if we are NOT looking at the map!
+    // ONLY save the location if we are NOT looking at the map
     if (currentId !== 'map') {
         
         saveData('currentLocation', currentId);

@@ -28,7 +28,7 @@ function applyFogOfWar() {
     // Hook up the "Go Back" link
     const goBackLink = document.getElementById('goBackLink');
     if (goBackLink) {
-        // We add the .html back JUST for the clickable link. If index, use root to keep it clean!
+        // We add the .html back JUST for the clickable link. If index, use root to keep it clean
         goBackLink.href = currentId === 'index' ? '/' : `${currentId}.html`; 
     }
 
