@@ -107,7 +107,7 @@ function applyFogOfWar() {
                                 showTemporaryMessage(`You will arrive in approximately ${roundedSeconds} second${roundedSeconds === 1 ? '' : 's'}...`);
                             }
                         }
-                    setTimeout(() => { window.location.href = pinHref; }, travelTime);
+                        setTimeout(() => { window.location.href = pinHref; }, travelTime);
 
                 } else {
                     toggleOfficeMenu(e, pin);
