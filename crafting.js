@@ -53,7 +53,7 @@ function openSmithyUI(recipeId) {
 
     selectedIngots = [];                                         // Reset selections from previous crafting attempts
 
-    const satchel = loadSatchelData();                           // Load player's inventory
+    const satchel = loadData('satchelData', DEFAULT_SATCHEL);    // Load player's inventory
     const requiredType = currentRecipe.cost.type;                // What ore type do we need? (e.g., 'iron')
     const requiredAmount = currentRecipe.cost.amount;            // How many do we need? (e.g., 3)
     const playerIngots = satchel.ingots[requiredType] || [];     // Grab the player's ingots of this exact type (or empty array)
@@ -125,7 +125,7 @@ function closeSmithyUI() {
 function executeCrafting() {
     if (!currentRecipe || selectedIngots.length !== currentRecipe.cost.amount) return; // Final safety check
 
-    let satchel = loadSatchelData();                             // Load inventory
+    let satchel = loadData('satchelData', DEFAULT_SATCHEL);      // Load inventory
     const requiredType = currentRecipe.cost.type;                // Get ore type
     
     // CRITICAL: Sort indices descending (Highest index to Lowest index). 
@@ -145,7 +145,7 @@ function executeCrafting() {
     const avgQuality = Math.floor(totalQuality / currentRecipe.cost.amount);
 
     // Save the updated inventory (the spent ingots are now permanently gone)
-    saveSatchelData(satchel);
+    saveData('satchelData', satchel);
     if (typeof renderSatchel === 'function') renderSatchel();    // Update sidebar UI
 
     // Create the final Equipment Object
@@ -164,3 +164,9 @@ function executeCrafting() {
     
     closeSmithyUI();                                             // Close the modal
 }
+
+// --- STARTUP ---
+// Draw the dynamic buttons as soon as the page loads!
+document.addEventListener('DOMContentLoaded', () => {
+    renderBlacksmithMenu();
+});
