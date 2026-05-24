@@ -32,11 +32,11 @@ const BLACKSMITH_RECIPES = {                                     // Central data
         slot: 'offHand',
         cost: { type: 'tin', amount: 1 }                // change this
     },
-    'copper_compass': {
-        id: 'copper_compass', 
-        name: 'Copper Compass',
+    'iron_compass': {
+        id: 'iron_compass', 
+        name: 'Iron Compass',
         slot: 'offHand',
-        cost: { type: 'copper', amount: 1 }                // change this
+        cost: { type: 'iron', amount: 1 }                // change this
     }
 };
 
