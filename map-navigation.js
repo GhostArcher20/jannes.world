@@ -1,6 +1,5 @@
 // ==================== MAP LOGIC & FOG OF WAR ====================
-
-// 1. Define the Map Connections (Kept for future use if needed)
+// Define the Map Connections (Kept for future use if needed)
 const MAP_GRAPH = {
     'index.html': ['castle_gate.html', 'notice_board.html', 'campfire.html', 'mine.html', 'tavern.html', 'market.html', 'blacksmith.html' ],
     'castle_gate.html': ['castle_hallway.html', 'castle_garden.html', 'notice_board.html', 'index.html', 'blacksmith.html'],
@@ -16,12 +15,41 @@ const MAP_GRAPH = {
     'smeltery.html': ['blacksmith.html', 'market.html']
 };
 
+// --- TRAVEL CONFIGURATION ---
+const BASE_TRAVEL_TIME_MS = 3000;
+
+// Databank for gear that speeds up fast travel
+const TRAVEL_MODIFIERS = {
+    'boots_of_the_traveller': { timeReduction: 500 }, // Shaves 0.5 seconds off travel time
+    'true_compass': { timeReduction: 500 }    // Shaves 0.5 seconds off travel time
+    'iron_compass': {timeReduction: 250 }       // 0.25ec
+};
+
+
 document.addEventListener('DOMContentLoaded', () => {
     applyFogOfWar();
 });
 
+function calculateTravelTime() {
+    let finalTime = BASE_TRAVEL_TIME_MS;
+    
+    // 1. Check what the player is wearing
+    const equipment = loadData('playerEquipment', {}); 
+    
+    // 2. Loop through their equipped items
+    Object.values(equipment).forEach(item => {
+        // If the item exists and is in our dictionary then:
+        if (item && item.id && TRAVEL_MODIFIERS[item.id]) {
+            // Subtract its specific time from the timer
+            finalTime -= TRAVEL_MODIFIERS[item.id].timeReduction; 
+        }
+    });
+    // 3. Don't let travel time go below 0
+    return Math.max(0, finalTime); 
+}
+
 function applyFogOfWar() {
-    // 1. Grab our clean IDs from memory (default to 'index' instead of 'index.html')
+    // 1. Grab clean IDs from memory (default to 'index' instead of 'index.html')
     const visitedIds = loadData('visitedPages', []);
     const currentId = loadData('currentLocation', 'index');
     
@@ -34,7 +62,7 @@ function applyFogOfWar() {
 
     // Loop through every pin on the map
     document.querySelectorAll('.map-pin').forEach(pin => {
-        // We now rely purely on the data-id for our logic!
+        // We now rely purely on the data-id for     logic
         const pinId = pin.getAttribute('data-id');
         
         // We still need the target URL for the actual teleportation link
@@ -63,6 +91,20 @@ function applyFogOfWar() {
                 e.stopPropagation();
                 if (pin.hasAttribute('data-href')) {
                     pin.style.pointerEvents = 'none'; 
+
+                    const travelTime = calculateTravelTime();
+
+                    if (typeof showTemporaryMessage === 'function') {
+                        // message is dynamic
+                        // Divide by 1000 to turn milliseconds into seconds
+                            let roundedSeconds = Math.round(travelTime / 1000);
+                            
+                            // Inject it into the message! (added a plural check for 'second' vs 'seconds')
+                            showTemporaryMessage(`You will arrive in approximately ${roundedSeconds} second${roundedSeconds === 1 ? '' : 's'}...`);
+                        }
+                    }
+                    setTimeout(() => { window.location.href = pinHref; }, travelTime);
+
                     if (typeof showTemporaryMessage === 'function') showTemporaryMessage("You will be transported momentarily...");
                     setTimeout(() => { window.location.href = pinHref; }, 3000);
                 } else {
