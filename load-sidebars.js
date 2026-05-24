@@ -45,7 +45,7 @@ const itemDatabase = {
     compass:  { name:'Compass ',  desc:'Points to hidden treasures',    img:'../assets/compass.png' },
     map:      { name:'Map ',      desc:'Unlocks the minimap',           img:'../assets/map-item.png' },
     backpack: { name:'Backpack ', desc:'Allows you to carry items',     img:'../assets/backpack.png' },
-    pickaxe:  { name:'Pickaxe ',  desc:'Used to mine ores',			   img:'../assets/pickaxe.png' },
+    pickaxe:  { name:'Pickaxe ',  desc:'Used to mine ores',			    img:'../assets/pickaxe.png' },
     satchel:  { name:'Satchel ',  desc:'Holds heavy ores and ingots',   img:'../assets/satchel.png' }
 };
 

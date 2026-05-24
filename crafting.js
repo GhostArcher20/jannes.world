@@ -19,6 +19,24 @@ const BLACKSMITH_RECIPES = {                                     // Central data
         name: 'Ring of Forgiveness',
         slot: 'ring',
         cost: { type: 'tin', amount: 3 } 
+    },
+    'boots_of_the_traveller': {
+        id: 'boots_of_the_traveller', 
+        name: 'Boots of the Traveller',
+        slot: 'boots',
+        cost: { type: 'copper', amount: 1 }             // change this 
+    },
+    'true_compass': {
+        id: 'true_compass', 
+        name: 'True Compass',
+        slot: 'offHand',
+        cost: { type: 'tin', amount: 1 }                // change this
+    },
+    'copper_compass': {
+        id: 'copper_compass', 
+        name: 'Copper Compass',
+        slot: 'offHand',
+        cost: { type: 'copper', amount: 1 }                // change this
     }
 };
 

@@ -21,7 +21,7 @@ const BASE_TRAVEL_TIME_MS = 3000;
 // Databank for gear that speeds up fast travel
 const TRAVEL_MODIFIERS = {
     'boots_of_the_traveller': { timeReduction: 500 }, // Shaves 0.5 seconds off travel time
-    'true_compass': { timeReduction: 500 }    // Shaves 0.5 seconds off travel time
+    'true_compass': { timeReduction: 500 },    // Shaves 0.5 seconds off travel time
     'iron_compass': {timeReduction: 250 }       // 0.25ec
 };
 
@@ -99,14 +99,16 @@ function applyFogOfWar() {
                         // Divide by 1000 to turn milliseconds into seconds
                             let roundedSeconds = Math.round(travelTime / 1000);
                             
-                            // Inject it into the message! (added a plural check for 'second' vs 'seconds')
-                            showTemporaryMessage(`You will arrive in approximately ${roundedSeconds} second${roundedSeconds === 1 ? '' : 's'}...`);
+                            // Inject it into the message (added a plural check for 'second' vs 'seconds')
+                            // if value is small enough, it won't say "0 seconds"
+                            if (roundedSeconds === 0) {
+                                showTemporaryMessage("You will arrive in less than a second...");
+                            } else {
+                                showTemporaryMessage(`You will arrive in approximately ${roundedSeconds} second${roundedSeconds === 1 ? '' : 's'}...`);
+                            }
                         }
-                    }
                     setTimeout(() => { window.location.href = pinHref; }, travelTime);
 
-                    if (typeof showTemporaryMessage === 'function') showTemporaryMessage("You will be transported momentarily...");
-                    setTimeout(() => { window.location.href = pinHref; }, 3000);
                 } else {
                     toggleOfficeMenu(e, pin);
                 }
