@@ -13,9 +13,9 @@ let domain = "jannesworld.nekoweb.org/"; // <<<--- Insert your domain here!
     if (document.getElementById("created"))
       document.getElementById("created").innerHTML =
         `created: ${created}`;
-    if (document.getElementById("updated"))
-      document.getElementById("updated").innerHTML =
-        `updated: ${updated}`;
+    // if (document.getElementById("updated"))
+    //   document.getElementById("updated").innerHTML =
+    //     `updated: ${updated}`;
     if (document.getElementById("visitors"))
       document.getElementById("visitors").innerHTML =
         `visits: ${json.views}`;
