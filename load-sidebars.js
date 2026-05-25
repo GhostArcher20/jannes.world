@@ -270,6 +270,55 @@ function equipItem(slot, gearItem) {
     }
 }
 
+// ======== SAFE EQUIPMENT HANDLER ========
+let pendingEquip = null; // Memory variable to hold the item while the player decides
+
+function promptEquipItem(slot, newGear) {
+    let data = loadData('playerEquipment', DEFAULT_EQUIPMENT);
+    // 1. If the slot is empty, equip it immediately!
+    if (!data[slot]) {
+        equipItem(slot, newGear);
+        showTemporaryMessage(`Equipped the ${newGear.name}!`);
+        return;
+    }
+
+    // 2. If the slot is occupied, remember the new gear and show the HTML modal
+    pendingEquip = { slot: slot, newGear: newGear };
+    const existingItem = data[slot];
+    // Inject the names into the HTML
+    document.getElementById('existingGearText').textContent = `[ ${existingItem.name} ]`;
+    document.getElementById('newGearText').textContent = `[ ${newGear.name} ]?`;
+
+    // Unhide the modal
+    document.getElementById('equipWarningModal').classList.remove('hidden');
+}
+
+// 3. Button Click Listeners (Attach these once when the sidebar loads)
+function initEquipModalListeners() {
+    const cancelBtn = document.getElementById('cancelEquipBtn');
+    const confirmBtn = document.getElementById('confirmEquipBtn');
+    const modal = document.getElementById('equipWarningModal');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            pendingEquip = null; // Wipe memory
+            showTemporaryMessage("You kept your original equipment.");
+        });
+    }
+
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            if (pendingEquip) {
+                equipItem(pendingEquip.slot, pendingEquip.newGear);
+                showTemporaryMessage(`Replaced old gear with ${pendingEquip.newGear.name}!`);
+                pendingEquip = null; // Wipe memory
+            }
+            modal.classList.add('hidden');
+        });
+    }
+}
+
+
 // ======== HIDE ALREADY COLLECTED ITEMS ========
 function hideCollectedItems() {
     const collected = loadData('collectedItems', []);

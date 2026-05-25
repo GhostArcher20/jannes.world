@@ -1,5 +1,8 @@
 /* found this font on https://puppy-l0ve.nekoweb.org/ */
 @font-face {font-family: 'pixel';src: url(https://dl.dropbox.com/s/kmhe7d3n18vdz5e/w95fa.woff?dl=0);} 
+
+
+/* ============================== COLOR VARIABLES ===== */
 :root {
 	--dark-green: #1e3b23;
     --light-green: #acc9a7;
@@ -20,6 +23,7 @@
     --gray: #4B4543;
     --light-gray: #68615C;
 }
+/* ============================== GLOBAL STYLES ===== */
 body {
     background-color: var(--dark-brown); /*  brown base color */
     background-size: cover;               /* background image covers entire page */
@@ -67,18 +71,16 @@ a:hover {
     z-index: 20;                           
     pointer-events: none;
 }
-
 .tooltipcontainer:hover .tooltip {
     visibility: visible;                   /* show on hover */
 }
 
 
-/* =============== THREE-COLUMN LAYOUT ===== */
+/* ============================== THREE-COLUMN LAYOUT ===== */
 .container {					/* Use container only for when making different flex columns, for the content of a div, use content*/
     display: flex;
     height: 100vh;                          /* full viewport height for columns */
 }
-
 /* =============== LEFT SIDEBAR ===== */
 .left-sidebar {
     width: 220px;
@@ -86,7 +88,7 @@ a:hover {
     padding: 18px 18px 5px 18px;
     border-right: 2px solid gold;           /* gold separator */
 }
-/* Left sidebar menu */
+/* ======= Left sidebar menu */
 .sidebar-menu {
     list-style: none;
     padding: 0;
@@ -117,7 +119,7 @@ a:hover {
 	/* -webkit-backdrop-filter: grayscale(100%); */ /* doesn't work with image I guess */
 }
 
-/* ====== blinkies strip */
+/* ======= blinkies strip */
 .blinkie-strip-container {
 	position: relative;        /* anchor for absolute positioning */
 	display: flex;
@@ -125,8 +127,6 @@ a:hover {
 	gap: 0.5rem;
 	margin-top: 15px;
 }
-
-
 .strip-toggle {
 	flex-shrink: 0;
 	z-index: 31; /* Keeps button above the sliding strip */
@@ -137,7 +137,6 @@ a:hover {
 	border-radius: 4px;
 	padding: 2px 5px;
 }
-
 .strip-content {
 	position: absolute;        /* taken out of normal flow */
 	left: 0;
@@ -155,12 +154,10 @@ a:hover {
 	white-space: nowrap; /* Keeps blinkies on one line */
 	transition: max-width 0.4s ease;
 }
-
 .strip-content.open {
   max-height: 50px;
   border: 1px inset var(--gray);
 }
-
 .strip-inner {
   display: flex;
   flex-direction: row;
@@ -230,7 +227,7 @@ a:hover {
     transform: translateX(-150px) translateY(-180px);		   /* moves it to the left and up*/
 }
 
-/* === INVENTORY SYSTEM STYLES ===== */
+/* =============== INVENTORY SYSTEM STYLES ===== */
 /* Temporary popup message (e.g. when trying to pick up without backpack) */
 .temp-message {
     position: fixed;
@@ -328,6 +325,21 @@ a:hover {
 /* "grid-row: 1 / 3" tells the grid to start at row 1 and span down to row 3 */
 .equipment-part.mainhand { grid-column: 1; grid-row: 2 ; } 
 .equipment-part.offhand  { grid-column: 1; grid-row: 3 ; }
+
+/* ======== equipment modal Overlay ======== */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-overlay.hidden {
+    display: none;
+}
+
 
 /* ---- inventory ---- */
 .sidebar-inventory {
@@ -550,7 +562,17 @@ a:hover {
     transition: .3s ease;
 }
 
-
+/* ======== Smithy Window ======== */
+.smithy-window {
+    background-image: var(--motherload);
+    border: 3px solid var(--light-gray);
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 5px 5px 15px black;
+    color: white;
+    text-align: center;
+}
 
 
 

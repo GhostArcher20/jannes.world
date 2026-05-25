@@ -29,7 +29,7 @@
       <img src="minimap.png" alt="minimap" style="width: 100%; height: auto; max-width: 230px; display: block;"/> 
     </div>
   </a>
-  <span class="tooltip" style="top=">Your minimap, click to enlarge.</span>
+  <span class="tooltip">Your minimap, click to enlarge.</span>
 </div>
 
 <!-- =============== Inventory sections  =============== -->
@@ -47,6 +47,23 @@
     <div class="equipment-part potion plain-slot" data-slot="potion">Potion</div>
     <div class="equipment-part feet plain-slot" data-slot="boots">Boots</div>
   </div>
+</div>
+
+<!-- replace equipment warning modal -->
+<div id="equipWarningModal" class="modal-overlay hidden">
+    <div class="smithy-window" style="z-index: 1001;">
+        <h3 style="color: #ffaa00; margin-top: 0;">Slot Occupied!</h3>
+        <p style="font-size: 14px;">You are currently wearing:</p>
+        <p id="existingGearText" style="color: #acc9a7; font-weight: bold;">[ Old Gear ]</p>
+        
+        <p style="font-size: 14px; margin-top: 15px;">Replace it with:</p>
+        <p id="newGearText" style="color: gold; font-weight: bold;">[ New Gear ]?</p>
+        
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+            <button id="cancelEquipBtn" class="ui-button danger">Keep Old</button>
+            <button id="confirmEquipBtn" class="ui-button success">Replace</button>
+        </div>
+    </div>
 </div>
 
 
