@@ -61,12 +61,27 @@ function startMiningMinigame() {
     minigameContainer = document.querySelector('.' + MINIGAME_CONTAINER_CLASS); 
     if (!minigameContainer) return;              // Abort if screen is missing
     
+    // --- SMART PICKAXE CHECK ---
+    // Safely load both the equipment dictionary and the inventory array
+    const equipment = typeof loadData === 'function' ? loadData('playerEquipment', { mainHand: null }) : { mainHand: null };
     const inventory = typeof loadData === 'function' ? loadData('collectedItems', []) : [];
-    if (!inventory.includes('pickaxe')) {        // Verify tool requirement
-        if (typeof showTemporaryMessage === 'function') {
-            showTemporaryMessage(`You need a pickaxe to start mining!`); 
+
+    // 1. Check if a pickaxe is currently physically equipped in the mainHand slot
+    const hasEquippedPickaxe = equipment.mainHand && equipment.mainHand.id === 'pickaxe';
+
+    if (!hasEquippedPickaxe) {
+        // 2. If it's NOT equipped, check if it's hiding in their backpack
+        if (inventory.includes('pickaxe')) {
+            if (typeof showTemporaryMessage === 'function') {
+                showTemporaryMessage("You have a pickaxe in your backpack, but you need to equip it to your Mainhand first!");
+            }
+        } else {
+            // 3. They don't own it at all
+            if (typeof showTemporaryMessage === 'function') {
+                showTemporaryMessage("You need to find a pickaxe before you can mine ores.");
+            }
         }
-        return;                                  // Abort without tool
+        return; // CRITICAL: This kills the function so the minigame doesn't start!
     }
     
     minigameActive = true;                       // Enable interactions

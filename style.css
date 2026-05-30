@@ -1,600 +1,465 @@
+/*
+1. Setup & Variables: Fonts, :root colors.
+2. Base HTML Tags: body, a.
+3. Utility Classes: Tiny, reusable helpers (.hidden, .text-gold, .mb-5).
+4. Main Layouts: The 3-column grid (.container, .left-sidebar, .main-content, .right-sidebar).
+5. Global Components: Tooltips, Buttons.
+6. Specific Modules: Left Sidebar items (Blinkies), Right Sidebar items (XP, Minimap).
+7. The Game Engine (Inventory & Crafting): Slots, Equipment Grid, Satchel.
+8. Modals & Overlays: Pop-ups, Context Menus, Debug Console.
+9. D-PAD NAVIGATION BOX
+*/
+
+/* ============================== 1. SETUP & VARIABLES ============================== */
 /* found this font on https://puppy-l0ve.nekoweb.org/ */
-@font-face {font-family: 'pixel';src: url(https://dl.dropbox.com/s/kmhe7d3n18vdz5e/w95fa.woff?dl=0);} 
+@font-face {
+    font-family: 'pixel';
+    src: url(https://dl.dropbox.com/s/kmhe7d3n18vdz5e/w95fa.woff?dl=0);
+} 
 
-
-/* ============================== COLOR VARIABLES ===== */
 :root {
-	--dark-green: #1e3b23;
+    /* Base Earth Theme */
+    --dark-green: #1e3b23;
     --light-green: #acc9a7;
     --green: #12db1f;
-    
     --dark-brown: #452c06;
     --light-brown: #7d5d2d;
     --light-beige: #f0e6d2;
-    
     --dark-blue: #0d2252;
-    
     --gold: #ffd700;
     --white: white;
     --off-white: #d6d6d2;
     --black: black;
+    
+    /* Core Grays */
     --dark-gray: #191411;
     --darkish-gray: #221B17;
     --gray: #4B4543;
     --light-gray: #68615C;
-}
-/* ============================== GLOBAL STYLES ===== */
-body {
-    background-color: var(--dark-brown); /*  brown base color */
-    background-size: cover;               /* background image covers entire page */
-    background-repeat: no-repeat;         /* no tiling */
-    background-position: center;          /* center the image */
-    background-attachment: fixed;         /* image stays fixed on scroll */
-    color: white;
-    /* text-shadow: 0.1em 0.1em 2px black;       /* gives text depth:  text-shadow: h-shadow v-shadow blur-radius color*/
-    font-family: 'pixel', calibri, verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    height: 100vh;                        /* full viewport height */
+
+    /* Merged UI Grays */
+    --ui-gray-light: #ccc;
+    --ui-gray-medium: #888;
+    --ui-gray-dark: #555;
+    --ui-gray-darker: #333;
+
+    /* Semantic Accents */
+    --accent-blue: #3db8ff;
+    --danger-red: #ff4444;
+    --danger-red-hover: #cc0000;
+    --xp-green: #8aff8a;
+    --hacker-green: #00ff00;
+    --crimson-dark: #1a0206;
+    --gold-transparent: rgba(255, 215, 0, 0.2);
+    
     --motherload: url('../assets/motherload_edited.png');
 }
 
-/* =============== LINKS ===== */
-a {
-    color: gold;                          
-    font-weight: bold;
-    text-shadow: 1px 1px 2px black;       /* subtle shadow for readability */
-    text-decoration: none;                 /* no underline when not hovered  */
-}
-a:hover {
-    text-decoration: underline;            /* underline on hover for clarity */
+/* ============================== 2. BASE HTML Elements ============================== */
+body {
+    background-color: var(--dark-brown);
+    background-size: cover;               
+    background-repeat: no-repeat;         
+    background-position: center;          
+    background-attachment: fixed;         
+    color: var(--white);
+    font-family: 'pixel', calibri, verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;                        
 }
 
-/* =============== TOOLTIP ===== */
+a {
+    color: var(--gold);                                  
+    font-weight: bold;
+    text-shadow: 1px 1px 2px var(--black);       
+    text-decoration: none;                
+}
+a:hover {
+    text-decoration: underline;            
+}
+
+/* ============================== 3. UTILITY & HELPER CLASSES ============================== */
+/* Text Colors */
+.text-white { color: var(--white); }
+.text-blue { color: var(--accent-blue); }
+.text-gray { color: var(--light-gray); }
+.text-green { color: var(--green); }
+.text-gold { color: var(--gold); }
+
+/* Alignment & Spacing */
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-center { display: flex; align-items: center; }
+.text-left { text-align: left; }
+.center-text { text-align: center; margin: 0; }
+.mb-5 { margin-bottom: 5px; }
+
+/* Visibility & Interaction */
+.hidden { display: none !important; }
+.ghost-icon { pointer-events: none; }
+
+/* Global Buttons */
+.btn-reset { 
+    width: 100%; background: var(--danger-red); color: var(--white); 
+    border: none; border-radius: 5px; cursor: pointer; 
+    font-size: 10px; padding: 5px; margin: 0; 
+}
+.btn-reset:hover { background: var(--danger-red-hover); }
+
+/* Custom Scrollbars */
+.custom-scroll-area {
+    max-height: 80px; 
+    overflow-y: auto; 
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding-right: 4px; 
+}
+.custom-scroll-area::-webkit-scrollbar { width: 4px; }
+.custom-scroll-area::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll-area::-webkit-scrollbar-thumb { background: var(--ui-gray-medium); border-radius: 2px; }
+
+/* ============================== 4. MAIN PAGE LAYOUT (3-Column) ============================== */
+.container {                    
+    display: flex;
+    height: 100vh;                          
+}
+
+.left-sidebar {
+    width: 220px;
+    background-image: var(--motherload); 
+    padding: 18px 18px 5px 18px;
+    border-right: 2px solid var(--gold);          
+    box-sizing: border-box;
+}
+
+.main-content {
+    padding: 20px;  
+    overflow-y: auto;                          
+    display: flex;
+    flex: 1;                                    
+    justify-content: flex-start;                
+    align-items: flex-start;
+}
+
+.right-sidebar {
+    width: 220px;
+    background-image: var(--motherload);        
+    padding: 18px;
+    border-left: 2px solid var(--gold);                
+    box-sizing: border-box;
+}
+
+/* ============================== 5. GLOBAL COMPONENTS ============================== */
+/* --- Tooltips --- */
 .tooltipcontainer {
     flex: 1;
-    justify-content: center;               /* centers horizontally (flex context) */
-    align-items: center;                   			/* centers vertically */
+    justify-content: center;               
+    align-items: center;                            
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted var(--dark-gray);     /* visual cue that it's hoverable */
+    border-bottom: 1px dotted var(--dark-gray);     
 }
 .tooltip {
-    visibility: hidden;                    /* hidden until hover */
+    visibility: hidden;                    
     width: 160px;
     padding: 5px 5px;
     background-color: var(--dark-gray);
-    color: white;
+    color: var(--white);
     text-align: center;
     border-radius: 6px;
-    position: absolute;                    /* positioned relative to .tooltipcontainer */
+    position: absolute;                    
     z-index: 20;                           
     pointer-events: none;
 }
-.tooltipcontainer:hover .tooltip {
-    visibility: visible;                   /* show on hover */
-}
-/* =============== Inventory Context Menu ======== */
-.context-menu {
-    position: absolute;
-    background-image: var(--motherload);
-    background-color: #222;
-    border: 2px outset var(--light-gray);
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    z-index: 2000;
-    box-shadow: 3px 3px 10px black;
-    color: white;
-    border-radius: 4px;
-    min-width: 150px;
-}
-.context-menu.hidden {
-    display: none;
-}
+.tooltipcontainer:hover .tooltip { visibility: visible; }
 
-/* ============================== THREE-COLUMN LAYOUT ===== */
-.container {					/* Use container only for when making different flex columns, for the content of a div, use content*/
-    display: flex;
-    height: 100vh;                          /* full viewport height for columns */
-}
-/* =============== LEFT SIDEBAR ===== */
-.left-sidebar {
-    width: 220px;
-    background-image: var(--motherload); /* textured background */
-    padding: 18px 18px 5px 18px;
-    border-right: 2px solid gold;           /* gold separator */
-}
-/* ======= Left sidebar menu */
+/* ============================== 6. LEFT SIDEBAR MODULES ============================== */
+/* Menu Links */
 .sidebar-menu {
     list-style: none;
     padding: 0;
     margin: 0;
-    position: absolute;               /* positioned relative to nearest positioned ancestor (should be relative to .left-sidebar?) */
-    bottom: 300px;                    /* distance from bottom – may need adjustment */
+    position: absolute;               
+    bottom: 300px;                    
 }
-.left-sidebar,
-.left-sidebar * {
-    box-sizing: border-box;
-}
-.sidebar-menu li {
-    margin-bottom: 3px;
-}
+.sidebar-menu li { margin-bottom: 3px; }
 .sidebar-menu a {
     display: block;
     padding: 3px 8px;
-    background-image: url('../assets/menu-sidebar-background.png'); 			/* wooden background: ; */
+    background-image: url('../assets/menu-sidebar-background.png');            
     max-width: 160px;
     border: 2px solid var(--dark-gray);
-    box-shadow: 3px 3px rgba(0, 0, 0, 0.3); /* subtle 3D effect */
+    box-shadow: 3px 3px rgba(0, 0, 0, 0.3); 
     transition: 0.3s;
 }
 .sidebar-menu a:hover {
-	box-shadow: 3px 3px black; /* subtle 3D effect */
-	transform: scale(105%);
-	transition: 0.3s;
-	/* -webkit-backdrop-filter: grayscale(100%); */ /* doesn't work with image I guess */
+    box-shadow: 3px 3px var(--black); 
+    transform: scale(105%);
 }
 
-/* ======= blinkies strip */
+/* Blinkie Strip */
 .blinkie-strip-container {
-	position: relative;        /* anchor for absolute positioning */
-	display: flex;
-	align-items: center; /* Align button and strip vertically */
-	gap: 0.5rem;
-	margin-top: 15px;
+    position: relative;        
+    display: flex;
+    align-items: center; 
+    gap: 0.5rem;
+    margin-top: 15px;
 }
 .strip-toggle {
-	flex-shrink: 0;
-	z-index: 31; /* Keeps button above the sliding strip */
-	cursor: pointer;
-	background: var(--dark-gray);
-	color: gold;
-	border: 1px solid gold;
-	border-radius: 4px;
-	padding: 2px 5px;
+    flex-shrink: 0;
+    z-index: 31; 
+    cursor: pointer;
+    background: var(--dark-gray);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 2px 5px;
 }
 .strip-content {
-	position: absolute;        /* taken out of normal flow */
-	left: 0;
-	top: 100%;                 /* sits directly below the toggle button */
-	width: auto;               /* width determined by content */
-	min-width: 200px;     
-	max-width: 60vw;           
-	overflow-x: auto;
-	overflow-y: hidden;
-	max-height: 0;
-	background: var(--darkish-gray);
-	z-index: 30;
-	box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
-	border-radius: 4px;
-	white-space: nowrap; /* Keeps blinkies on one line */
-	transition: max-width 0.4s ease;
+    position: absolute;        
+    left: 0; top: 100%;                
+    width: auto; min-width: 200px; max-width: 60vw;          
+    overflow-x: auto; overflow-y: hidden;
+    max-height: 0;
+    background: var(--darkish-gray);
+    z-index: 30;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    white-space: nowrap; 
+    transition: max-width 0.4s ease;
 }
-.strip-content.open {
-  max-height: 50px;
-  border: 1px inset var(--gray);
-}
-.strip-inner {
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
-  align-items: center;
-  padding: 5px;
-  height: 40px;
-}
+.strip-content.open { max-height: 50px; border: 1px inset var(--gray); }
+.strip-content.open .strip-toggle { margin-left: auto; }
+.strip-inner { display: flex; flex-direction: row; gap: 4px; align-items: center; padding: 5px; height: 40px; }
+.blinkie-item { display: block; }
 
-.blinkie-item {
-  display: block;
-}
+/* Chatbox */
+.sidebar-chatbox { position: absolute; bottom: 5px; padding-bottom: 5px; }
 
-/* When strip is expanded, push the toggle button to the far right */
-.strip-content.open .strip-toggle {
-  margin-left: auto;
-}
-/* ======== Chatbox inside left sidebar */
-.sidebar-chatbox {
-    position: absolute;
-    bottom: 5px;
-    padding-bottom: 5px;
-}
-
-/* =============== MAIN CONTENT AREA ===== */
-.main-content {
-    padding: 20px;	
-    overflow-y: auto;                        	/* scroll if content overflows */
-    display: flex;
-    flex: 1;                                	/* takes remaining space */
-    justify-content: flex-start;             	/* align children to start */
-    align-items: flex-start;
-}
-
-/* =============== RIGHT SIDEBAR ===== */
-.right-sidebar {
-    width: 220px;
-    background-image: var(--motherload); 		/* same texture as left */
-    padding: 18px;
-    border-left: 2px solid gold;            	/* gold separator */
-}
-.right-sidebar,
+/* ============================== 7. RIGHT SIDEBAR MODULES (Non-Inventory) ============================== */
+/* Fixes the padding/border math for everything inside the sidebar */
 .right-sidebar * {
     box-sizing: border-box;
 }
-/* xp bar container (e.g., for XP) */
+/* XP Bar */
 .xpbar-container {
     position: relative;
-    width: 100%;
-    height: 10px;
+    width: 100%; height: 10px;
     background: var(--dark-gray);
-    border-radius: 5px;
-    margin-top: 5px;
+    border-radius: 5px; margin-top: 5px;
+}
+.xpbar-container:hover .tooltip { visibility: visible; transform: translateX(-150px); }
+.xp-header-text { font-size: 14px; margin-right: 3px; }
+.xp-header-val { font-size: 14px; font-weight: bold; }
+.xp-icon { height: 16px; width: auto; margin-left: 5px; }
+.xp-tooltip-text { padding: 5px 10px; }
+.xp-notification { 
+    position: absolute; top: -20px; left: 50%; transform: translateX(-50%); 
+    background: rgba(0,0,0,0.8); color: var(--xp-green); padding: 2px 8px; border-radius: 5px; 
+    font-size: 12px; font-weight: bold; opacity: 0; transition: opacity 0.2s; pointer-events: none; 
 }
 
-.xpbar-container:hover .tooltip {
-    visibility: visible;
-    transform: translateX(-150px);		   /* moves it to the left */
+/* Minimap */
+.minimap-container:hover .tooltip { visibility: visible; transform: translateX(-150px) translateY(-180px); }
+.minimap-img { width: 100%; height: auto; max-width: 230px; display: block; }
+
+/* Daily Tip */
+.daily-tip { font-size: 15px; text-align: center; margin-top: 10px; opacity: 0.8; }
+
+/* Updates Box */
+.updates {
+    font-size: 13px;
+    background-image: linear-gradient(to bottom, var(--black), var(--crimson-dark)); 
+    width: 19%; height: 22%; color: var(--white); float: right;
+    border: 1px solid var(--dark-blue);                  
+    border-radius: 3px; padding: 5px; margin: 5px;
+    overflow-x: hidden; overflow-y: scroll;
+    border-width: 8px; border-style: solid;
+    animation: fade-in 1.2s ease-in 0.6s both;   
 }
 
-.minimap-container {
-	
+/* ============================== 8. GAME ENGINE: INVENTORY & EQUIPMENT ============================== */
+/* Main Containers */
+.inventory-container { margin-bottom: 5px; transition: opacity 0.5s ease, filter 0.5s ease; }
+.inventory-container.locked { opacity: 0.3; filter: grayscale(100%); pointer-events: none; }
+.sidebar-inventory {
+    background-image: url('../assets/inventory.png');
+    display: flex; flex-wrap: wrap; gap: 5px; 
+    min-height: 65px; border-style: inset; border-width: 5px; 
+    border-color: var(--light-gray); padding: 5px;
+    left: -10px; overflow: visible;
 }
 
-.minimap-container:hover .tooltip {
-    visibility: visible;
-    transform: translateX(-150px) translateY(-180px);		   /* moves it to the left and up*/
+/* Base Slots */
+.inventory-slot {
+    width: 31%; height: auto;
+    border: 0px solid transparent; border-radius: 8px;
+    background: var(--light-beige);
+    display: flex; align-items: center; justify-content: center;
+    cursor: help; position: relative;
+}
+.inventory-slot img { max-width: 80%; max-height: 80%; }
+.inventory-slot:hover .tooltip { visibility: visible; transform: translateX(-100px); }
+.equipped-slot:hover .tooltip { 
+    visibility: visible; 
+    transform: translateX(-110px) translateY(-20px); 
+    z-index: 50; 
 }
 
-/* =============== INVENTORY SYSTEM STYLES ===== */
-/* Temporary popup message (e.g. when trying to pick up without backpack) */
-.temp-message {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.5);
-    color: white;
-    padding: 20px 30px;
-    border-radius: 10px;
-    font-size: 18px;
-    z-index: 100;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    border: 2px solid gold;
-    text-align: center;
-}
-
-/* Inventory wrapper to handle unlocking animations */
-.inventory-container {
-    margin-bottom: 5px;
-    transition: opacity 0.5s ease, filter 0.5s ease;
-}
-
-/* The faded out, locked state */
-.inventory-container.locked {
-    opacity: 0.3;
-    filter: grayscale(100%);
-    pointer-events: none; /* Prevents interaction while locked */
-}
-
-/* box style for inventory slots */
 .plain-slot {
-    border: 2px solid var(--gray);
-    border-radius: 4px;
-    background: var(--darkish-gray);
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box; /* Forces padding/borders to stay inside the box */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--light-gray);
-    font-size: 7px; /* Shrunk text to prevent grid breaking */
-    line-height: 1;
-    text-align: center;
-    text-transform: uppercase;
-    overflow: hidden; /* Hides text if it accidentally escapes the box */
-    word-wrap: break-word;
-    margin: 0; /* Margins removed; the grid gap handles spacing now! */
+    border: 2px solid var(--gray); border-radius: 4px;
+    background: var(--darkish-gray); width: 100%; height: 100%;
+    box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+    color: var(--light-gray); font-size: 7px; line-height: 1; text-align: center;
+    text-transform: uppercase; overflow: hidden; word-wrap: break-word; margin: 0; 
 }
-
-/* Styling for when an item is actually equipped */
 .equipped-slot {
-    border: 2px solid gold;
-    border-radius: 4px;
-    background: var(--dark-brown);
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-align: center;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
-    margin: 0;
+    border: 2px solid var(--gold); border-radius: 4px;
+    background: var(--dark-brown); width: 100%; height: 100%;
+    box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--white); text-align: center; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); margin: 0;
 }
 
-/* --- Strict Equipment Layout --- */
+/* Equipment Grid & Parts */
 .equipment-grid {
-    display: grid;
-    /* Forces 3 exact columns of 40px */
+    display: grid; justify-content: center; gap: 4px; margin-top: 0px;
     grid-template-columns: 50px 50px 50px; 
-    /* Forces 4 exact rows of 40px */
     grid-template-rows: 50px 50px 50px 50px; 
-    justify-content: center;
-    gap: 4px;
-    margin-top: 0px;
 }
-
-/* Center Column: The Body */
 .equipment-part.head     { grid-column: 2; grid-row: 1; }
 .equipment-part.torso    { grid-column: 2; grid-row: 2; }
 .equipment-part.legs     { grid-column: 2; grid-row: 3; }
 .equipment-part.feet     { grid-column: 2; grid-row: 4; }
-
-/* Right Column: Accessories */
 .equipment-part.neck     { grid-column: 3; grid-row: 1; }
 .equipment-part.hand     { grid-column: 3; grid-row: 2; }
 .equipment-part.finger   { grid-column: 3; grid-row: 3; }
 .equipment-part.potion   { grid-column: 3; grid-row: 4; }
-
-/* Left Column: Tall Weapons & Shields */
-/* "grid-row: 1 / 3" tells the grid to start at row 1 and span down to row 3 */
 .equipment-part.mainhand { grid-column: 1; grid-row: 2 ; } 
 .equipment-part.offhand  { grid-column: 1; grid-row: 3 ; }
 
-/* ======== equipment modal Overlay ======== */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-.modal-overlay.hidden {
-    display: none;
-}
+.equip-icon { width: 32px; height: auto; pointer-events: none; }
+.equip-name { font-size: 10px; pointer-events: none; }
 
+/* Text Formatters for Gear */
+.quality-text { color: var(--gold); font-weight: bold; }
+.ingot-percent { font-weight: bold; margin: 0 3px; }
 
-/* ---- inventory ---- */
-.sidebar-inventory {
-    background-image: url('../assets/inventory.png');
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 5px; 
-    min-height: 65px; 
-    border-style: inset; 
-    border-width: 5px; 
-    border-color: var(--light-gray); 
-    padding: 5px;
-    left: -10px;
-    overflow: visible;
-}
-/* Individual inventory slot (holds item image) */
-.inventory-slot {
-    width: 31%;								/* a bit less than a third to account for margins */
-    height: auto;
-    border: 0px solid transparent;
-    border-radius: 8px;
-    background: var(--light-beige);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: help;							/* indicates tooltip on hover */
-    position: relative;
-}
-.inventory-slot img {
-    max-width: 80%;
-    max-height: 80%;
-}
-.inventory-slot:hover .tooltip {
-    visibility: visible;
-    transform: translateX(-100px);
-}
+/* Collectibles on the Map */
+.collectible { transition: .3s ease; filter: drop-shadow(0px 0px 30px rgba(0,0,0,0.8)); }
+.collectible:hover { filter: drop-shadow(0px 0px 30px var(--gold)); transform: scale(105%); }
 
-/* Collectible items on pages – subtle glow */
-.collectible {
-    transition: .3s ease;
-    filter: drop-shadow(0px 0px 30px #222);    /* soft shadow */
-}
-.collectible:hover {
-    filter: drop-shadow(0px 0px 30px gold); /* gold glow on hover */
-    transform: scale(105%);
-}
+/* Satchel Module */
+.satchel-wrapper { position: relative; }
+.inventory-satchel { cursor: pointer; text-align: center; margin: 5px auto; }
+.satchel-slot-large { height: 50px; }
+.satchel-icon:hover .tooltip { visibility: visible; transform: translateX(-100px) translateY(-60px); z-index: 20; }
 
-/* --- Satchel Toggle Styles --- */
-.inventory-satchel {
-    cursor: pointer;
-    text-align: center;
-    margin: 5px auto;
-}
-/* empty class, only for hovering tooltip 
-	.satchel-icon {
-	
-}
-*/
-.satchel-icon:hover .tooltip {
-	visibility: visible;
-	transform: translateX(-100px) translateY(-60px);
-	z-index: 20;
-}
-/* ======== Floating Satchel Pop-up ======== */
 .satchel-popup {
-    position: absolute;
-    right: 101%; 				/* This pushes the pop-up out to the left of the sidebar! */
-    top: 0;
-    margin-right: 15px; 
-    min-width: 200px;
-    background-image: var(--motherload);
-    border: 2px solid gold;
-    border-radius: 8px;
-    padding: 5px 10px 10px 10px;
-    z-index: 10;
+    position: absolute; right: 101%; top: 0; margin-right: 15px; 
+    min-width: 200px; background-image: var(--motherload);
+    border: 2px solid var(--gold); border-radius: 8px; padding: 5px 10px 10px 10px; z-index: 10;
 }
-.satchel-popup.hidden {
-    display: none;
-}
-
-/* Sub-inventory behavior (initially hidden) */
-.sub-inventory.hidden {
-    display: none;
-}
-
-/* Badge for stacked items in the satchel */
+.satchel-popup.hidden { display: none; }
+.sub-inventory.hidden { display: none; }
 .quantity-badge {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    background-color: var(--off-white);
-    color: var(--dark-gray);
-    padding: 0 1px;
-    border-radius: 2px;
-    font-size: 10px;
-    font-weight: bold;
-    pointer-events: none; /* So it doesn't block the tooltip hover */
+    position: absolute; bottom: 0px; right: 0px;
+    background-color: var(--off-white); color: var(--dark-gray);
+    padding: 0 1px; border-radius: 2px; font-size: 10px; font-weight: bold; pointer-events: none; 
 }
 
-
-/* ===== daily loading screen tip */
-.daily-tip {
-	font-size: 15px; 
-	text-align: center; 
-	margin-top: 10px; 
-	opacity: 0.8;
-}
-
-
-/* ===== PERSONAL UPDATES BOX ===== */
-.updates {
-    font-size: 13px;
-    background-image: linear-gradient(to bottom, black, #1a0206); /* dark gradient */
-    width: 19%;
-    height: 22%;
-    color: white;
-    float: right;
-    border: 1px solid var(--dark-blue);                  /* deep blue border */
-    border-radius: 3px;
-    padding: 5px;
-    margin: 5px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    border-width: 8px;
-    border-style: solid;
-    /* border-image: url(/main/border.png) 8 fill round; /* custom decorative border */
-    animation: fade-in 1.2s ease-in 0.6s both;   /* fade-in animation (keyframes not shown) */
-}
-
-/* =============== Navigation box styling =============== */
+/* ============================== OTHER ============================== */
+/* =============== 9. D-PAD NAVIGATION BOX ============== */
 .navigation-box {
-    position: fixed;
-    bottom: 10px;
-    width: 185px;
-    height: 160px;
-    background: var(--dark-brown);
-    border: 2px solid gold;
-    padding: 5px;
-    overflow: visible;
-    margin-top: 10px;
-    box-sizing: border-box;
-    text-align: center; /* optional: centers the "Navigation" text */
+    position: fixed; bottom: 10px; width: 185px; height: 160px;
+    background: var(--dark-brown); border: 2px solid var(--gold); padding: 5px;
+    overflow: visible; margin-top: 10px; box-sizing: border-box; text-align: center; 
 }
-.navigation-box-title {
-	cursor: default; /* for all cursors: w3schools.com/cssref/playit.php?filename=playcss_cursor&preval=alias */
-}
-.navigation-box-title:hover .tooltip {
-	visibility: visible;
-	transform: translateX(-230px) translateY(-20px);
-}
+.navigation-box-title { cursor: default; }
+.navigation-box-title:hover .tooltip { visibility: visible; transform: translateX(-230px) translateY(-20px); }
 
-/* Reset arrow styles inside the box */
-.navigation-box .arrow-up,
-.navigation-box .arrow-upright,
-.navigation-box .arrow-right,
-.navigation-box .arrow-downright,
-.navigation-box .arrow-down,
-.navigation-box .arrow-downleft,
-.navigation-box .arrow-left,
-.navigation-box .arrow-upleft {
-    position: absolute;
-    width: 50px;          /* smaller arrows to fit in the box */
-    height: auto;
-    /* clear any inherited positioning */
-    top: auto;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    transform: none;
+/* Arrow Positioning */
+.navigation-box .arrow-up, .navigation-box .arrow-upright, .navigation-box .arrow-right,
+.navigation-box .arrow-downright, .navigation-box .arrow-down, .navigation-box .arrow-downleft,
+.navigation-box .arrow-left, .navigation-box .arrow-upleft {
+    position: absolute; width: 50px; height: auto;
+    top: auto; left: auto; right: auto; bottom: auto; transform: none;
 }
+.navigation-box img { width: 100%; height: auto; }
 
-/* Make images fill the container */
-.navigation-box .arrow-up img,
-.navigation-box .arrow-upright img,
-.navigation-box .arrow-right img,
-.navigation-box .arrow-downright img,
-.navigation-box .arrow-down img,
-.navigation-box .arrow-downleft img,
-.navigation-box .arrow-left img,
-.navigation-box .arrow-upleft img {
-    width: 100%;
-    height: auto;
-}
-
-/* Position each arrow */
 .navigation-box .arrow-up { top: 25px; left: 65px; }
 .navigation-box .arrow-upright { top: 25px; right: 23px; }
-.navigation-box .arrow-right {
-    top: 68px;
-    right: 15px;
-}
-.navigation-box .arrow-downright {
-    bottom: 2px;
-    right: 23px;
-}
-.navigation-box .arrow-down {
-    bottom: 2px;
-    left: 65px;
-}
-.navigation-box .arrow-downleft {
-    bottom: 2px;
-    left: 23px;
-}
-.navigation-box .arrow-left {
-    top: 68px;
-    left: 15px;
-}
-.navigation-box .arrow-upleft {
-    top: 25px;
-    left: 23px;
-}
+.navigation-box .arrow-right { top: 68px; right: 15px; }
+.navigation-box .arrow-downright { bottom: 2px; right: 23px; }
+.navigation-box .arrow-down { bottom: 2px; left: 65px; }
+.navigation-box .arrow-downleft { bottom: 2px; left: 23px; }
+.navigation-box .arrow-left { top: 68px; left: 15px; }
+.navigation-box .arrow-upleft { top: 25px; left: 23px; }
 
-/* making the arrow glow green but not the tooltip */
-.navigation-box a:hover .tooltip {
-    visibility: visible;
-    transform: translateX(-200px);		   /* moves it to the left */
-}
-.navigation-box a:hover img {
-    filter: drop-shadow(0px 0px 20px var(--green));
-    transition: .3s ease;
-}
+/* Arrow Hover Effects */
+.navigation-box a:hover .tooltip { visibility: visible; transform: translateX(-200px); }
+.navigation-box a:hover img { filter: drop-shadow(0px 0px 20px var(--green)); transition: .3s ease; }
 
-/* ======== Smithy Window ======== */
+/* =============== 10. MODALS, MENUS & OVERLAYS ============== */
+/* Inventory Context Menu */
+.context-menu {
+    position: absolute; background-image: var(--motherload);
+    border: 2px outset var(--light-gray); padding: 10px; display: flex; flex-direction: column;
+    gap: 5px; z-index: 10; box-shadow: 3px 3px 10px var(--black); color: var(--white); border-radius: 4px; min-width: 150px;
+}
+.context-menu.hidden { display: none; }
+.context-header { font-weight: bold; border-bottom: 1px solid var(--gray); padding-bottom: 5px; color: var(--gold); }
+.context-subheader { font-size: 12px; color: var(--ui-gray-light); }
+.menu-scroll-area { background: rgba(0,0,0,0.5); padding: 5px; border-radius: 4px; margin-bottom: 10px; max-width: 150px; max-height: 40px; }
+
+/* Smithy Crafting Window */
 .smithy-window {
-    background-image: var(--motherload);
-    border: 3px solid var(--light-gray);
-    border-radius: 8px;
-    padding: 20px;
-    width: 300px;
-    box-shadow: 5px 5px 15px black;
-    color: white;
-    text-align: center;
+    background-image: var(--motherload); border: 3px solid var(--light-gray); border-radius: 8px;
+    padding: 20px; width: 300px; box-shadow: 5px 5px 15px var(--black); color: var(--white); text-align: center;
+}
+.smithy-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 10px;
+    max-height: 200px; overflow-y: auto; padding: 10px; background: rgba(0, 0, 0, 0.4);
+    border: 1px inset var(--ui-gray-dark); border-radius: 4px;
+}
+.smithy-grid::-webkit-scrollbar { width: 8px; }
+.smithy-grid::-webkit-scrollbar-track { background: var(--darkish-gray); border-radius: 4px; }
+.smithy-grid::-webkit-scrollbar-thumb { background: var(--light-gray); border-radius: 4px; }
+.smithy-grid::-webkit-scrollbar-thumb:hover { background: var(--ui-gray-medium); }
+
+.selectable-ingot {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: var(--ui-gray-darker); border: 2px solid var(--ui-gray-dark); border-radius: 5px; padding: 5px;
+    cursor: pointer; transition: all 0.2s;
+}
+.selectable-ingot:hover { border-color: var(--ui-gray-medium); background: var(--gray); }
+.selectable-ingot.selected { border-color: var(--gold); background: var(--gold-transparent); box-shadow: 0 0 8px var(--gold); }
+.selectable-ingot img { width: 32px; height: 32px; pointer-events: none; }
+.ingot-quality-badge { font-size: 11px; font-weight: bold; margin-top: 4px; text-shadow: 1px 1px 0 var(--black); pointer-events: none; }
+
+/* Pop-up Modals (Background Overlay) */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000;
+}
+.modal-overlay.hidden { display: none; }
+
+/* Temporary Message Pop-up */
+.temp-message {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.5); color: var(--white); padding: 20px 30px; border-radius: 10px;
+    font-size: 18px; z-index: 100; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 2px solid var(--gold); text-align: center;
 }
 
-
-
-
+/* Developer Console */
+.debug-panel {
+    position: fixed; bottom: 20px; left: 20px; background: rgba(0, 0, 0, 0.9);
+    border: 2px solid var(--hacker-green); padding: 15px; border-radius: 5px; z-index: 9999; 
+    display: flex; flex-direction: column; font-family: monospace;
+}
+.debug-panel.hidden { display: none; }
+.debug-title { margin: 0 0 10px 0; color: var(--hacker-green); }
+.debug-btn-spaced { margin-top: 10px; }
 
 
 

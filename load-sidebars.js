@@ -109,13 +109,14 @@ function initSatchelInteraction() {
 
 // ======== MINIMAP VISIBILITY ========
 function updateMinimapVisibility() {
-    const minimapContainer = document.getElementById('minimapContainer'); // Find the minimap wrapper in the HTML
-    if (minimapContainer) {                                               // Safety check: only run if the container exists
-        const items = loadData('collectedItems', []);                               // Grab the player's inventory array
-        // Ternary operator: If inventory has 'map', set display to 'block' (visible). Otherwise, set to 'none' (hidden).
-        minimapContainer.style.display = items.includes('map') ? 'block' : 'none';
+    const minimapContainer = document.getElementById('minimapContainer');   // Find the minimap wrapper in the HTML
+    if (minimapContainer) {                                                 // Safety check: only run if the container exists
+        const items = loadData('collectedItems', []);                       // Grab the player's inventory array     
+        // Ternary operator: If inventory has 'map', set display to 'block' (visible). Otherwise, set to 'none' (hidden). 
+        minimapContainer.classList.toggle('hidden', !items.includes('map'));
     }
 }
+
 
 // ======== TEMPORARY POP-UP MESSAGE ========
 function showTemporaryMessage(text, duration = 5000) {					  // duration defaults to 5000ms (5 seconds) if not specified.
@@ -138,34 +139,40 @@ function renderInventory() {
     if (!container) return;
     container.innerHTML = ''; 
 
-    // 1. Draw Base Items (Map, Compass, Pickaxe)
+    // 1. Draw Base Items
     const items = loadData('collectedItems', []);
     items.forEach(id => {
-        if (id === 'backpack' || id === 'satchel') return;
-        const item = itemDatabase[id];
+        if (id === 'backpack' || id === 'satchel' || id === 'map') return; // These items have their own special sections, so we skip them here
+        const item = itemDatabase[id]; 
         if (!item) return;
 
         const div = document.createElement('div');
         div.className = 'inventory-slot';
         div.style.cursor = 'pointer';
-        div.innerHTML = `<img src="${item.img}" alt="${item.name}" style="pointer-events: none;">`;
+        
+        div.innerHTML = `
+            <img src="${item.img}" alt="${item.name}" class="ghost-icon">
+            <div class="tooltip">${item.name}: ${item.desc}</div>
+        `;
 
-        // Click to open menu!
         div.onclick = (e) => {
-            // Reformat base item to look like gear for the engine
-            const itemData = { id: id, name: item.name, icon: item.img, slot: item.slot, desc: item.desc };
+            const itemData = { id: id, name: item.name, icon: item.img, slot: item.slot, desc: item.desc }; // We pass the slot info here for auto-equip purposes, even if it's undefined for most items
             openContextMenu(e, 'base_item', id, itemData);
         };
         container.appendChild(div);
     });
 
-    // 2. Draw Crafted Gear (Swords, Helmets) stored in the new 'unequippedGear' array
+    // 2. Draw Crafted Gear
     const gearArray = loadData('unequippedGear', []);
     gearArray.forEach((gear, index) => {
         const div = document.createElement('div');
         div.className = 'inventory-slot';
         div.style.cursor = 'pointer';
-        div.innerHTML = `<img src="../assets/${gear.icon}" alt="${gear.name}" style="pointer-events: none;">`;
+        
+        div.innerHTML = `
+            <img src="../assets/${gear.icon}" alt="${gear.name}" class="ghost-icon">
+            <div class="tooltip">${gear.name} <br> <span class="quality-text">Quality: ${gear.quality}%</span></div>
+        `;
 
         div.onclick = (e) => {
             openContextMenu(e, 'crafted_gear', index, gear);
@@ -182,67 +189,75 @@ function renderEquipment() {
         if (!slotElement) continue; 
         
         if (gear) { 
+            let tooltipHTML = gear.quality 
+                ? `${gear.name} <br> <span class="quality-text">Quality: ${gear.quality}%</span>` 
+                : `${gear.name}: ${gear.desc}`;
+
             slotElement.innerHTML = `
-                <img src="${gear.icon.includes('/') ? gear.icon : '../assets/' + gear.icon}" style="width:32px; height:auto; pointer-events:none;">
-                <span style="font-size:10px; pointer-events:none;">${gear.name}</span>
+                <img src="${gear.icon.includes('/') ? gear.icon : '../assets/' + gear.icon}" class="equip-icon">
+                <span class="equip-name">${gear.name}</span>
+                <div class="tooltip">${tooltipHTML}</div>
             `; 
+            
             slotElement.classList.remove('plain-slot'); 
             slotElement.classList.add('equipped-slot');
             slotElement.style.cursor = 'pointer';
-
-            // Click an equipped item to open the menu!
             slotElement.onclick = (e) => openContextMenu(e, 'equipped', slot, gear);
         } else {
             slotElement.innerHTML = slot.charAt(0).toUpperCase() + slot.slice(1); 
             slotElement.classList.add('plain-slot'); 
             slotElement.classList.remove('equipped-slot'); 
             slotElement.style.cursor = 'default';
-            slotElement.onclick = null; // Remove click event if empty
+            slotElement.onclick = null; 
         }
     }
 }
 
 // ==================== INVENTORY CONTEXT MENU ====================
-let currentContext = null; // Memory for what item we are currently interacting with
-
 function openContextMenu(event, itemType, locator, itemData) {
     event.stopPropagation();
     currentContext = { type: itemType, locator: locator, data: itemData };
 
     let menu = document.getElementById('itemContextMenu');
     if (!menu) {
-        // Automatically build the HTML if it doesn't exist yet
         menu = document.createElement('div');
         menu.id = 'itemContextMenu';
         menu.className = 'context-menu hidden';
         document.body.appendChild(menu);
     }
 
-    // Determine what Button 1 should do based on where the item currently is
-    let btn1HTML = '';
-    if (itemType === 'equipped') {
-        btn1HTML = `<button class="ui-button" onclick="actionUnequip()">Put in Inventory</button>`;
+    let innerHTML = `<div class="context-header">${itemData.name}</div>`;
+    if (itemType === 'satchel_ingot') {
+        innerHTML += `
+            <div class="context-subheader">Contained Qualities:</div>
+            <div class="custom-scroll-area menu-scroll-area">
+                ${itemData.qualitiesHTML}
+            </div>
+        `;
     } else {
-        // If it's in the inventory, check if it is actually equippable!
-        if (itemData.slot) {
-            btn1HTML = `<button class="ui-button success" onclick="actionEquip()">Equip Item</button>`;
+        if (itemType === 'equipped') {
+            innerHTML += `<button class="ui-button" onclick="actionUnequip(event)">Put in Inventory</button>`;
         } else {
-            btn1HTML = `<button class="ui-button" disabled>Cannot Equip</button>`;
+            if (itemData.slot) {
+                innerHTML += `<button class="ui-button success" onclick="actionEquip(event)">Equip Item</button>`;
+            } else {
+                innerHTML += `<button class="ui-button" disabled>Cannot Equip</button>`;
+            }
         }
+        innerHTML += `<button class="ui-button" onclick="actionInfo(event)">More Information</button>`;
+        innerHTML += `<button class="ui-button danger" onclick="actionDiscard(event)">Discard Item</button>`;
     }
 
-    // Inject the buttons
-    menu.innerHTML = `
-        <div style="font-weight: bold; border-bottom: 1px solid gray; margin-bottom: 5px; padding-bottom: 5px; color: gold;">${itemData.name}</div>
-        ${btn1HTML}
-        <button class="ui-button" onclick="actionInfo()">More Information</button>
-        <button class="ui-button danger" onclick="actionDiscard()">Discard Item</button>
-    `;
-
-    // Position the menu exactly at the mouse cursor
-    menu.style.left = `${event.pageX + 10}px`;
-    menu.style.top = `${event.pageY + 10}px`;
+    menu.innerHTML = innerHTML;
     menu.classList.remove('hidden');
+
+    const clickedSlot = event.currentTarget; 
+    const rect = clickedSlot.getBoundingClientRect();
+
+    menu.style.top = `${rect.bottom + window.scrollY}px`;
+    
+    let calculatedLeft = rect.left + window.scrollX - menu.offsetWidth;
+    menu.style.left = `${calculatedLeft}px`;
 }
 
 // Hide the menu if the player clicks anywhere else on the screen
@@ -359,14 +374,12 @@ function renderSatchel() {
     if (!container) return;
 
     const data = loadData('satchelData', DEFAULT_SATCHEL);
-    container.innerHTML = '';       // Wipe old contents off the screen
+    container.innerHTML = '';      
 
     // 1. Draw Ores
     Object.entries(data.ores).forEach(([type, count]) => {
         if (count > 0) {
             const displayName = type.charAt(0).toUpperCase() + type.slice(1);
-            
-            // Inject the HTML directly!
             container.innerHTML += `
                 <div class="inventory-slot">
                     <img src="../assets/${type}_ore.png" alt="${type} ore">
@@ -377,31 +390,39 @@ function renderSatchel() {
         }
     });
 
-    // 2. Draw Ingots (Stacked with custom quality tooltips)
+    // 2. Draw Ingots (Clickable for Context Menu)
     Object.entries(data.ingots).forEach(([type, ingotArray]) => {
         if (ingotArray.length > 0) {
             const displayName = type.charAt(0).toUpperCase() + type.slice(1);
             
-            // First, calculate the colorful quality percentages for the tooltip
             let qualitySpans = '';
             ingotArray.forEach(ingot => {
                 let q = ingot.quality;
-                // A quick "ternary operator" to decide the color in one line!
                 let color = q >= 101 ? '#d000ff' : `hsl(${Math.floor((q / 100) * 120)}, 100%, 50%)`;
-                qualitySpans += `<span style="color: ${color}; font-weight:bold; margin: 0 2px;">${q}%</span>`;
+                qualitySpans += `<span class="ingot-percent" style="color: ${color};">${q}%</span>`;
             });
 
-            // Now, inject the entire ingot slot!
-            container.innerHTML += `
-                <div class="inventory-slot">
-                    <img src="../assets/${type}_ingot.png" alt="${type} ingot">
-                    <div class="quantity-badge">${ingotArray.length}</div>
-                    <div class="tooltip">
-                        <div style="margin-bottom:3px; border-bottom:1px solid #777;">${displayName} Ingot(s)</div>
-                        ${qualitySpans}
-                    </div>
+            const div = document.createElement('div');
+            div.className = 'inventory-slot';
+            div.style.cursor = 'pointer';
+            
+            div.innerHTML = `
+                <img src="../assets/${type}_ingot.png" alt="${type} ingot" class="ghost-icon">
+                <div class="quantity-badge">${ingotArray.length}</div>
+                <div class="tooltip" onclick="event.stopPropagation()">
+                    ${displayName} Ingot(s)
                 </div>
             `;
+
+            div.onclick = (e) => {
+                const itemData = { 
+                    name: `${displayName} Ingots`, 
+                    qualitiesHTML: qualitySpans 
+                };
+                openContextMenu(e, 'satchel_ingot', type, itemData);
+            };
+
+            container.appendChild(div);
         }
     });
 }
@@ -662,6 +683,66 @@ function resetAllItems() {
     location.reload();
 }
 
+// ==================== DEVELOPER DEBUG TOOLS ====================
+function initDebugMenu() {
+    const debugPanel = document.createElement('div');
+    debugPanel.id = 'debugPanel';
+    debugPanel.className = 'debug-panel hidden';
+    
+    debugPanel.innerHTML = `
+        <h4 class="debug-title">🛠️ DEV CONSOLE</h4>
+        <button class="ui-button" onclick="debugGiveEverything()">God Mode (Items + Mats)</button>
+        <button class="ui-button danger debug-btn-spaced" onclick="resetAllItems()">Wipe Save File</button>
+    `;
+    document.body.appendChild(debugPanel);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === '²') { 
+            debugPanel.classList.toggle('hidden');
+            if (!debugPanel.classList.contains('hidden')) {
+                showTemporaryMessage("Developer Mode Enabled");
+            }
+        }
+    });
+}
+
+function debugGiveEverything() {
+    // 1. Give the exact Base Items requested
+    let items = loadData('collectedItems', []);
+    const itemsToGive = ['backpack', 'map', 'pickaxe', 'satchel'];
+    
+    itemsToGive.forEach(id => {
+        if (!items.includes(id)) items.push(id);
+    });
+    saveData('collectedItems', items);
+
+    // 2. Give 10 of every Ore and 10 of every Ingot
+    let satchel = loadData('satchelData', DEFAULT_SATCHEL);
+    
+    // Add Ores
+    satchel.ores.iron += 10;
+    satchel.ores.copper += 10;
+    satchel.ores.tin += 10;
+
+    // Add 100% Quality Ingots (Using a loop since they are saved as individual objects)
+    for (let i = 0; i < 10; i++) {
+        satchel.ingots.iron.push({ quality: 100 });
+        satchel.ingots.copper.push({ quality: 100 });
+        satchel.ingots.tin.push({ quality: 100 });
+    }
+    
+    saveData('satchelData', satchel);
+
+    // 3. Force the UI to instantly refresh everything on the screen
+    if (typeof renderInventory === 'function') renderInventory();
+    if (typeof renderSatchel === 'function') renderSatchel();
+    if (typeof updateInventoryVisibility === 'function') updateInventoryVisibility();
+    if (typeof updateMinimapVisibility === 'function') updateMinimapVisibility();
+    if (typeof hideCollectedItems === 'function') hideCollectedItems();
+    
+    showTemporaryMessage("DEBUG: Granted base items, 10x ores, and 10x ingots!");
+}
+
 // ==================== MUSIC PLAYER ====================
 function initMusicPlayer() {
     const audio = document.getElementById('bgMusic');
@@ -788,5 +869,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDailyTip();
         initMusicPlayer();
         initArrowNavigation();
+        initDebugMenu();
       });
 });

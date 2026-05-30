@@ -84,23 +84,26 @@ function openSmithyUI(recipeId) {
     const grid = document.getElementById('smithyIngotGrid');     // Find the empty grid container
     grid.innerHTML = '';                                         // Clear it out
 
-    if (playerIngots.length === 0) {                             // If the player is totally broke...
+    if (playerIngots.length === 0) {                             
         grid.innerHTML = `<span style="font-size: 12px; color: #ff4444;">You have no ${requiredType} ingots!</span>`;
     } else {
         // Draw every ingot the player owns of this specific type
         playerIngots.forEach((ingot, index) => {
-            const ingotBtn = document.createElement('div');      // Create a visual square for the ingot
+            const ingotBtn = document.createElement('div');      
             ingotBtn.className = 'selectable-ingot';
             
-            // Color code the text using the exact same HSL math from the smelting minigame!
-            if (ingot.quality >= 101) ingotBtn.style.color = '#d000ff';
-            else ingotBtn.style.color = `hsl(${Math.floor((ingot.quality / 100) * 120)}, 100%, 50%)`;
+            // Calculate the dynamic color based on quality
+            let qualityColor = ingot.quality >= 101 ? '#d000ff' : `hsl(${Math.floor((ingot.quality / 100) * 120)}, 100%, 50%)`;
             
-            ingotBtn.textContent = `${ingot.quality}%`;          // Print the quality score on the square
+            // Inject the image and the colored percentage text
+            ingotBtn.innerHTML = `
+                <img src="../assets/${requiredType}_ingot.png" alt="${requiredType} ingot">
+                <span class="ingot-quality-badge" style="color: ${qualityColor};">${ingot.quality}%</span>
+            `;
             
             // Attach a click listener that passes this ingot's specific array index
             ingotBtn.onclick = () => toggleIngotSelection(ingotBtn, index, requiredAmount);
-            grid.appendChild(ingotBtn);                          // Put the square into the grid
+            grid.appendChild(ingotBtn);                          
         });
     }
 

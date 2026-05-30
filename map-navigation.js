@@ -49,41 +49,50 @@ function calculateTravelTime() {
 }
 
 function applyFogOfWar() {
-    // 1. Grab clean IDs from memory (default to 'index' instead of 'index.html')
+    // 1. Grab clean IDs and Equipment from memory
     const visitedIds = loadData('visitedPages', []);
     const currentId = loadData('currentLocation', 'index');
+    const equipment = loadData('playerEquipment', {}); 
     
+    // 2. Check if the player is holding ANY type of compass in their off-hand
+    // Using .includes('compass') automatically covers the base compass, copper_compass, and true_compass!
+    const offHand = equipment.offHand;
+    const hasCompass = offHand && offHand.id && offHand.id.includes('compass');
+
     // Hook up the "Go Back" link
     const goBackLink = document.getElementById('goBackLink');
     if (goBackLink) {
-        // We add the .html back JUST for the clickable link. If index, use root to keep it clean
         goBackLink.href = currentId === 'index' ? '/' : `${currentId}.html`; 
     }
 
     // Loop through every pin on the map
     document.querySelectorAll('.map-pin').forEach(pin => {
-        // We now rely purely on the data-id for     logic
         const pinId = pin.getAttribute('data-id');
-        
-        // We still need the target URL for the actual teleportation link
         const pinHref = pin.getAttribute('data-href') || `${pinId}.html`; 
 
         pin.className = 'map-pin'; // Reset classes
 
         // 1. CURRENT LOCATION (Compare IDs directly!)
         if (currentId === pinId) {
-            pin.classList.add('pin-current');
+            
+            // --- THE NEW COMPASS LOGIC ---
+            if (hasCompass) {
+                pin.classList.add('pin-current'); // Show the player icon!
+            } else {
+                pin.classList.add('pin-visited'); // Disguise it as a normal visited pin!
+            }
+            // -----------------------------
             
             pin.onclick = (e) => {
                 e.stopPropagation();
-                if (pin.hasAttribute('data-href')) { // Standard location
+                if (pin.hasAttribute('data-href')) { 
                     if (typeof showTemporaryMessage === 'function') showTemporaryMessage("You are already here.");
-                } else { // Office Menu
+                } else { 
                     toggleOfficeMenu(e, pin);
                 }
             };
             
-        // 2. VISITED LOCATION (Compare IDs directly!)
+        // 2. VISITED LOCATION
         } else if (visitedIds.includes(pinId)) {
             pin.classList.add('pin-visited');
             
@@ -91,23 +100,17 @@ function applyFogOfWar() {
                 e.stopPropagation();
                 if (pin.hasAttribute('data-href')) {
                     pin.style.pointerEvents = 'none'; 
-
                     const travelTime = calculateTravelTime();
 
                     if (typeof showTemporaryMessage === 'function') {
-                        // message is dynamic
-                        // Divide by 1000 to turn milliseconds into seconds
-                            let roundedSeconds = Math.round(travelTime / 1000);
-                            
-                            // Inject it into the message (added a plural check for 'second' vs 'seconds')
-                            // if value is small enough, it won't say "0 seconds"
-                            if (roundedSeconds === 0) {
-                                showTemporaryMessage("You will arrive in less than a second...");
-                            } else {
-                                showTemporaryMessage(`You will arrive in approximately ${roundedSeconds} second${roundedSeconds === 1 ? '' : 's'}...`);
-                            }
+                        let roundedSeconds = Math.round(travelTime / 1000);
+                        if (roundedSeconds === 0) {
+                            showTemporaryMessage("You will arrive in less than a second...");
+                        } else {
+                            showTemporaryMessage(`You will arrive in approximately ${roundedSeconds} second${roundedSeconds === 1 ? '' : 's'}...`);
                         }
-                        setTimeout(() => { window.location.href = pinHref; }, travelTime);
+                    }
+                    setTimeout(() => { window.location.href = pinHref; }, travelTime);
 
                 } else {
                     toggleOfficeMenu(e, pin);
