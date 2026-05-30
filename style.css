@@ -461,6 +461,117 @@ a:hover {
 .debug-title { margin: 0 0 10px 0; color: var(--hacker-green); }
 .debug-btn-spaced { margin-top: 10px; }
 
+/* 11. =============== MOBILE RESPONSIVENESS =============== */
+/* The Toggle Button (Hidden by default on Desktop) */
+.mobile-nav-toggle {
+    display: none;
+    position: fixed;
+    
+    /* Perfect Vertical Centering Math! */
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--gold);
+    padding: 10px 8px;
+    border-radius: 0 20px 20px 0;
+    
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: bold;
+    
+    /* Smooth transition for when we rotate the arrow later */
+    transition: left 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* --- Rules for Mobile Screens (Phones & Small Tablets) --- */
+@media (max-width: 850px) {
+    
+    .mobile-nav-toggle { display: block; }
+    
+    /* Stack the main content and right sidebar vertically! */
+    .container {
+        flex-direction: column;
+    }
+    
+    .main-content { 
+        padding-top: 60px; 
+        /* Ensure it takes up available space but leaves room for the HUD */
+        flex: 1; 
+        overflow-y: auto;
+    }
+
+    /* ====== LEFT SIDEBAR (Slider) ====== */
+    .left-sidebar {
+        position: fixed; top: 0; left: 0;
+        height: 100vh; z-index: 9000;
+        transform: translateX(-100%); 
+        transition: transform 0.3s ease-in-out; 
+        box-shadow: 5px 0 15px rgba(0,0,0,0.8);
+    }
+    .left-sidebar.mobile-open { transform: translateX(0); }
+    
+    .left-toggle.sidebar-is-open {
+        left: 220px; 
+        border-left: none; 
+        border-radius: 0 5px 5px 0;
+    }
+
+    /* ====== RIGHT SIDEBAR (Permanent Bottom HUD) ====== */
+    .right-sidebar {
+        width: 100vw;
+        height: auto;
+        max-height: 45vh; /* Caps it at slightly less than half the screen */
+        overflow-y: auto; /* Allows scrolling through inventory without moving the game screen! */
+        
+        border-left: none;
+        border-top: 4px solid var(--gold);
+        
+        /* THE MAGIC LAYOUT: CSS GRID */
+        display: grid;
+        grid-template-columns: 1fr 1fr;    
+        grid-auto-flow: row;
+        gap: 10px;
+        align-content: start;
+    }
+
+    /* --- Rearranging the items inside the drawer --- */
+    /* 1. Map goes top-left */
+    #minimapContainer {
+        grid-column: 1; 
+        grid-row: 1;
+        margin: 0;
+    }
+    
+    /* 2. Nav Box goes top-right */
+    .navigation-box {
+        grid-column: 2; 
+        grid-row: 1;
+        position: relative; /* Overrides the 'fixed' desktop positioning */
+        bottom: auto;
+        margin: 0 0 0 auto; /* Pushes it flush to the right */
+        transform: scale(0.85); /* Slightly shrinks it to guarantee it fits next to the map */
+        transform-origin: top right;
+    }
+
+    /* 3. Everything else spans all the way across beneath them! */
+    .right-sidebar > div:not(#minimapContainer):not(.navigation-box),
+    .right-sidebar > button {
+        grid-column: 1 / -1; 
+    }
+}
+
+/* When the sidebar is open, shift the button to the right */
+.mobile-nav-toggle.sidebar-is-open {
+    left: 220px; /* Matches your sidebar width */
+    border-left: none; /* Keeps the UI looking clean */
+    border-radius: 0 20px 20px 0;
+}
+
+
 
 
 /* elements.css inspiration */

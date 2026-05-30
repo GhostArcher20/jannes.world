@@ -4,32 +4,6 @@ const BASE_TOLERANCE_PX = 4;                     // Starting click radius (px)
 const MAX_TOLERANCE_PX = 20;                     // Max click radius allowed
 const DROP_DURATION_MS = 250;                    // Falling animation speed
 
-// --- CONFIGURATIONS ---
-const MINING_CONFIG = {                          // Change balance numbers here
-    'iron': {
-        requiredTool: 'pickaxe',                 // Required item in inventory
-        spawnRange: [3, 5],                      // Min/Max ores on the wall
-        baseParticles: 3,                        // Clicks required to break
-        dropRange: [1, 3]                        // Min/Max items dropped
-    },
-    'copper': {
-        requiredTool: 'pickaxe',
-        spawnRange: [4, 6],
-        baseParticles: 2,        
-        dropRange: [1, 4]
-    },
-    'tin': {
-        requiredTool: 'pickaxe',
-        spawnRange: [1, 2],
-        baseParticles: 4,
-        dropRange: [1, 2]
-    }
-};
-
-const ITEM_MODIFIERS = {                         // Future tool upgrades go here
-    'pickaxe': { power: 0, yield: 0 } 
-};
-
 // --- GAME STATE ---
 let minigameActive = false;                      // Tracks if game is running
 let minigameContainer;                           // Reference to the HTML element

@@ -39,28 +39,6 @@ function initBlinkieStrip() {
 }
 
 // ==================== Right sidebar functions ====================
-// ======== ITEM DATABASE ========
-const itemDatabase = {
-    key:      { name:'Key',      desc:'Opens mysterious doors',      img:'../assets/key.png' },
-    compass:  { name:'Compass',  desc:'Points to hidden treasures',  img:'../assets/compass.png', slot: 'offHand' },
-    map:      { name:'Map',      desc:'Unlocks the minimap',         img:'../assets/map-item.png' },
-    backpack: { name:'Backpack', desc:'Allows you to carry items',   img:'../assets/backpack.png' },
-    pickaxe:  { name:'Pickaxe',  desc:'Used to mine ores',           img:'../assets/pickaxe.png', slot: 'mainHand' },
-    satchel:  { name:'Satchel',  desc:'Holds heavy ores and ingots', img:'../assets/satchel.png' }
-};
-
-// ======== DEFAULT STARTING DATA ========
-const DEFAULT_SATCHEL = {
-    ores: { iron: 0, copper: 0, tin: 0 },
-    ingots: { iron: [], copper: [], tin: [] }
-};
-
-const DEFAULT_EQUIPMENT = {
-    head: null, chest: null, legs: null, boots: null,
-    hands: null, mainHand: null, offHand: null, 
-    necklace: null, ring: null, potion: null
-};
-
 // ======== INVENTORY VISIBILITY & INTERACTION ========
 function updateInventoryVisibility() {
     const items = loadData('collectedItems', []); // Check the main array
@@ -116,7 +94,6 @@ function updateMinimapVisibility() {
         minimapContainer.classList.toggle('hidden', !items.includes('map'));
     }
 }
-
 
 // ======== TEMPORARY POP-UP MESSAGE ========
 function showTemporaryMessage(text, duration = 5000) {					  // duration defaults to 5000ms (5 seconds) if not specified.
@@ -606,62 +583,22 @@ function updateDailyTip() {
     const storedDate = localStorage.getItem('dailyTipDate');
     let tipText = localStorage.getItem('dailyTipText');
     
+    // If it's a new day, pick a new tip!
     if (storedDate !== today) {
-        const special = getSpecialTip();
+        const special = typeof getSpecialTip === 'function' ? getSpecialTip() : null;
+        
         if (special) {
             tipText = special;
         } else {
-            const tips = [
-                // exp related tips
-                "Daily login gives bonus EXP!",
-                "Visit new places to get more EXP points!",
-                "Discover secrets for extra points!",
-                "Interacting with the website give EXP!",
-                // navigation related tips
-                "Check the map to navigate!",
-                "Use the arrows for easy navigation!",
-                "Use the left sidebar menu for navigation!",
-                "Use the arrow keys on your keyboard to navigate!",
-                // item and collectibles related tips
-                "Find the backpack to carry items!",
-                "Pick up the map item to unlock the minimap!",
-                "Collect items to unlock new areas!",
-                "Equip the satchel to carry ores and ingots!",
-                "Picking up the pickaxe allows you to mine ores!",
-                "Equipment is stored in the equipment slots!",
-                // funcionality related tips
-                "You can leave a message in my guestbook or chatbox!",
-                "Take a look at the blinkies!",
-                "Look at the notice board for changes and future updates!",
-                "Read my goals with this website!",
-                "This Message changes every day!",
-                "Reset all EXP and collectibles by pressing the red button!",
-                "Click the satchel to see what you collected!",
-                "Play a mining minigame in the mine!",
-                "Play a smelting minigame in the smeltery!",
-                // pages related tips
-                "Visit the tavern to get a drink!",
-                "Visit the gardens!",
-                "Visit the market!",
-                "See all the rooms in the castle from the hallway!",
-                "Enter the old computer from the office!",
-                "Open the old computer to read blogs and reviews!",
-                "Go take a look behind the scenes!",
-                "Find all my socials in the old computer",
-                "Read my blogs in the old computer!",
-                "Read my reviews in the old computer!",
-                "Read about my projects in the old computer!",
-                "Visit the campfire to chat with other travellers!",
-                "Visit the mine to find ores!",
-                "Visit the smithy to make ingots from your ores!",
-                "Visit the blacksmith to make equipment!"
-            ];
-            const randomIndex = Math.floor(Math.random() * tips.length);
-            tipText = tips[randomIndex];
+            // PULL FROM THE DATABASE
+            const randomIndex = Math.floor(Math.random() * DAILY_TIPS.length);
+            tipText = DAILY_TIPS[randomIndex];
         }
+        
         localStorage.setItem('dailyTipDate', today);
         localStorage.setItem('dailyTipText', tipText);
     }
+    
     tipElement.textContent = tipText;
 }
 
@@ -831,6 +768,46 @@ function initArrowNavigation() {
     });
 }
 
+// ==================== MOBILE NAVIGATION ====================
+function initMobileNavigation() {
+    let leftToggleBtn = document.getElementById('leftMenuToggle');
+    if (!leftToggleBtn) {
+        leftToggleBtn = document.createElement('button');
+        leftToggleBtn.id = 'leftMenuToggle';
+        leftToggleBtn.className = 'mobile-nav-toggle';
+        leftToggleBtn.innerHTML = '&gt;'; 
+        document.body.appendChild(leftToggleBtn);
+    }
+
+    const leftSidebar = document.getElementById('left-sidebar'); 
+
+    if (leftToggleBtn && leftSidebar) {
+        
+        const updateButtonState = () => {
+            const isOpen = leftSidebar.classList.contains('mobile-open');
+            // Change arrow direction
+            leftToggleBtn.innerHTML = isOpen ? '&lt;' : '&gt;';
+            // Toggle the position class so it moves with the sidebar
+            leftToggleBtn.classList.toggle('sidebar-is-open', isOpen);
+        };
+
+        // 1. TOGGLE MENU ON CLICK
+        leftToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            leftSidebar.classList.toggle('mobile-open');
+            updateButtonState();
+        });
+
+        // 2. CLOSE MENU ON OUTSIDE CLICK
+        document.addEventListener('click', (e) => {
+            if (leftSidebar.classList.contains('mobile-open') && !leftSidebar.contains(e.target) && e.target !== leftToggleBtn) {
+                leftSidebar.classList.remove('mobile-open'); 
+                updateButtonState();
+            }
+        });
+    }
+}
+
 // ==================== STARTUP ====================
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Grab the raw path (e.g., "/", "/market", or "/market/")
@@ -870,5 +847,6 @@ document.addEventListener('DOMContentLoaded', () => {
         initMusicPlayer();
         initArrowNavigation();
         initDebugMenu();
+        initMobileNavigation();
       });
 });

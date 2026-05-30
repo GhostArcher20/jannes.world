@@ -1,45 +1,4 @@
 // ==================== BLACKSMITH CRAFTING SYSTEM ====================
-
-// --- DATA CONFIGURATION ---
-const BLACKSMITH_RECIPES = {                                     // Central databank for everything the Blacksmith can make
-    'iron_sword': {
-        id: 'iron_sword',                                        // The exact ID used to save and track the item
-        name: 'Iron Sword',                                      // The display name shown to the player
-        slot: 'mainHand',                                        // Which body part this item equips to
-        cost: { type: 'iron', amount: 3 }                        // The exact type and quantity of ingots required
-    },
-    'copper_helmet': {
-        id: 'copper_helmet',                
-        name: 'Copper Helmet',
-        slot: 'head',
-        cost: { type: 'copper', amount: 2 } 
-    },
-    'ring_of_smithing_forgiveness': {
-        id: 'ring_of_smithing_forgiveness', 
-        name: 'Ring of Forgiveness',
-        slot: 'ring',
-        cost: { type: 'tin', amount: 3 } 
-    },
-    'boots_of_the_traveller': {
-        id: 'boots_of_the_traveller', 
-        name: 'Boots of the Traveller',
-        slot: 'boots',
-        cost: { type: 'copper', amount: 1 }             // change this 
-    },
-    'true_compass': {
-        id: 'true_compass', 
-        name: 'True Compass',
-        slot: 'offHand',
-        cost: { type: 'tin', amount: 1 }                // change this
-    },
-    'iron_compass': {
-        id: 'iron_compass', 
-        name: 'Iron Compass',
-        slot: 'offHand',
-        cost: { type: 'iron', amount: 1 }                // change this
-    }
-};
-
 // --- RENDER BLACKSMITH MENU ---
 function renderBlacksmithMenu() {
     const menuContainer = document.getElementById('blacksmithMenu'); // Find the empty container in the HTML
