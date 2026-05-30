@@ -50,7 +50,7 @@ a:hover {
     text-decoration: underline;            /* underline on hover for clarity */
 }
 
-/* =============== TOOLTIP CONTAINER ===== */
+/* =============== TOOLTIP ===== */
 .tooltipcontainer {
     flex: 1;
     justify-content: center;               /* centers horizontally (flex context) */
@@ -74,7 +74,25 @@ a:hover {
 .tooltipcontainer:hover .tooltip {
     visibility: visible;                   /* show on hover */
 }
-
+/* =============== Inventory Context Menu ======== */
+.context-menu {
+    position: absolute;
+    background-image: var(--motherload);
+    background-color: #222;
+    border: 2px outset var(--light-gray);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 2000;
+    box-shadow: 3px 3px 10px black;
+    color: white;
+    border-radius: 4px;
+    min-width: 150px;
+}
+.context-menu.hidden {
+    display: none;
+}
 
 /* ============================== THREE-COLUMN LAYOUT ===== */
 .container {					/* Use container only for when making different flex columns, for the content of a div, use content*/

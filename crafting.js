@@ -167,20 +167,33 @@ function executeCrafting() {
     if (typeof renderSatchel === 'function') renderSatchel();    // Update sidebar UI
 
     // Create the final Equipment Object
+    // Create the final Equipment Object
     const newGear = {
         id: currentRecipe.id,
         name: currentRecipe.name,
-        quality: avgQuality,                                     // Inject the calculated average quality!
-        icon: `${currentRecipe.id || 'default_gear'}.png`        // Dynamically point to the correct image file
+        quality: avgQuality,                                     
+        icon: `${currentRecipe.id || 'default_gear'}.png`,
+        slot: currentRecipe.slot // CRITICAL: Save the slot data so the inventory knows where it goes!
     };
 
-    // Equip it to the player's body
-    equipItem(currentRecipe.slot, newGear);
+    let equipment = loadData('playerEquipment', DEFAULT_EQUIPMENT);
+
+    // --- SMART AUTO-EQUIP OR STORE ---
+    if (!equipment[currentRecipe.slot]) {
+        // Hands are empty? Equip it immediately!
+        equipItem(currentRecipe.slot, newGear);
+        showTemporaryMessage(`Forged and equipped a ${avgQuality}% quality ${currentRecipe.name}!`);
+    } else {
+        // Hands are full? Send it to the backpack!
+        let gearInv = loadData('unequippedGear', []);
+        gearInv.push(newGear);
+        saveData('unequippedGear', gearInv);
+        if (typeof renderInventory === 'function') renderInventory();
+        showTemporaryMessage(`Forged a ${avgQuality}% quality ${currentRecipe.name}! (Placed in Backpack)`);
+    }
     
-    showTemporaryMessage(`Forged a ${avgQuality}% quality ${currentRecipe.name}!`); // Alert player
-    if (typeof addExpPoint === 'function') addExpPoint(50);      // Big XP reward for crafting!
-    
-    closeSmithyUI();                                             // Close the modal
+    if (typeof addExpPoint === 'function') addExpPoint(50);      
+    closeSmithyUI();
 }
 
 // --- STARTUP ---

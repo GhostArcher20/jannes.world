@@ -41,12 +41,12 @@ function initBlinkieStrip() {
 // ==================== Right sidebar functions ====================
 // ======== ITEM DATABASE ========
 const itemDatabase = {
-    key:      { name:'Key ',      desc:'Opens mysterious doors',        img:'../assets/key.png' },
-    compass:  { name:'Compass ',  desc:'Points to hidden treasures',    img:'../assets/compass.png' },
-    map:      { name:'Map ',      desc:'Unlocks the minimap',           img:'../assets/map-item.png' },
-    backpack: { name:'Backpack ', desc:'Allows you to carry items',     img:'../assets/backpack.png' },
-    pickaxe:  { name:'Pickaxe ',  desc:'Used to mine ores',			    img:'../assets/pickaxe.png' },
-    satchel:  { name:'Satchel ',  desc:'Holds heavy ores and ingots',   img:'../assets/satchel.png' }
+    key:      { name:'Key',      desc:'Opens mysterious doors',      img:'../assets/key.png' },
+    compass:  { name:'Compass',  desc:'Points to hidden treasures',  img:'../assets/compass.png', slot: 'offHand' },
+    map:      { name:'Map',      desc:'Unlocks the minimap',         img:'../assets/map-item.png' },
+    backpack: { name:'Backpack', desc:'Allows you to carry items',   img:'../assets/backpack.png' },
+    pickaxe:  { name:'Pickaxe',  desc:'Used to mine ores',           img:'../assets/pickaxe.png', slot: 'mainHand' },
+    satchel:  { name:'Satchel',  desc:'Holds heavy ores and ingots', img:'../assets/satchel.png' }
 };
 
 // ======== DEFAULT STARTING DATA ========
@@ -133,27 +133,224 @@ function showTemporaryMessage(text, duration = 5000) {					  // duration default
 }
 
 // ======== RENDER INVENTORY ========
-function renderInventory() {                                 // Function to build standard backpack items
-    const container = document.getElementById('inventoryContainer'); // Find the HTML UI box
-    if (!container) return;                                  // Abort if the box doesn't exist
+function renderInventory() {
+    const container = document.getElementById('inventoryContainer');
+    if (!container) return;
+    container.innerHTML = ''; 
 
-    const items = loadData('collectedItems', []);                      // Fetch the array of saved item IDs
-    container.innerHTML = '';                                // Wipe old items off the screen
+    // 1. Draw Base Items (Map, Compass, Pickaxe)
+    const items = loadData('collectedItems', []);
+    items.forEach(id => {
+        if (id === 'backpack' || id === 'satchel') return;
+        const item = itemDatabase[id];
+        if (!item) return;
 
-    items.forEach(id => {                                   // Loop through each item ID
-        // Skip drawing the containers inside the backpack
-        if (id === 'backpack' || id === 'satchel') return;  // Don't draw the backpack and the satchel inside the inv 
-        
-        const item = itemDatabase[id];                      // Look up the item's data in your database
-        if (!item) return;                                  // Skip if data is missing
-        // Inject the HTML directly
-        container.innerHTML += `                            
-            <div class="inventory-slot">
-                <img src="${item.img}" alt="${item.name}">
-                <div class="tooltip">${item.name}: ${item.desc}</div>
-            </div>
-        `;
+        const div = document.createElement('div');
+        div.className = 'inventory-slot';
+        div.style.cursor = 'pointer';
+        div.innerHTML = `<img src="${item.img}" alt="${item.name}" style="pointer-events: none;">`;
+
+        // Click to open menu!
+        div.onclick = (e) => {
+            // Reformat base item to look like gear for the engine
+            const itemData = { id: id, name: item.name, icon: item.img, slot: item.slot, desc: item.desc };
+            openContextMenu(e, 'base_item', id, itemData);
+        };
+        container.appendChild(div);
     });
+
+    // 2. Draw Crafted Gear (Swords, Helmets) stored in the new 'unequippedGear' array
+    const gearArray = loadData('unequippedGear', []);
+    gearArray.forEach((gear, index) => {
+        const div = document.createElement('div');
+        div.className = 'inventory-slot';
+        div.style.cursor = 'pointer';
+        div.innerHTML = `<img src="../assets/${gear.icon}" alt="${gear.name}" style="pointer-events: none;">`;
+
+        div.onclick = (e) => {
+            openContextMenu(e, 'crafted_gear', index, gear);
+        };
+        container.appendChild(div);
+    });
+}
+
+// ======== RENDER EQUIPMENT ========
+function renderEquipment() {
+    const equipment = loadData('playerEquipment', DEFAULT_EQUIPMENT); 
+    for (const [slot, gear] of Object.entries(equipment)) { 
+        const slotElement = document.querySelector(`.equipment-part[data-slot="${slot}"]`); 
+        if (!slotElement) continue; 
+        
+        if (gear) { 
+            slotElement.innerHTML = `
+                <img src="${gear.icon.includes('/') ? gear.icon : '../assets/' + gear.icon}" style="width:32px; height:auto; pointer-events:none;">
+                <span style="font-size:10px; pointer-events:none;">${gear.name}</span>
+            `; 
+            slotElement.classList.remove('plain-slot'); 
+            slotElement.classList.add('equipped-slot');
+            slotElement.style.cursor = 'pointer';
+
+            // Click an equipped item to open the menu!
+            slotElement.onclick = (e) => openContextMenu(e, 'equipped', slot, gear);
+        } else {
+            slotElement.innerHTML = slot.charAt(0).toUpperCase() + slot.slice(1); 
+            slotElement.classList.add('plain-slot'); 
+            slotElement.classList.remove('equipped-slot'); 
+            slotElement.style.cursor = 'default';
+            slotElement.onclick = null; // Remove click event if empty
+        }
+    }
+}
+
+// ==================== INVENTORY CONTEXT MENU ====================
+let currentContext = null; // Memory for what item we are currently interacting with
+
+function openContextMenu(event, itemType, locator, itemData) {
+    event.stopPropagation();
+    currentContext = { type: itemType, locator: locator, data: itemData };
+
+    let menu = document.getElementById('itemContextMenu');
+    if (!menu) {
+        // Automatically build the HTML if it doesn't exist yet
+        menu = document.createElement('div');
+        menu.id = 'itemContextMenu';
+        menu.className = 'context-menu hidden';
+        document.body.appendChild(menu);
+    }
+
+    // Determine what Button 1 should do based on where the item currently is
+    let btn1HTML = '';
+    if (itemType === 'equipped') {
+        btn1HTML = `<button class="ui-button" onclick="actionUnequip()">Put in Inventory</button>`;
+    } else {
+        // If it's in the inventory, check if it is actually equippable!
+        if (itemData.slot) {
+            btn1HTML = `<button class="ui-button success" onclick="actionEquip()">Equip Item</button>`;
+        } else {
+            btn1HTML = `<button class="ui-button" disabled>Cannot Equip</button>`;
+        }
+    }
+
+    // Inject the buttons
+    menu.innerHTML = `
+        <div style="font-weight: bold; border-bottom: 1px solid gray; margin-bottom: 5px; padding-bottom: 5px; color: gold;">${itemData.name}</div>
+        ${btn1HTML}
+        <button class="ui-button" onclick="actionInfo()">More Information</button>
+        <button class="ui-button danger" onclick="actionDiscard()">Discard Item</button>
+    `;
+
+    // Position the menu exactly at the mouse cursor
+    menu.style.left = `${event.pageX + 10}px`;
+    menu.style.top = `${event.pageY + 10}px`;
+    menu.classList.remove('hidden');
+}
+
+// Hide the menu if the player clicks anywhere else on the screen
+document.addEventListener('click', () => {
+    const menu = document.getElementById('itemContextMenu');
+    if (menu) menu.classList.add('hidden');
+});
+
+// --- MENU ACTIONS ---
+function actionUnequip() {
+    const slot = currentContext.locator;
+    const gear = currentContext.data;
+
+    // 1. Remove from body
+    let equipment = loadData('playerEquipment', DEFAULT_EQUIPMENT);
+    equipment[slot] = null;
+    saveData('playerEquipment', equipment);
+
+    // 2. Put back in inventory
+    if (currentContext.data.quality) {
+        let gearInv = loadData('unequippedGear', []);
+        gearInv.push(gear);
+        saveData('unequippedGear', gearInv);
+    } else {
+        let baseInv = loadData('collectedItems', []);
+        if (!baseInv.includes(gear.id)) baseInv.push(gear.id);
+        saveData('collectedItems', baseInv);
+    }
+
+    renderEquipment();
+    renderInventory();
+    showTemporaryMessage(`Unequipped the ${gear.name}.`);
+}
+
+function actionEquip() {
+    const targetSlot = currentContext.data.slot;
+    const newGear = currentContext.data;
+    
+    let equipment = loadData('playerEquipment', DEFAULT_EQUIPMENT);
+    const oldGear = equipment[targetSlot]; // Check if they are already wearing something
+
+    // 1. Remove the NEW gear from the inventory
+    if (currentContext.type === 'crafted_gear') {
+        let gearInv = loadData('unequippedGear', []);
+        gearInv.splice(currentContext.locator, 1);
+        saveData('unequippedGear', gearInv);
+    } else if (currentContext.type === 'base_item') {
+        let baseInv = loadData('collectedItems', []);
+        baseInv = baseInv.filter(id => id !== currentContext.locator);
+        saveData('collectedItems', baseInv);
+    }
+
+    // 2. Put the OLD gear into the inventory (The Swap!)
+    if (oldGear) {
+        if (oldGear.quality) { 
+            // It's a crafted item, send it to the gear array
+            let gearInv = loadData('unequippedGear', []);
+            gearInv.push(oldGear);
+            saveData('unequippedGear', gearInv);
+        } else { 
+            // It's a base item (like the compass), send it to the standard array
+            let baseInv = loadData('collectedItems', []);
+            if (!baseInv.includes(oldGear.id)) baseInv.push(oldGear.id);
+            saveData('collectedItems', baseInv);
+        }
+        showTemporaryMessage(`Swapped ${oldGear.name} for ${newGear.name}!`);
+    } else {
+        showTemporaryMessage(`Equipped the ${newGear.name}!`);
+    }
+
+    // 3. Equip the new gear to the body
+    equipment[targetSlot] = newGear;
+    saveData('playerEquipment', equipment);
+
+    renderEquipment();
+    renderInventory();
+}
+
+function actionDiscard() {
+    const name = currentContext.data.name;
+
+    if (currentContext.type === 'equipped') {
+        let equipment = loadData('playerEquipment', DEFAULT_EQUIPMENT);
+        equipment[currentContext.locator] = null;
+        saveData('playerEquipment', equipment);
+        renderEquipment();
+    } else if (currentContext.type === 'crafted_gear') {
+        let gearInv = loadData('unequippedGear', []);
+        gearInv.splice(currentContext.locator, 1);
+        saveData('unequippedGear', gearInv);
+        renderInventory();
+    } else if (currentContext.type === 'base_item') {
+        let baseInv = loadData('collectedItems', []);
+        baseInv = baseInv.filter(id => id !== currentContext.locator);
+        saveData('collectedItems', baseInv);
+        renderInventory();
+    }
+    showTemporaryMessage(`Threw away the ${name}.`);
+}
+
+function actionInfo() {
+    if (currentContext.data.desc) {
+        showTemporaryMessage(currentContext.data.desc);
+    } else if (currentContext.data.quality) {
+        showTemporaryMessage(`Quality: ${currentContext.data.quality}%. Forged at the Smithy.`);
+    } else {
+        showTemporaryMessage("A piece of equipment.");
+    }
 }
 
 // ======== RENDER SATCHEL CONTENTS ========
@@ -209,27 +406,6 @@ function renderSatchel() {
     });
 }
 
-function renderEquipment() {
-    const equipment = loadData('playerEquipment', DEFAULT_EQUIPMENT); // Get current gear from storage
-    for (const [slot, gear] of Object.entries(equipment)) { // Loop through each equipment slot
-        const slotElement = document.querySelector(`.equipment-part[data-slot="${slot}"]`); // Find the HTML element for this slot
-        if (!slotElement) continue;                         // Skip if the slot element isn't on the current page
-        if (gear) {                                         // Check if something is actually equipped in this slot
-            // Replace the plain-slot content with gear info
-            slotElement.innerHTML = `
-                <img src="../assets/${gear.icon || 'default_gear.png'}" style="width:32px; height:auto;">
-                <span style="font-size:10px;">${gear.name}</span>
-            `; // Inject gear icon and name into the slot
-            slotElement.classList.remove('plain-slot');     // Remove the "empty" styling
-            slotElement.classList.add('equipped-slot');     // Apply the "filled" styling
-        } else {
-            // Restore empty state
-            slotElement.innerHTML = slot.charAt(0).toUpperCase() + slot.slice(1); // Capitalize slot name (e.g., "head")
-            slotElement.classList.add('plain-slot');        // Re-apply "empty" styling
-            slotElement.classList.remove('equipped-slot');  // Remove "filled" styling
-        }
-    }
-}
 
 // ======== CRAFTING API HELPERS ========
 function addOre(type, amount) {
@@ -346,21 +522,32 @@ function initCollectibles() {
 
 // ======== ADD ITEM TO INVENTORY ========
 function addItemToInventory(itemId) {
-    // 1. Get the player's current item list
     const items = loadData('collectedItems', []); 
+    const equipment = loadData('playerEquipment', DEFAULT_EQUIPMENT);
+    const itemData = itemDatabase[itemId];
 
-    // 2. Enforce the Backpack rule
     if (itemId !== 'backpack' && !items.includes('backpack')) {
         showTemporaryMessage("You found this item but you do not have the means to carry it yet.");
         return false;
     }
 
-    // 3. Add the item if they don't have it yet
+    // --- SMART AUTO-EQUIP LOGIC ---
+    // If the item has a designated body slot, and the player's slot is empty...
+    if (itemData && itemData.slot && !equipment[itemData.slot]) {
+        // Reformat it into a "gear" object and equip it immediately!
+        const gearObj = { id: itemId, name: itemData.name, icon: itemData.img, slot: itemData.slot, desc: itemData.desc };
+        equipItem(itemData.slot, gearObj);
+        
+        showTemporaryMessage(`Auto-equipped the ${itemData.name}!`);
+        addExpPoint(25);
+        return true; 
+    }
+
+    // --- STANDARD INVENTORY LOGIC ---
     if (!items.includes(itemId)) {
         items.push(itemId);
         saveData('collectedItems', items);
         
-        // 4. Update the game state
         renderInventory();
         updateInventoryVisibility();
         addExpPoint(25);
@@ -368,7 +555,7 @@ function addItemToInventory(itemId) {
         
         return true;
     }
-    return false; // They already own it
+    return false; 
 }
 
 // ======== DAILY TIP ========
