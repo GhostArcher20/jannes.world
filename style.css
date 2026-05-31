@@ -437,6 +437,65 @@ a:hover {
 .selectable-ingot img { width: 32px; height: 32px; pointer-events: none; }
 .ingot-quality-badge { font-size: 11px; font-weight: bold; margin-top: 4px; text-shadow: 1px 1px 0 var(--black); pointer-events: none; }
 
+/* crafting horizontal row */
+.ingot-scroll-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;          /* CRITICAL: Forces items onto a single horizontal line */
+    overflow-x: auto;           /* Adds a horizontal scrollbar if items overflow */
+    overflow-y: hidden;
+    gap: 10px;                  /* Space between ingots */
+    padding-bottom: 10px;       /* Breathing room for the scrollbar */
+    margin-bottom: 15px;        /* Spacing between the different material rows */
+    width: 100%;
+}
+
+/* 2. Chrome, Edge, and Safari Support */
+.ingot-scroll-row::-webkit-scrollbar {
+    height: 6px; /* This is the magic number! Controls the thickness of a horizontal bar */
+}
+
+.ingot-scroll-row::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2); /* A subtle dark track for the bar to sit in */
+    border-radius: 4px;
+}
+
+.ingot-scroll-row::-webkit-scrollbar-thumb {
+    background: var(--gold, #ffd700); /* Uses your gold variable if it exists */
+    border-radius: 4px;
+}
+
+.ingot-scroll-row::-webkit-scrollbar-thumb:hover {
+    filter: brightness(1.2); /* Makes it slightly brighter when hovered */
+}
+
+/* Ensure the ingots don't accidentally shrink when the row gets crowded */
+.ingot-scroll-row .selectable-ingot {
+    flex: 0 0 auto;             
+}
+
+/* SMITHY MODAL VERTICAL LAYOUT */
+#smithyIngotGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between the different metal types */
+}
+.metal-section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.metal-title {
+    text-transform: uppercase;
+    font-size: 12px;
+    margin-bottom: 8px;
+    color: var(--gold); /* Use your existing gold variable! */
+}
+.metal-warning {
+    font-size: 12px;
+    color: #ff4444;
+}
+
 /* Pop-up Modals (Background Overlay) */
 .modal-overlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;

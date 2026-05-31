@@ -1,152 +1,179 @@
 // ==================== BLACKSMITH CRAFTING SYSTEM ====================
 // --- RENDER BLACKSMITH MENU ---
 function renderBlacksmithMenu() {
-    const menuContainer = document.getElementById('blacksmithMenu'); // Find the empty container in the HTML
-    if (!menuContainer) return;                                  // Abort if the player isn't on the blacksmith page
+    const menuContainer = document.getElementById('blacksmithMenu'); 
+    if (!menuContainer) return;                                  
 
-    menuContainer.innerHTML = '';                                // Clear out any old buttons to prevent duplicates
+    menuContainer.innerHTML = '';                                
 
-    // Loop through every recipe in your database
-    for (const [recipeId, recipe] of Object.entries(BLACKSMITH_RECIPES)) {
-        const capitalizedType = recipe.cost.type.charAt(0).toUpperCase() + recipe.cost.type.slice(1);
+    for (const [recipeId, recipe] of Object.entries(craftablesDatabase)) {
+        // Dynamically build the requirement string (e.g., "3 Iron, 1 Coal")
+        let costString = Object.entries(recipe.cost)
+            .map(([type, amount]) => `${amount} ${type.charAt(0).toUpperCase() + type.slice(1)}`)
+            .join(', ');
         
-        // Create the button in plain HTML, and attach the onclick using the recipeId
         menuContainer.innerHTML += `
             <button class="ui-button" onclick="openSmithyUI('${recipeId}')">
-                Forge ${recipe.name} (Requires ${recipe.cost.amount} ${capitalizedType})
+                Forge ${recipe.name} (Requires ${costString})
             </button>
         `;
     }
 }
 
 // --- MODAL STATE TRACKING ---
-let currentRecipe = null;                                        // Remembers which recipe the player clicked
-let selectedIngots = [];                                         // Remembers the ARRAY INDEX of the specific ingots clicked
+let currentRecipe = null;                                        
+let selectedIngots = {}; // Now a dictionary: { iron: [], tin: [] } to track multiple materials
 
 // --- OPEN MODAL ---
 function openSmithyUI(recipeId) {
-    currentRecipe = BLACKSMITH_RECIPES[recipeId];                // Look up the recipe data using the ID
-    if (!currentRecipe) return;                                  // Safety check
+    currentRecipe = craftablesDatabase[recipeId];                
+    if (!currentRecipe) return;                                  
 
-    selectedIngots = [];                                         // Reset selections from previous crafting attempts
-
-    const satchel = loadData('satchelData', DEFAULT_SATCHEL);    // Load player's inventory
-    const requiredType = currentRecipe.cost.type;                // What ore type do we need? (e.g., 'iron')
-    const requiredAmount = currentRecipe.cost.amount;            // How many do we need? (e.g., 3)
-    const playerIngots = satchel.ingots[requiredType] || [];     // Grab the player's ingots of this exact type (or empty array)
-
-    // 1. Update UI Text
-    document.getElementById('smithyRequirement').textContent = `0/${requiredAmount} ${requiredType} Ingots`; // Set counter
-    document.getElementById('confirmCraftBtn').disabled = true;  // Lock the 'Forge' button initially
-
-    // 2. Populate the Grid
-    const grid = document.getElementById('smithyIngotGrid');     // Find the empty grid container
-    grid.innerHTML = '';                                         // Clear it out
-
-    if (playerIngots.length === 0) {                             
-        grid.innerHTML = `<span style="font-size: 12px; color: #ff4444;">You have no ${requiredType} ingots!</span>`;
-    } else {
-        // Draw every ingot the player owns of this specific type
-        playerIngots.forEach((ingot, index) => {
-            const ingotBtn = document.createElement('div');      
-            ingotBtn.className = 'selectable-ingot';
-            
-            // Calculate the dynamic color based on quality
-            let qualityColor = ingot.quality >= 101 ? '#d000ff' : `hsl(${Math.floor((ingot.quality / 100) * 120)}, 100%, 50%)`;
-            
-            // Inject the image and the colored percentage text
-            ingotBtn.innerHTML = `
-                <img src="../assets/${requiredType}_ingot.png" alt="${requiredType} ingot">
-                <span class="ingot-quality-badge" style="color: ${qualityColor};">${ingot.quality}%</span>
-            `;
-            
-            // Attach a click listener that passes this ingot's specific array index
-            ingotBtn.onclick = () => toggleIngotSelection(ingotBtn, index, requiredAmount);
-            grid.appendChild(ingotBtn);                          
-        });
+    selectedIngots = {}; // Wipe old memory
+    for (const type of Object.keys(currentRecipe.cost)) {
+        selectedIngots[type] = []; 
     }
 
-    // 3. Show the Modal
-    document.getElementById('smithyModal').classList.remove('hidden'); // Remove the CSS hiding class
+    const satchel = loadData('satchelData', DEFAULT_SATCHEL);    
+    document.getElementById('confirmCraftBtn').disabled = true;  
+    
+    const grid = document.getElementById('smithyIngotGrid');     
+    grid.innerHTML = ''; // Wipe old UI
+    
+    let reqTextArray = [];
+
+    // Loop through EVERY material required by the recipe
+    for (const [type, reqAmount] of Object.entries(currentRecipe.cost)) {
+        const playerIngots = satchel.ingots[type] || [];         
+        reqTextArray.push(`0/${reqAmount} ${type}`);
+        
+        // 1. CREATE THE VERTICAL WRAPPER
+        const metalSection = document.createElement('div');
+        metalSection.className = 'metal-section'; // Using CSS class!
+
+        // 2. ADD THE TITLE
+        metalSection.innerHTML = `<div class="metal-title">${type}</div>`; // Using CSS class!
+
+        if (playerIngots.length < reqAmount) {                             
+            metalSection.innerHTML += `<div class="metal-warning">Not enough ${type} ingots! (Need ${reqAmount})</div>`; // Using CSS class!
+        } else {
+            // 3. CREATE THE HORIZONTAL ROW
+            const rowContainer = document.createElement('div');
+            rowContainer.className = 'ingot-scroll-row custom-scroll-area'; 
+            
+            // 4. DRAW THE INGOTS INSIDE THE ROW
+            playerIngots.forEach((ingot, index) => {
+                const ingotBtn = document.createElement('div');      
+                ingotBtn.className = 'selectable-ingot';
+                
+                let qualityColor = ingot.quality >= 101 ? '#d000ff' : `hsl(${Math.floor((ingot.quality / 100) * 120)}, 100%, 50%)`;
+                
+                ingotBtn.innerHTML = `
+                    <img src="../assets/${type}_ingot.png" alt="${type} ingot">
+                    <span class="ingot-quality-badge" style="color: ${qualityColor};">${ingot.quality}%</span>
+                `;
+                
+                ingotBtn.onclick = () => toggleIngotSelection(ingotBtn, type, index, reqAmount);
+                rowContainer.appendChild(ingotBtn);                          
+            });
+            
+            // 5. ATTACH ROW TO SECTION
+            metalSection.appendChild(rowContainer);
+        }
+
+        // 6. ATTACH SECTION TO GRID
+        grid.appendChild(metalSection);
+    }
+
+    document.getElementById('smithyRequirement').textContent = reqTextArray.join(' | '); 
+    document.getElementById('smithyModal').classList.remove('hidden'); 
 }
 
 // --- TOGGLE INGOT SELECTION ---
-function toggleIngotSelection(buttonElement, ingotIndex, requiredAmount) {
-    const isSelected = selectedIngots.includes(ingotIndex);      // Check if this ingot is already in our chosen list
+function toggleIngotSelection(buttonElement, type, ingotIndex, requiredAmount) {
+    const isSelected = selectedIngots[type].includes(ingotIndex);      
 
     if (isSelected) {
-        // Deselect it
-        selectedIngots = selectedIngots.filter(i => i !== ingotIndex); // Remove its index from our array
-        buttonElement.classList.remove('selected');              // Remove the golden CSS border
+        selectedIngots[type] = selectedIngots[type].filter(i => i !== ingotIndex); 
+        buttonElement.classList.remove('selected');              
     } else {
-        // Prevent selecting more than the recipe requires
-        if (selectedIngots.length >= requiredAmount) return;     // Block the click if they already picked enough
-        
-        // Select it
-        selectedIngots.push(ingotIndex);                         // Add its index to our array
-        buttonElement.classList.add('selected');                 // Apply the golden CSS border
+        if (selectedIngots[type].length >= requiredAmount) return;     
+        selectedIngots[type].push(ingotIndex);                         
+        buttonElement.classList.add('selected');                 
     }
 
-    // Update Counter Text dynamically (e.g., "2/3 iron Ingots")
-    document.getElementById('smithyRequirement').textContent = `${selectedIngots.length}/${requiredAmount} ${currentRecipe.cost.type} Ingots`;
+    // Recalculate Requirement Text and Button Status
+    let reqTextArray = [];
+    let allSatisfied = true;
 
-    // Enable the Forge Button ONLY if they have selected the exact amount needed
-    document.getElementById('confirmCraftBtn').disabled = (selectedIngots.length !== requiredAmount);
+    for (const [reqType, reqAmt] of Object.entries(currentRecipe.cost)) {
+        const selectedAmt = selectedIngots[reqType].length;
+        reqTextArray.push(`${selectedAmt}/${reqAmt} ${reqType}`);
+        
+        if (selectedAmt !== reqAmt) allSatisfied = false; // If even ONE material is short, lock the button
+    }
+
+    document.getElementById('smithyRequirement').textContent = reqTextArray.join(' | ');
+    document.getElementById('confirmCraftBtn').disabled = !allSatisfied;
 }
 
 // --- CLOSE MODAL ---
 function closeSmithyUI() {
-    document.getElementById('smithyModal').classList.add('hidden'); // Hide the UI
-    currentRecipe = null;                                        // Wipe memory
-    selectedIngots = [];                                         // Wipe memory
+    document.getElementById('smithyModal').classList.add('hidden'); 
+    currentRecipe = null;                                        
+    selectedIngots = {};                                         
 }
 
 // --- EXECUTE CRAFTING ---
 function executeCrafting() {
-    if (!currentRecipe || selectedIngots.length !== currentRecipe.cost.amount) return; // Final safety check
+    if (!currentRecipe) return;
 
-    let satchel = loadData('satchelData', DEFAULT_SATCHEL);      // Load inventory
-    const requiredType = currentRecipe.cost.type;                // Get ore type
+    // Final safety check: ensure every requirement was perfectly met
+    for (const [type, amount] of Object.entries(currentRecipe.cost)) {
+        if (selectedIngots[type].length !== amount) return; 
+    }
+
+    let satchel = loadData('satchelData', DEFAULT_SATCHEL);      
     
-    // CRITICAL: Sort indices descending (Highest index to Lowest index). 
-    // If we delete index 0 first, index 1 becomes index 0, ruining our remaining selections!
-    selectedIngots.sort((a, b) => b - a);
+    let totalQuality = 0;                                        
+    let totalIngotsSpent = 0;
 
-    let totalQuality = 0;                                        // Start quality counter
+    // Loop through every material spent
+    for (const [type, amount] of Object.entries(currentRecipe.cost)) {
+        
+        // CRITICAL: Sort indices descending to prevent array-shift bugs when deleting!
+        selectedIngots[type].sort((a, b) => b - a);
 
-    // Remove the selected ingots and add up their quality
-    selectedIngots.forEach(index => {
-        // .splice(index, 1) removes 1 item at the given index and returns it. [0] grabs that returned item.
-        const removedIngot = satchel.ingots[requiredType].splice(index, 1)[0]; 
-        totalQuality += removedIngot.quality;                    // Add its quality to the pool
-    });
+        selectedIngots[type].forEach(index => {
+            const removedIngot = satchel.ingots[type].splice(index, 1)[0]; 
+            totalQuality += removedIngot.quality;                    
+            totalIngotsSpent++;
+        });
+    }
 
-    // Calculate final average quality, rounding down
-    const avgQuality = Math.floor(totalQuality / currentRecipe.cost.amount);
+    // Calculate final average quality across ALL spent materials
+    const avgQuality = Math.floor(totalQuality / totalIngotsSpent);
 
-    // Save the updated inventory (the spent ingots are now permanently gone)
     saveData('satchelData', satchel);
-    if (typeof renderSatchel === 'function') renderSatchel();    // Update sidebar UI
+    if (typeof renderSatchel === 'function') renderSatchel();    
 
-    // Create the final Equipment Object
     // Create the final Equipment Object
     const newGear = {
         id: currentRecipe.id,
         name: currentRecipe.name,
+        desc: currentRecipe.desc,
         quality: avgQuality,                                     
-        icon: `${currentRecipe.id || 'default_gear'}.png`,
-        slot: currentRecipe.slot // CRITICAL: Save the slot data so the inventory knows where it goes!
+        icon: `../assets/${currentRecipe.id || 'default_gear'}.png`,
+        slot: currentRecipe.slot 
     };
 
     let equipment = loadData('playerEquipment', DEFAULT_EQUIPMENT);
 
     // --- SMART AUTO-EQUIP OR STORE ---
     if (!equipment[currentRecipe.slot]) {
-        // Hands are empty? Equip it immediately!
         equipItem(currentRecipe.slot, newGear);
         showTemporaryMessage(`Forged and equipped a ${avgQuality}% quality ${currentRecipe.name}!`);
     } else {
-        // Hands are full? Send it to the backpack!
         let gearInv = loadData('unequippedGear', []);
         gearInv.push(newGear);
         saveData('unequippedGear', gearInv);
@@ -154,12 +181,13 @@ function executeCrafting() {
         showTemporaryMessage(`Forged a ${avgQuality}% quality ${currentRecipe.name}! (Placed in Backpack)`);
     }
     
-    if (typeof addExpPoint === 'function') addExpPoint(50);      
+    if (typeof addExpPoint === 'function' && typeof XP_REWARDS !== 'undefined') {
+        addExpPoint(XP_REWARDS.craftItem);
+    }  
     closeSmithyUI();
 }
 
 // --- STARTUP ---
-// Draw the dynamic buttons as soon as the page loads!
 document.addEventListener('DOMContentLoaded', () => {
     renderBlacksmithMenu();
 });

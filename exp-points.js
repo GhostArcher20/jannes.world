@@ -9,7 +9,8 @@ const XP_REWARDS = {
     secretClickMax: 3,    // Maximum XP for clicking a secret item
     mineOre: 5,           // XP for successfully picking up mined ore
     smeltIngot: 15,       // XP for successfully forging an ingot
-    findItem: 25          // XP for finding a unique item/tool (e.g., pickaxe)
+    findItem: 25,         // XP for finding a unique item/tool (e.g., pickaxe)
+    craftItem: 20         // XP for crafting a new item/recipe
 };
 
 // ==================== CORE XP FUNCTIONS ====================

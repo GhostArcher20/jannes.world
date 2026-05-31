@@ -127,9 +127,10 @@ function spawnSingleOre(oreType, config, reqSparkles, tolerance, pStats, width, 
     });
     placedOres.push(pos);                        // Save spot to prevent overlaps
 
+const mat = materialsDatabase[oreType]; // PULL DATABASE INFO
     const oreEl = document.createElement('div');
     oreEl.className = 'minigame-ore'; 
-    oreEl.style.backgroundImage = `url('../assets/${oreType}_ore_mine.png')`; 
+    oreEl.style.backgroundImage = `url('../assets/${mat.id}_ore_mine.png')`; // Dynamic ID
     oreEl.style.backgroundSize = 'contain';
     oreEl.style.backgroundRepeat = 'no-repeat';
     oreEl.style.backgroundPosition = 'center';
@@ -303,6 +304,8 @@ function spawnOreOnGround(type, amount) {        // Builds clickable floor item
     let container = document.getElementById('minedOresContainer');
     if (!container) return; 
 
+    const mat = materialsDatabase[type]; // PULL DATABASE INFO
+
     const oreEl = document.createElement('div');
     oreEl.className = 'collectible';             // Glowing hover effect
     oreEl.style.cursor = 'pointer';
@@ -311,7 +314,7 @@ function spawnOreOnGround(type, amount) {        // Builds clickable floor item
     oreEl.style.zIndex = '10';
 
     const img = document.createElement('img');
-    img.src = `../assets/${type}_ore.png`; 
+    img.src = `../assets/${mat.id}_ore.png`; // Dynamic ID
     img.style.width = '40px';
 
     const badge = document.createElement('div');

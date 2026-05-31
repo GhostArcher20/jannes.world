@@ -120,7 +120,7 @@ function renderInventory() {
     const items = loadData('collectedItems', []);
     items.forEach(id => {
         if (id === 'backpack' || id === 'satchel' || id === 'map') return; // These items have their own special sections, so we skip them here
-        const item = itemDatabase[id]; 
+        const item = collectiblesDatabase[id]; 
         if (!item) return;
 
         const div = document.createElement('div');
@@ -128,12 +128,13 @@ function renderInventory() {
         div.style.cursor = 'pointer';
         
         div.innerHTML = `
-            <img src="${item.img}" alt="${item.name}" class="ghost-icon">
+            <img src="../assets/${item.id}.png" alt="${item.name}" class="ghost-icon">
             <div class="tooltip">${item.name}: ${item.desc}</div>
         `;
 
         div.onclick = (e) => {
-            const itemData = { id: id, name: item.name, icon: item.img, slot: item.slot, desc: item.desc }; // We pass the slot info here for auto-equip purposes, even if it's undefined for most items
+            // pass the slot info here for auto-equip purposes, even if it's undefined for most items
+            const itemData = { id: id, name: item.name, icon: `../assets/${item.id}.png`, slot: item.slot, desc: item.desc }; 
             openContextMenu(e, 'base_item', id, itemData);
         };
         container.appendChild(div);
@@ -172,7 +173,6 @@ function renderEquipment() {
 
             slotElement.innerHTML = `
                 <img src="${gear.icon.includes('/') ? gear.icon : '../assets/' + gear.icon}" class="equip-icon">
-                <span class="equip-name">${gear.name}</span>
                 <div class="tooltip">${tooltipHTML}</div>
             `; 
             
@@ -206,6 +206,7 @@ function openContextMenu(event, itemType, locator, itemData) {
     let innerHTML = `<div class="context-header">${itemData.name}</div>`;
     if (itemType === 'satchel_ingot') {
         innerHTML += `
+            <div style="font-size: 11px; margin-bottom: 8px; color: var(--light-gray); text-align: center;">${itemData.desc}</div>
             <div class="context-subheader">Contained Qualities:</div>
             <div class="custom-scroll-area menu-scroll-area">
                 ${itemData.qualitiesHTML}
@@ -356,12 +357,15 @@ function renderSatchel() {
     // 1. Draw Ores
     Object.entries(data.ores).forEach(([type, count]) => {
         if (count > 0) {
-            const displayName = type.charAt(0).toUpperCase() + type.slice(1);
+            const mat = materialsDatabase[type]; // <-- PULL FROM DATABASE
             container.innerHTML += `
                 <div class="inventory-slot">
-                    <img src="../assets/${type}_ore.png" alt="${type} ore">
+                    <img src="../assets/${mat.id}_ore.png" alt="${mat.name} ore">
                     <div class="quantity-badge">${count}</div>
-                    <div class="tooltip">${count} ${displayName} Ore</div>
+                    <div class="tooltip">
+                        ${count}x ${mat.name} Ore <br> 
+                        <span style="font-size: 10px; color: var(--light-gray);">${mat.oreDesc}</span>
+                    </div>
                 </div>
             `;
         }
@@ -370,7 +374,7 @@ function renderSatchel() {
     // 2. Draw Ingots (Clickable for Context Menu)
     Object.entries(data.ingots).forEach(([type, ingotArray]) => {
         if (ingotArray.length > 0) {
-            const displayName = type.charAt(0).toUpperCase() + type.slice(1);
+            const mat = materialsDatabase[type]; // pull from database
             
             let qualitySpans = '';
             ingotArray.forEach(ingot => {
@@ -384,16 +388,18 @@ function renderSatchel() {
             div.style.cursor = 'pointer';
             
             div.innerHTML = `
-                <img src="../assets/${type}_ingot.png" alt="${type} ingot" class="ghost-icon">
+                <img src="../assets/${mat.id}_ingot.png" alt="${mat.name} ingot" class="ghost-icon">
                 <div class="quantity-badge">${ingotArray.length}</div>
                 <div class="tooltip" onclick="event.stopPropagation()">
-                    ${displayName} Ingot(s)
+                    ${mat.name} Ingot(s) <br>
+                    <span style="font-size: 10px; color: var(--light-gray);">${mat.ingotDesc}</span>
                 </div>
             `;
 
             div.onclick = (e) => {
                 const itemData = { 
-                    name: `${displayName} Ingots`, 
+                    name: `${mat.name} Ingots`, 
+                    desc: mat.ingotDesc, // Pass the database description into the menu
                     qualitiesHTML: qualitySpans 
                 };
                 openContextMenu(e, 'satchel_ingot', type, itemData);
@@ -522,7 +528,7 @@ function initCollectibles() {
 function addItemToInventory(itemId) {
     const items = loadData('collectedItems', []); 
     const equipment = loadData('playerEquipment', DEFAULT_EQUIPMENT);
-    const itemData = itemDatabase[itemId];
+    const itemData = collectiblesDatabase[itemId];
 
     if (itemId !== 'backpack' && !items.includes('backpack')) {
         showTemporaryMessage("You found this item but you do not have the means to carry it yet.");
@@ -533,11 +539,11 @@ function addItemToInventory(itemId) {
     // If the item has a designated body slot, and the player's slot is empty...
     if (itemData && itemData.slot && !equipment[itemData.slot]) {
         // Reformat it into a "gear" object and equip it immediately!
-        const gearObj = { id: itemId, name: itemData.name, icon: itemData.img, slot: itemData.slot, desc: itemData.desc };
+        const gearObj = { id: itemId, name: itemData.name, icon: `../assets/${itemData.id}.png`, slot: itemData.slot, desc: itemData.desc };
         equipItem(itemData.slot, gearObj);
         
         showTemporaryMessage(`Auto-equipped the ${itemData.name}!`);
-        addExpPoint(25);
+        addExpPoint(XP_REWARDS.findItem);
         return true; 
     }
 
@@ -548,7 +554,7 @@ function addItemToInventory(itemId) {
         
         renderInventory();
         updateInventoryVisibility();
-        addExpPoint(25);
+        addExpPoint(XP_REWARDS.findItem);
         if (itemId === 'map') updateMinimapVisibility();
         
         return true;

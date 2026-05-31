@@ -15,7 +15,8 @@ let smeltState = {
     sideB: 0,                                                    // Total hits applied to Side B
     activeSideIsA: true,                                         // True = A is facing up, False = B is facing up
     heatInterval: null,                                          // Stores the timer ID so we can pause/stop cooling
-    maxHits: 110                                                 // Dynamic failure limit (Changes if ring is equipped!)
+    maxHits: 110,                                                 // Dynamic failure limit (Changes if ring is equipped!)
+    ui: {}                                                       // DOM cashe
 };
 
 const ORE_COST = 2;                                              // Cost per ingot
@@ -51,6 +52,7 @@ function startFurnace() {
                 actionBtn.textContent = 'Take Out Bloom';        // Set button text for minigame
                 actionBtn.onclick = moveToAnvil;                 // Connect click to start minigame
             } else {                                             // FORK: If it is Copper or Tin...
+                const mat = materialsDatabase[smeltState.oreType]; // Pull from database for dynamic text
                 actionBtn.textContent = `Get the ${smeltState.oreType} ingot out of the mold`; // Set text for auto-loot
                 actionBtn.onclick = collectSimpleIngot;          // Connect click to auto-loot
             }
@@ -75,11 +77,22 @@ function moveToAnvil() {
     document.getElementById('forgeHeatPhase').style.display = 'none';  // Hide furnace screen
     document.getElementById('forgeAnvilPhase').style.display = 'block';// Show anvil minigame screen
     
+    const mat = materialsDatabase[smeltState.oreType]; // Get official ID
     document.getElementById('bloomVisualContainer').style.display = 'flex'; // Unhide the right-side images
     document.getElementById('visualBloom').src = `../assets/${smeltState.oreType}_bloom.png`; // Set bloom image
     document.getElementById('visualIngot').src = `../assets/${smeltState.oreType}_ingot.png`; // Set ingot image
     
-    // ---> DYNAMIC MODIFIER CALCULATION <---
+    // We grab all these elements exactly ONE time so the browser doesn't have to scan for them 5x a second!
+    smeltState.ui = {
+        tempMask: document.getElementById('bloomTempMask'),
+        activeMask: document.getElementById('activeSideMask'),
+        activeText: document.getElementById('activeSideText'),
+        bottomMask: document.getElementById('bottomSideMask'),
+        bottomText: document.getElementById('bottomSideText'),
+        visualIngot: document.getElementById('visualIngot')
+    };
+
+    // DYNAMIC MODIFIER CALCULATION
     let bonusHits = 0;                                           // Start with 0 bonus tolerance
     const equipment = typeof loadEquipment === 'function' ? loadEquipment() : {}; // Load equipped gear safely
     
@@ -225,8 +238,8 @@ function coolIngot() {
 
 // --- UI UPDATER ---
 function updateAnvilUI() {
-    let maskHeight = 100 - smeltState.temperature;               // Calc how much gray mask to show over the heat bar
-    document.getElementById('bloomTempMask').style.height = maskHeight + '%'; // Apply it
+    let maskHeight = 100 - smeltState.temperature;               
+    smeltState.ui.tempMask.style.height = maskHeight + '%'; // Using the cache
     
     // Figure out which values belong on Top vs Bottom based on the activeSideIsA toggle
     let activeVal = smeltState.activeSideIsA ? smeltState.sideA : smeltState.sideB;
@@ -236,26 +249,26 @@ function updateAnvilUI() {
     
     // Calculate the shrinking mask to reveal the gradient (stops shrinking at 0)
     let activeMaskWidth = Math.max(0, 100 - activeVal); 
-    document.getElementById('activeSideMask').style.width = activeMaskWidth + '%';
-    document.getElementById('activeSideText').textContent = `${activeName}: ${activeVal} / 100`;
+    smeltState.ui.activeMask.style.width = activeMaskWidth + '%';
+    smeltState.ui.activeText.textContent = `${activeName}: ${activeVal} / 100`;
     
     let bottomMaskWidth = Math.max(0, 100 - bottomVal); 
-    document.getElementById('bottomSideMask').style.width = bottomMaskWidth + '%';
-    document.getElementById('bottomSideText').textContent = `${bottomName}: ${bottomVal} / 100`;
+    smeltState.ui.bottomMask.style.width = bottomMaskWidth + '%';
+    smeltState.ui.bottomText.textContent = `${bottomName}: ${bottomVal} / 100`;
     
     // Smart Color Warnings (Red = Dead, Orange = Warning, White/Gray = Safe)
-    if (activeVal > smeltState.maxHits) document.getElementById('activeSideText').style.color = 'red';
-    else if (activeVal > 100) document.getElementById('activeSideText').style.color = 'orange';
-    else document.getElementById('activeSideText').style.color = 'white';
+    if (activeVal > smeltState.maxHits) smeltState.ui.activeText.style.color = 'red';
+    else if (activeVal > 100) smeltState.ui.activeText.style.color = 'orange';
+    else smeltState.ui.activeText.style.color = 'white';
     
-    if (bottomVal > smeltState.maxHits) document.getElementById('bottomSideText').style.color = 'red';
-    else if (bottomVal > 100) document.getElementById('bottomSideText').style.color = 'orange';
-    else document.getElementById('bottomSideText').style.color = 'var(--light-gray)';
+    if (bottomVal > smeltState.maxHits) smeltState.ui.bottomText.style.color = 'red';
+    else if (bottomVal > 100) smeltState.ui.bottomText.style.color = 'orange';
+    else smeltState.ui.bottomText.style.color = 'var(--light-gray)';
     
     // Fade the Ingot graphic in as you get closer to 200 total hits
     let totalHits = Math.min(smeltState.sideA, 100) + Math.min(smeltState.sideB, 100);
     let ingotOpacity = totalHits / 200; 
-    document.getElementById('visualIngot').style.opacity = ingotOpacity;
+    smeltState.ui.visualIngot.style.opacity = ingotOpacity;
 }
 
 // --- CLEANUP ---
@@ -285,8 +298,9 @@ function spawnIngotOnGround(type, quality) {
     ingotEl.style.textAlign = 'center';                          // Center text under it
     ingotEl.style.position = 'relative';                         // Setup for relative positioning
 
+    const mat = materialsDatabase[type]; // Get official ID
     const img = document.createElement('img');                   // Create an image element
-    img.src = `../assets/${type}_ingot.png`;                     // Load the correct graphic dynamically
+    img.src = `../assets/${mat.id}_ingot.png`;                     // Load the correct graphic dynamically
     img.style.width = '40px';                                    // Size it
 
     const badge = document.createElement('div');                 // Create the % text badge
