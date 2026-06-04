@@ -5,9 +5,11 @@
 4. Main Layouts: The 3-column grid (.container, .left-sidebar, .main-content, .right-sidebar).
 5. Global Components: Tooltips, Buttons.
 6. Specific Modules: Left Sidebar items (Blinkies), Right Sidebar items (XP, Minimap).
-7. The Game Engine (Inventory & Crafting): Slots, Equipment Grid, Satchel.
-8. Modals & Overlays: Pop-ups, Context Menus, Debug Console.
-9. D-PAD NAVIGATION BOX
+7. Right Sidebar modules (Non-Inventory)
+8. The Game Engine (Inventory & Crafting): Slots, Equipment Grid, Satchel.
+9. Modals & Overlays: Pop-ups, Context Menus, Debug Console.
+10. D-PAD NAVIGATION BOX
+11. Mobile Responsiveness: Media queries to turn sidebars into a sliding drawer and bottom HUD.
 */
 
 /* ============================== 1. SETUP & VARIABLES ============================== */
@@ -366,6 +368,21 @@ a:hover {
     position: absolute; bottom: 0px; right: 0px;
     background-color: var(--off-white); color: var(--dark-gray);
     padding: 0 1px; border-radius: 2px; font-size: 10px; font-weight: bold; pointer-events: none; 
+}
+
+/* --- MINING MINIGAME SCREEN SHAKE --- */
+@keyframes pickaxeTremble {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    20% { transform: translate(-2px, 1px) rotate(-0.5deg); }
+    40% { transform: translate(2px, -1px) rotate(0.5deg); }
+    60% { transform: translate(-2px, -1px) rotate(-0.5deg); }
+    80% { transform: translate(2px, 1px) rotate(0.5deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.tremble-active {
+    /* 0.15s is lightning fast, just enough to register as a heavy impact */
+    animation: pickaxeTremble 0.15s ease-in-out; 
 }
 
 /* ============================== OTHER ============================== */

@@ -127,7 +127,7 @@ function spawnSingleOre(oreType, config, reqSparkles, tolerance, pStats, width, 
     });
     placedOres.push(pos);                        // Save spot to prevent overlaps
 
-const mat = materialsDatabase[oreType]; // PULL DATABASE INFO
+    const mat = materialsDatabase[oreType]; // PULL DATABASE INFO
     const oreEl = document.createElement('div');
     oreEl.className = 'minigame-ore'; 
     oreEl.style.backgroundImage = `url('../assets/${mat.id}_ore_mine.png')`; // Dynamic ID
@@ -174,6 +174,14 @@ const mat = materialsDatabase[oreType]; // PULL DATABASE INFO
             const clickX = e.clientX - rect.left - rect.width / 2; 
             const clickY = e.clientY - rect.top - rect.height / 2;
             const distance = Math.sqrt(clickX * clickX + clickY * clickY); // Pyth. Thm.
+
+            // --- Tremble effect ---
+            // 1. Remove the class just in case it's still shaking from the last click
+            minigameContainer.classList.remove('tremble-active');
+            // 2. Force the browser to process the removal (The "DOM Reflow" trick)
+            void minigameContainer.offsetWidth; 
+            // 3. Add the class back to trigger the CSS keyframes instantly
+            minigameContainer.classList.add('tremble-active');
 
             if (distance <= tolerance) {         // HIT!
                 e.stopPropagation();             // Don't click background
