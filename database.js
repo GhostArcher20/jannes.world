@@ -17,7 +17,7 @@ const collectiblesDatabase = {
 const craftablesDatabase = {                                     
     iron_sword:                   { id: 'iron_sword',                   name: 'Iron Sword',             desc: 'A basic, sturdy blade.',                        slot: 'mainHand', cost: { iron: 3 } },
     copper_helmet:                { id: 'copper_helmet',                name: 'Copper Helmet',          desc: 'Offers light protection for your head.',        slot: 'head',     cost: { copper: 2 } },
-    ring_of_smithing_forgiveness: { id: 'ring_of_smithing_forgiveness', name: 'Ring of Forgiveness',    desc: 'Rumored to slightly boost forging quality.',    slot: 'ring',     cost: { tin: 3 } },
+    ring_of_forgiveness:          { id: 'ring_of_forgiveness',          name: 'Ring of Forgiveness',    desc: 'Rumored to slightly boost forging quality.',    slot: 'ring',     cost: { tin: 3 } },
     boots_of_the_traveller:       { id: 'boots_of_the_traveller',       name: 'Boots of the Traveller', desc: 'Lightweight boots for long journeys.',          slot: 'boots',    cost: { copper: 1 } },
     true_compass:                 { id: 'true_compass',                 name: 'True Compass',           desc: 'Always points to hidden truths.',               slot: 'offHand',  cost: { tin: 1, iron: 1 } }, // <-- Multi-ingredient!
     iron_compass:                 { id: 'iron_compass',                 name: 'Iron Compass',           desc: 'A heavy, reliable navigational tool.',          slot: 'offHand',  cost: { iron: 1 } }
