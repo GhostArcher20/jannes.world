@@ -117,85 +117,86 @@ function showFloatingText(clientX, clientY, container, message, color, moveYOffs
     setTimeout(() => floatText.remove(), 500);   // Delete HTML after 0.2s 
 }
 
+// --- HELPER: BUILD ORE HTML ---
+function buildOreNode(oreType, x, y) {
+    const mat = materialsDatabase[oreType]; 
+    const oreEl = document.createElement('div');
+    oreEl.className = 'minigame-ore'; 
+    oreEl.style.backgroundImage = `url('../assets/${mat.id}_ore_mine.png')`; 
+    oreEl.style.left = x + 'px';             
+    oreEl.style.top = y + 'px'; 
+    return oreEl;
+}
+
+// --- HELPER: BUILD SPARKLE HTML ---
+function buildSparkleNode(x, y) {
+    const sparkleEl = document.createElement('div');
+    sparkleEl.className = 'minigame-sparkle'; 
+    sparkleEl.style.left = `calc(50% + ${x}px)`; 
+    sparkleEl.style.top = `calc(50% + ${y}px)`;
+    return sparkleEl;
+}
+
+// --- HELPER: TRIGGER SCREEN SHAKE ---
+function triggerScreenShake() {
+    minigameContainer.classList.remove('tremble-active');
+    void minigameContainer.offsetWidth; // DOM Reflow trick to restart animation
+    minigameContainer.classList.add('tremble-active');
+}
+
 // --- WORKER: SPAWN ORE ---
 function spawnSingleOre(oreType, config, reqSparkles, tolerance, pStats, width, height, placedOres, wallState) {
     
-    const pos = getValidPosition(placedOres, {   // Find safe spot for Ore
+    // 1. Calculate Safe Wall Position
+    const pos = getValidPosition(placedOres, {   
         rangeX: width - 80, rangeY: height - 150,
         offsetX: 0, offsetY: 50,
         minDistance: 75, maxAttempts: 100
     });
-    placedOres.push(pos);                        // Save spot to prevent overlaps
+    placedOres.push(pos);                        
 
-    const mat = materialsDatabase[oreType]; // PULL DATABASE INFO
-    const oreEl = document.createElement('div');
-    oreEl.className = 'minigame-ore'; 
-    oreEl.style.backgroundImage = `url('../assets/${mat.id}_ore_mine.png')`; // Dynamic ID
-    oreEl.style.backgroundSize = 'contain';
-    oreEl.style.backgroundRepeat = 'no-repeat';
-    oreEl.style.backgroundPosition = 'center';
-    oreEl.style.position = 'absolute';
-    oreEl.style.left = pos.x + 'px';             // Apply safe X
-    oreEl.style.top = pos.y + 'px';              // Apply safe Y
-    oreEl.style.width = '100px'; 
-    oreEl.style.height = '100px';
-    oreEl.style.zIndex = '5'; 
-    oreEl.style.cursor = `url('../assets/pickaxe.png'), pointer`; // Custom cursor
+    // 2. Build the Ore (Outsourced to Helper!)
+    const oreEl = buildOreNode(oreType, pos.x, pos.y);
     
-    let oreParticleHits = 0;                     // Hits on THIS ore
-    let placedSparkles = [];                     // Sparkles on THIS ore
+    let oreParticleHits = 0;                     
+    let placedSparkles = [];                     
     
-    for (let j = 0; j < reqSparkles; j++) {      // Generate sparkles
+    // 3. Build the Sparkles
+    for (let j = 0; j < reqSparkles; j++) {      
         
-        const sPos = getValidPosition(placedSparkles, { // Find safe offset
+        const sPos = getValidPosition(placedSparkles, { 
             rangeX: 30, rangeY: 30,
             offsetX: -15, offsetY: -15,
             minDistance: 15, maxAttempts: 50
         });
         placedSparkles.push(sPos);               
 
-        const sparkleEl = document.createElement('div');
-        sparkleEl.className = 'minigame-sparkle'; 
-        sparkleEl.style.position = 'absolute';
-        sparkleEl.style.left = `calc(50% + ${sPos.x}px)`; // Center + X offset
-        sparkleEl.style.top = `calc(50% + ${sPos.y}px)`;  // Center + Y offset
-        sparkleEl.style.transform = 'translate(-50%, -50%)'; // Center perfectly
-        sparkleEl.style.width = '70px'; 
-        sparkleEl.style.height = '70px';
-        sparkleEl.style.backgroundImage = `url('../assets/sparkle.gif')`;
-        sparkleEl.style.backgroundSize = 'contain';
-        sparkleEl.style.backgroundRepeat = 'no-repeat';
-        sparkleEl.style.backgroundPosition = 'center';
+        // Build the Sparkle (Outsourced to Helper!)
+        const sparkleEl = buildSparkleNode(sPos.x, sPos.y);
 
-        sparkleEl.addEventListener('click', (e) => { // Handle clicking
+        // 4. Attach Click Logic
+        sparkleEl.addEventListener('click', (e) => { 
             if (!minigameActive) return;         
 
-            const rect = sparkleEl.getBoundingClientRect(); // Get exact location
+            const rect = sparkleEl.getBoundingClientRect(); 
             const clickX = e.clientX - rect.left - rect.width / 2; 
             const clickY = e.clientY - rect.top - rect.height / 2;
-            const distance = Math.sqrt(clickX * clickX + clickY * clickY); // Pyth. Thm.
-
-            // --- Tremble effect ---
-            // 1. Remove the class just in case it's still shaking from the last click
-            minigameContainer.classList.remove('tremble-active');
-            // 2. Force the browser to process the removal (The "DOM Reflow" trick)
-            void minigameContainer.offsetWidth; 
-            // 3. Add the class back to trigger the CSS keyframes instantly
-            minigameContainer.classList.add('tremble-active');
+            const distance = Math.sqrt(clickX * clickX + clickY * clickY); 
 
             if (distance <= tolerance) {         // HIT!
-                e.stopPropagation();             // Don't click background
-                sparkleEl.remove();              // Remove visual
-                oreParticleHits++;               // Increment local score
+                e.stopPropagation();             
+                sparkleEl.remove();              
+                oreParticleHits++;               
                 
+                triggerScreenShake(); // Tremble effect (Outsourced to Helper!)
                 showFloatingText(e.clientX, e.clientY, minigameContainer, 'Hit!', '#00ff00', -40);
 
-                if (oreParticleHits === reqSparkles) { // Ore destroyed?
+                if (oreParticleHits === reqSparkles) { // Ore completely destroyed?
                     handleOreMinedStateTransition(oreEl, pos.x, pos.y, oreType, config, pStats);
-                    wallState.minedOres++;       // Increment global score
+                    wallState.minedOres++;       
                     
                     if (wallState.minedOres === wallState.totalTargetOres) {
-                        allOresMinedEvent();     // Wall cleared!
+                        allOresMinedEvent();     
                     }
                 }
             } else {                             // MISS!
@@ -203,9 +204,11 @@ function spawnSingleOre(oreType, config, reqSparkles, tolerance, pStats, width, 
                 showFloatingText(e.clientX, e.clientY, minigameContainer, 'Miss!', '#ff3333', 20);
             }
         });
-        oreEl.appendChild(sparkleEl);            // Attach sparkle to ore
+        
+        oreEl.appendChild(sparkleEl);            
     }
-    minigameContainer.appendChild(oreEl);        // Attach ore to wall
+    
+    minigameContainer.appendChild(oreEl);        
 }
 
 // --- MANAGER: POPULATE WALL ---

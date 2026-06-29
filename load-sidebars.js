@@ -635,6 +635,7 @@ function initDebugMenu() {
     debugPanel.innerHTML = `
         <h4 class="debug-title">🛠️ DEV CONSOLE</h4>
         <button class="ui-button" onclick="debugGiveEverything()">God Mode (Items + Mats)</button>
+        <button class="ui-button success debug-btn-spaced" onclick="debugGiveExp(1000)">+1000 EXP</button>
         <button class="ui-button danger debug-btn-spaced" onclick="resetAllItems()">Wipe Save File</button>
     `;
     document.body.appendChild(debugPanel);
@@ -684,6 +685,15 @@ function debugGiveEverything() {
     if (typeof hideCollectedItems === 'function') hideCollectedItems();
     
     showTemporaryMessage("DEBUG: Granted base items, 10x ores, and 10x ingots!");
+}
+
+function debugGiveExp(amount) {
+    if (typeof addExpPoint === 'function') {
+        addExpPoint(amount); // Calls your centralized EXP script!
+        showTemporaryMessage(`DEBUG: Granted ${amount} EXP!`);
+    } else {
+        showTemporaryMessage("DEBUG ERROR: EXP script is not loaded on this page.", 3000);
+    }
 }
 
 // ==================== MUSIC PLAYER ====================

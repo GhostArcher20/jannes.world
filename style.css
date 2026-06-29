@@ -370,6 +370,29 @@ a:hover {
     padding: 0 1px; border-radius: 2px; font-size: 10px; font-weight: bold; pointer-events: none; 
 }
 
+/* --- MINIGAME ORES & SPARKLES --- */
+.minigame-ore {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 5;
+    cursor: url('../assets/pickaxe.png'), pointer;
+}
+
+.minigame-sparkle {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background-image: url('../assets/sparkle.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: translate(-50%, -50%); /* Centers perfectly */
+}
+
 /* --- MINING MINIGAME SCREEN SHAKE --- */
 @keyframes pickaxeTremble {
     0% { transform: translate(0, 0) rotate(0deg); }
@@ -379,7 +402,6 @@ a:hover {
     80% { transform: translate(2px, 1px) rotate(0.5deg); }
     100% { transform: translate(0, 0) rotate(0deg); }
 }
-
 .tremble-active {
     /* 0.15s is lightning fast, just enough to register as a heavy impact */
     animation: pickaxeTremble 0.15s ease-in-out; 
