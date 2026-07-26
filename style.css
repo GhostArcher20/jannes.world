@@ -32,6 +32,7 @@
     --white: white;
     --off-white: #d6d6d2;
     --black: black;
+    --purple: #b19cd9;
     
     /* Core Grays */
     --dark-gray: #191411;
@@ -88,6 +89,7 @@ a:hover {
 .text-gray { color: var(--light-gray); }
 .text-green { color: var(--green); }
 .text-gold { color: var(--gold); }
+.text-purple { color: var(--purple); } 
 
 /* Alignment & Spacing */
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
